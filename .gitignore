@@ -52,6 +52,10 @@ Plugins/*/Binaries/*
 # Builds
 Build/*
 
+# Assets
+Content/Assets/*
+Content/Downtown_West/*
+
 # Whitelist PakBlacklist-<BuildConfiguration>.txt files
 !Build/*/
 Build/*/**
