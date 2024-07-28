@@ -1,4 +1,5 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright Chukwuyenum Opone @officialyenum
+
 
 #pragma once
 
@@ -6,23 +7,14 @@
 #include "GameFramework/Character.h"
 #include "TbfCharacterBase.generated.h"
 
-UCLASS()
+UCLASS(Abstract)
 class TURNBASEDBPFRAMEWORK_API ATbfCharacterBase : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	ATbfCharacterBase();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 };

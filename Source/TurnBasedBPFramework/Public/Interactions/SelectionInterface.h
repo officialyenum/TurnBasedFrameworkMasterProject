@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "CombatInterface.generated.h"
+#include "SelectionInterface.generated.h"
 
 // This class does not need to be modified.
 UINTERFACE()
-class UCombatInterface : public UInterface
+class USelectionInterface : public UInterface
 {
 	GENERATED_BODY()
 };
@@ -16,10 +16,12 @@ class UCombatInterface : public UInterface
 /**
  * 
  */
-class TURNBASEDBPFRAMEWORK_API ICombatInterface
+class TURNBASEDBPFRAMEWORK_API ISelectionInterface
 {
 	GENERATED_BODY()
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
+	virtual void HighlightActor() = 0;
+	virtual void UnHighlightActor() = 0;
 };

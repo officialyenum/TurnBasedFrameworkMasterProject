@@ -55,6 +55,7 @@ Build/*
 # Assets
 Content/Assets/*
 Content/Downtown_West/*
+Content/ParagonGideon/*
 
 # Whitelist PakBlacklist-<BuildConfiguration>.txt files
 !Build/*/
