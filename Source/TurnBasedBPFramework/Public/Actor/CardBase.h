@@ -9,6 +9,7 @@
 #include "CardBase.generated.h"
 
 
+class UWidgetComponent;
 // Forward declaration
 class ATbfCharacterUnit;
 
@@ -64,13 +65,19 @@ public:
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
 
-	UFUNCTION(BlueprintNativeEvent, Category="Selection")
-	void HighlightMesh();
-	UFUNCTION(BlueprintNativeEvent, Category="Selection")
-	void UnHighlightMesh();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	
+	UPROPERTY(EditAnywhere, Category="Components")
+	TObjectPtr<UStaticMeshComponent> CardMesh;
+
+	UPROPERTY(EditAnywhere, Category="Components")
+	TObjectPtr<UWidgetComponent> FrontWidget;
+
+	UPROPERTY(EditAnywhere, Category="Components")
+	TObjectPtr<UArrowComponent> SpawnDirectionArrow;
+	
 	
 	UPROPERTY(BlueprintReadOnly, meta=(ExposeOnSpawn="true"))
 	FTbfCardInfo CardInfo;
