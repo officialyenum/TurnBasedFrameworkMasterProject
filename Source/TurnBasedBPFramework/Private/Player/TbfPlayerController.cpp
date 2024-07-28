@@ -6,7 +6,6 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "Interactions/SelectionInterface.h"
-#include "Interactions/UnitInterface.h"
 
 ATbfPlayerController::ATbfPlayerController()
 {
@@ -35,6 +34,7 @@ void ATbfPlayerController::BeginPlay()
 void ATbfPlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
+	CursorTrace();
 	
 }
 

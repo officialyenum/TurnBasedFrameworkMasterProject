@@ -1,6 +1,20 @@
 // Copyright Chukwuyenum Opone @officialyenum
 
 #pragma once
+#include "Actor/CardBase.h"
+
+struct FGameState
+{
+	int32 LifePoints;
+	int32 OpponentLifePoints;
+	TArray<ACardBase*> Deck;
+	TArray<ACardBase*> Hand;
+	TArray<ACardBase*> CardField;
+	TArray<ACardBase*> OpponentCardField;
+	TArray<ATbfCharacterUnit*> UnitField;
+	TArray<ATbfCharacterUnit*> OpponentUnitField;
+	// Add other game state variables as needed
+};
 
 #include "CoreMinimal.h"
 #include "TbfCharacterBase.h"
@@ -14,15 +28,29 @@ class TURNBASEDBPFRAMEWORK_API ATbfCharacterAI : public ATbfCharacterBase
 public:
 	// Sets default values for this character's properties
 	ATbfCharacterAI();
-
+	
+	void MakeMove();
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	FGameState InitialGameState;
+	// Helper methods for AI Game decision making
+	void PerformDrawPhase();
+	void PerformMainPhase();
+	void PerformBattlePhase();
+	void PerformEndPhase();
 
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	// Helper methods for AI card decision-making
+	int32 ChooseCardToPlay() const;
+	int32 ChooseCardToAttack();
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	// AlphaBeta Pruning method for AI card selection
+	int32 AlphaBetaPruning(int32 Depth, int32 Alpha, int32 Beta, bool bIsMaximizingPlayer);
+	int32 EvaluateBoardState();
+
+	// MonteCarlo Simulation method for AI card selection
+	int32 MonteCarloSimulation(int32 Simulations);
+
+private:
+	void SaveGameState(const UObject* WorldContextObject);
+	void RestoreGameState(const UObject* WorldContextObject);
 };

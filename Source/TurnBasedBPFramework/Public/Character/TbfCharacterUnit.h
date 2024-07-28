@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "TbfCharacterBase.h"
 #include "Interactions/SelectionInterface.h"
-#include "Interactions/UnitInterface.h"
 #include "TbfCharacterUnit.generated.h"
 
 UCLASS()
@@ -17,5 +16,6 @@ public:
 	ATbfCharacterUnit();
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
-
+protected:
+	virtual void BeginPlay() override;
 };

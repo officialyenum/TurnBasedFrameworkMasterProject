@@ -4,6 +4,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Character/TbfCharacterBase.h"
 #include "UObject/Interface.h"
 #include "CardInterface.generated.h"
 
@@ -23,4 +24,11 @@ class TURNBASEDBPFRAMEWORK_API ICardInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
+	bool bIsSelected;
+	bool bIsOnBoard;
+	virtual void SetUpCard() = 0;
+	virtual void ActivateCard() = 0;
+	virtual void MoveCardToHandLocation(FVector& Location) = 0;
+	virtual void MoveCardToBoard() = 0;
+	virtual void AddCardToHand(ATbfCharacterBase* PlayerToGive) = 0;
 };

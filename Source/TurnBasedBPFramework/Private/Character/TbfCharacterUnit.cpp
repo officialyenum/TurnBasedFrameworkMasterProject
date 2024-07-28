@@ -3,6 +3,8 @@
 
 #include "Character/TbfCharacterUnit.h"
 
+#include "AbilitySystem/TbfAbilitySystemComponent.h"
+#include "AbilitySystem/TbfAttributeSet.h"
 #include "TurnBasedBPFramework/TurnBasedBPFramework.h"
 
 
@@ -12,6 +14,11 @@ ATbfCharacterUnit::ATbfCharacterUnit()
 	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	AbilitySystemComponent = CreateDefaultSubobject<UTbfAbilitySystemComponent>("AbilitySystemComponent");
+	AbilitySystemComponent->SetIsReplicated(true);
+
+	AttributeSet = CreateDefaultSubobject<UTbfAttributeSet>("AttributeSet");
 }
 
 void ATbfCharacterUnit::HighlightActor()
@@ -23,4 +30,10 @@ void ATbfCharacterUnit::HighlightActor()
 void ATbfCharacterUnit::UnHighlightActor()
 {
 	GetMesh()->SetRenderCustomDepth(false);
+}
+
+void ATbfCharacterUnit::BeginPlay()
+{
+	Super::BeginPlay();
+	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 }
