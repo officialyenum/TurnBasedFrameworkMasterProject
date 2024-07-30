@@ -56,21 +56,33 @@ class TURNBASEDBPFRAMEWORK_API ACardBase : public ATbfEffectActor, public ISelec
 public:
 	// Sets default values for this actor's properties
 	ACardBase();
+	UFUNCTION(BlueprintCallable, Category="Card Actions")
 	virtual void AddCardToHand(ATbfCharacterBase* PlayerToGive) override;
+	UFUNCTION(BlueprintCallable, Category="Card Actions")
 	virtual void SetUpCard() override;
+	UFUNCTION(BlueprintCallable, Category="Card Actions")
 	virtual void ActivateCard() override;
+	UFUNCTION(BlueprintCallable, Category="Card Actions")
 	virtual void MoveCardToBoard() override;
 	
-	UFUNCTION(BlueprintNativeEvent, Category="Card Blueprint Event")
-	void MoveToLocation(FVector& Location);
+	
+	UFUNCTION(BlueprintImplementableEvent)
+	void MoveCardToLocation(const FVector& Location);
 
+	UFUNCTION(BlueprintCallable, Category="Card Actions")
 	virtual void HighlightActor() override;
+	UFUNCTION(BlueprintCallable, Category="Card Actions")
 	virtual void UnHighlightActor() override;
+	UFUNCTION(BlueprintCallable, Category="Card Actions")
 	virtual void SelectActor() override;
+	UFUNCTION(BlueprintCallable, Category="Card Actions")
 	virtual void UnSelectActor() override;
 
-	UPROPERTY(EditAnywhere, Category="Modifier")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Modifier")
 	bool bOpponentCanSee = false;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Modifier")
+	bool bCardIsSelected = false;
 	
 	UPROPERTY(BlueprintReadOnly, meta=(ExposeOnSpawn="true"))
 	FTbfCardInfo CardInfo;

@@ -45,10 +45,15 @@ private:
 	UPROPERTY(EditAnywhere, Category="Input")
 	TObjectPtr<UInputAction> AttackAction;
 
+	UFUNCTION(BlueprintCallable, Category="Player Function")
 	void PauseGame(const struct FInputActionValue& InputActionValue);
+	UFUNCTION(BlueprintCallable, Category="Player Function")
 	void Draw(const struct FInputActionValue& InputActionValue);
+	UFUNCTION(BlueprintCallable, Category="Player Function")
 	void Move(const struct FInputActionValue& InputActionValue);
+	UFUNCTION(BlueprintCallable, Category="Player Function")
 	void Activate(const struct FInputActionValue& InputActionValue);
+	UFUNCTION(BlueprintCallable, Category="Player Function")
 	void Attack(const struct FInputActionValue& InputActionValue);
 
 	ISelectionInterface* LastActor;

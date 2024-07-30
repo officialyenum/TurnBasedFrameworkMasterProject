@@ -6,6 +6,7 @@
 #include "Actor/CardBase.h"
 #include "Actor/TbfGridCell.h"
 #include "Components/ArrowComponent.h"
+#include "Game/TbfGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "Library/TbfCardFunctionLibrary.h"
 
@@ -99,16 +100,36 @@ void ATbfCharacter::PlaySelectedCard()
 			FVector CellLocation = TargetedCell->SpawnDirectionArrow->GetComponentLocation();
 			FRotator CellRotator = TargetedCell->SpawnDirectionArrow->GetComponentRotation();
 			SelectedCard->SetActorRotation(CellRotator);
-			SelectedCard->MoveToLocation(CellLocation);
+			SelectedCard->MoveCardToLocation(CellLocation);
 			Hand.Remove(SelectedCard);
 			CardOnField.Add(SelectedCard);
+			SelectedCard->bOpponentCanSee = true;
+			SelectedCard = nullptr;
 		};
 		MoveCountPerTurn -= 1;
 	}
 	else
 	{
 		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("You Are Out of Card Moves"));
-		CurrentState = EPlayerState::Battle;
+		if (CurrentState == EPlayerState::MainOne)
+		{
+			CurrentState = EPlayerState::Battle;
+		}
+		else
+		{
+			if (CurrentState == EPlayerState::MainTwo)
+			{
+				if (bIsPlayer)
+				{
+					Cast<UTbfGameInstance>(GetGameInstance())->bIsPlayerOneTurn = false;
+				}
+				else
+				{
+					Cast<UTbfGameInstance>(GetGameInstance())->bIsPlayerOneTurn = true;
+				}
+				CurrentState = EPlayerState::Waiting;
+			}
+		}
 	}
 }
 
@@ -123,7 +144,7 @@ void ATbfCharacter::RepositionCardInHand()
 		// Update the Y position
 		FVector NewLocation = SpawnTransform.GetLocation();
 		NewLocation.Y += i * CardSpace;
-		Card->MoveToLocation(NewLocation);
+		Card->MoveCardToLocation(NewLocation);
 	}
 }
 

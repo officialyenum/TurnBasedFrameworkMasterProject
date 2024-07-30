@@ -27,10 +27,16 @@ public:
 	// Sets default values for this actor's properties
 	ATbfGridCell();
 	
+	UFUNCTION(BlueprintCallable, Category="Cell Actions")
 	virtual void HighlightActor() override;
+	
+	UFUNCTION(BlueprintCallable, Category="Cell Actions")
 	virtual void UnHighlightActor() override;
 
+	UFUNCTION(BlueprintCallable, Category="Cell Actions")
 	virtual void SelectActor() override;
+	
+	UFUNCTION(BlueprintCallable, Category="Cell Actions")
 	virtual void UnSelectActor() override;
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -50,6 +56,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cell Grid Params", meta=(ExposeOnSpawn="true"))
 	ECellType CellType;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Modifier")
+	bool bCellIsSelected = false;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

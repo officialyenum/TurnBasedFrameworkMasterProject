@@ -2,6 +2,8 @@
 
 
 #include "Actor/TbfGridCell.h"
+
+#include "Character/TbfCharacter.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "Components/DecalComponent.h"
@@ -10,6 +12,8 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Engine/World.h"
 #include "Engine/Engine.h"
+#include "Game/TbfGameInstance.h"
+#include "Kismet/GameplayStatics.h"
 #include "TurnBasedBPFramework/TurnBasedBPFramework.h"
 
 // Sets default values
@@ -70,16 +74,13 @@ ATbfGridCell::ATbfGridCell()
 
 void ATbfGridCell::HighlightActor()
 {
-	if (bIsActorSelected)
-	{
 		TileMesh->SetRenderCustomDepth(true);
 		TileMesh->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
-	}
 }
 
 void ATbfGridCell::UnHighlightActor()
 {
-	if (bIsActorSelected)
+	if (!bCellIsSelected)
 	{
 		TileMesh->SetRenderCustomDepth(false);
 	}
@@ -87,14 +88,33 @@ void ATbfGridCell::UnHighlightActor()
 
 void ATbfGridCell::SelectActor()
 {
-	bIsActorSelected = true;
+	bCellIsSelected = true;
 	SelectionDecal->SetVisibility(true);
+	
+	UTbfGameInstance* GI = Cast<UTbfGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if (GI->bIsPlayerOneTurn)
+	{
+		GI->PlayerOne->TargetedCell = this;
+	}
+	else
+	{
+		GI->PlayerTwo->TargetedCell = this;
+	}
 }
 
 void ATbfGridCell::UnSelectActor()
 {
-	bIsActorSelected = false;
+	bCellIsSelected = false;
 	SelectionDecal->SetVisibility(false);
+	UTbfGameInstance* GI = Cast<UTbfGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if (GI->bIsPlayerOneTurn)
+	{
+		GI->PlayerOne->TargetedCell = nullptr;
+	}
+	else
+	{
+		GI->PlayerTwo->TargetedCell = nullptr;
+	}
 }
 
 void ATbfGridCell::Tick(float DeltaTime)

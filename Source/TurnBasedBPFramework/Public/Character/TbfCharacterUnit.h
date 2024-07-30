@@ -20,4 +20,7 @@ public:
 	virtual void UnSelectActor() override;
 protected:
 	virtual void BeginPlay() override;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Modifier")
+	bool bUnitIsSelected = false;
 };

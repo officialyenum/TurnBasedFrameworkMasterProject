@@ -7,7 +7,9 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Blueprint/UserWidget.h"
 #include "Character/TbfCharacter.h"
+#include "Character/TbfCharacterPlayer.h"
 #include "Components/ArrowComponent.h"
+#include "Game/TbfGameInstance.h"
 #include "Game/TbfGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "Library/TbfGameFunctionLibrary.h"
@@ -31,9 +33,9 @@ ACardBase::ACardBase(): CardInfo()
 	}
 	
 	FrontWidget = CreateDefaultSubobject<UWidgetComponent>("FrontWidget");
-	FrontWidget->SetRelativeLocation(FVector(0.0f,0.0f,3.0f));
+	FrontWidget->SetRelativeLocation(FVector(0.0f,0.0f,100.0f));
 	FrontWidget->SetRelativeRotation(FRotator3d(90.0f,0.0f,0.0));
-	FrontWidget->SetRelativeScale3D(FVector(0.35,0.35,0.35f));
+	FrontWidget->SetRelativeScale3D(FVector(0.35,0.35,7.0f));
 	FrontWidget->SetupAttachment(CardMesh);
 	
 	
@@ -67,29 +69,49 @@ void ACardBase::AddCardToHand(ATbfCharacterBase* PlayerToGive)
 
 void ACardBase::HighlightActor()
 {
-	if (!bIsActorSelected)
-	{
-		CardMesh->SetRenderCustomDepth(true);
-		CardMesh->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
-	}
-}
-
-void ACardBase::UnHighlightActor()
-{
-	CardMesh->SetRenderCustomDepth(false);
-}
-
-void ACardBase::SelectActor()
-{
-	bIsActorSelected = true;
+	
 	CardMesh->SetRenderCustomDepth(true);
 	CardMesh->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
 }
 
+void ACardBase::UnHighlightActor()
+{
+	if (!bCardIsSelected)
+	{
+		CardMesh->SetRenderCustomDepth(false);
+	}
+}
+
+void ACardBase::SelectActor()
+{
+	bCardIsSelected = true;
+	CardMesh->SetRenderCustomDepth(true);
+	CardMesh->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
+
+	UTbfGameInstance* GI = Cast<UTbfGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if (GI->bIsPlayerOneTurn)
+	{
+		GI->PlayerOne->SelectedCard = this;
+	}
+	else
+	{
+		GI->PlayerTwo->SelectedCard = this;
+	}
+}
+
 void ACardBase::UnSelectActor()
 {
-	bIsActorSelected = false;
+	bCardIsSelected = false;
 	CardMesh->SetRenderCustomDepth(false);
+	UTbfGameInstance* GI = Cast<UTbfGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if (GI->bIsPlayerOneTurn)
+	{
+		GI->PlayerOne->SelectedCard = nullptr;
+	}
+	else
+	{
+		GI->PlayerTwo->SelectedCard = nullptr;
+	}
 }
 
 void ACardBase::SetUpCard()
@@ -120,9 +142,5 @@ void ACardBase::MoveCardToBoard()
 	}
 }
 
-void ACardBase::MoveToLocation_Implementation(FVector& Location)
-{
-	check(GEngine)
-	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Emerald,TEXT("Moving Card"));
-}
+
 
