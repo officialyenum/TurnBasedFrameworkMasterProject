@@ -9,7 +9,6 @@
 #include "Game/TbfGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/TbfPlayerState.h"
-#include "Tests/AutomationCommon.h"
 
 
 // Sets default values
