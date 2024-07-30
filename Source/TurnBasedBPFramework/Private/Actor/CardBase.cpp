@@ -6,7 +6,11 @@
 #include "Components/WidgetComponent.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Blueprint/UserWidget.h"
+#include "Character/TbfCharacter.h"
 #include "Components/ArrowComponent.h"
+#include "Game/TbfGameMode.h"
+#include "Kismet/GameplayStatics.h"
+#include "Library/TbfGameFunctionLibrary.h"
 #include "TurnBasedBPFramework/TurnBasedBPFramework.h"
 
 
@@ -61,18 +65,30 @@ void ACardBase::AddCardToHand(ATbfCharacterBase* PlayerToGive)
 
 }
 
-void ACardBase::MoveCardToHandLocation(FVector& Location)
-{
-}
-
 void ACardBase::HighlightActor()
 {
-	CardMesh->SetRenderCustomDepth(true);
-	CardMesh->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
+	if (!bIsActorSelected)
+	{
+		CardMesh->SetRenderCustomDepth(true);
+		CardMesh->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
+	}
 }
 
 void ACardBase::UnHighlightActor()
 {
+	CardMesh->SetRenderCustomDepth(false);
+}
+
+void ACardBase::SelectActor()
+{
+	bIsActorSelected = true;
+	CardMesh->SetRenderCustomDepth(true);
+	CardMesh->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
+}
+
+void ACardBase::UnSelectActor()
+{
+	bIsActorSelected = false;
 	CardMesh->SetRenderCustomDepth(false);
 }
 
@@ -86,5 +102,27 @@ void ACardBase::ActivateCard()
 
 void ACardBase::MoveCardToBoard()
 {
+	ATbfCharacter* CurrentPlayer;
+	ATbfGameMode* GM = Cast<ATbfGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (GM->GetIsPlayerOneTurn())
+	{
+		CurrentPlayer = GM->GetPlayerOne();
+	}else
+	{
+		CurrentPlayer = GM->GetPlayerTwo();
+	}
+
+	if (CurrentPlayer->MoveCountPerTurn > 0)
+	{
+		CurrentPlayer->SelectedCard = this;
+		CurrentPlayer->TargetedCell = UTbfGameFunctionLibrary::GetRandomCellForPlayer(CurrentPlayer);
+		
+	}
+}
+
+void ACardBase::MoveToLocation_Implementation(FVector& Location)
+{
+	check(GEngine)
+	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Emerald,TEXT("Moving Card"));
 }
 

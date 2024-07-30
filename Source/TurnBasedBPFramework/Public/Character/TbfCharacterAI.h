@@ -1,6 +1,7 @@
 // Copyright Chukwuyenum Opone @officialyenum
 
 #pragma once
+#include "TbfCharacter.h"
 #include "Actor/CardBase.h"
 
 struct FGameState
@@ -21,7 +22,7 @@ struct FGameState
 #include "TbfCharacterAI.generated.h"
 
 UCLASS()
-class TURNBASEDBPFRAMEWORK_API ATbfCharacterAI : public ATbfCharacterBase
+class TURNBASEDBPFRAMEWORK_API ATbfCharacterAI : public ATbfCharacter
 {
 	GENERATED_BODY()
 

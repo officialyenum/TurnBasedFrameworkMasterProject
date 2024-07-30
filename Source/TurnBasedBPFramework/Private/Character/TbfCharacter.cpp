@@ -3,10 +3,11 @@
 
 #include "Character/TbfCharacter.h"
 
-#include "Game/TbfGameInstance.h"
-#include "Game/TbfGameMode.h"
+#include "Actor/CardBase.h"
+#include "Actor/TbfGridCell.h"
+#include "Components/ArrowComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "Player/TbfPlayerState.h"
+#include "Library/TbfCardFunctionLibrary.h"
 
 
 // Sets default values
@@ -14,46 +15,124 @@ ATbfCharacter::ATbfCharacter()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-}
-
-UAbilitySystemComponent* ATbfCharacter::GetAbilitySystemComponent() const
-{
-	return AbilitySystemComponent;
-}
-
-void ATbfCharacter::PossessedBy(AController* NewController)
-{
-	Super::PossessedBy(NewController);
-	// For Server
-	InitAbilityActorInfo();
 
 	
+	CardSpawnDirectionArea = CreateDefaultSubobject<UArrowComponent>("CardSpawnDirectionArea");
+	CardSpawnDirectionArea->SetRelativeLocation(FVector(190.0f,-200.0f,100.0f));
+	CardSpawnDirectionArea->SetRelativeRotation(FRotator(90.0f,0.0f,0.0f));
+	CardSpawnDirectionArea->SetArrowSize(1.0f);
+	CardSpawnDirectionArea->SetArrowLength(80.0f);
 }
 
-void ATbfCharacter::OnRep_PlayerState()
+void ATbfCharacter::DrawCard()
 {
-	Super::OnRep_PlayerState();
-	// For Client
-	InitAbilityActorInfo();
+	if (Deck.Num() > 0 && DrawCountPerTurn > 0)
+	{
+		// Get Card Datatable List
+		if (!DT)
+		{
+			ConstructorHelpers::FObjectFinder<UDataTable> CardDataTable_BP(TEXT("DataTable'/Game/FrameWork/Blueprint/Data/DT_CardDeckList.DT_CardDeckList'"));
+			if (CardDataTable_BP.Succeeded())
+			{
+				DT = CardDataTable_BP.Object;
+			}
+		}
+
+		FTbfCardInfo CardInfoStruct = UTbfCardFunctionLibrary::GetRandomCardFromDataTable(DT);
+
+		// Define spawn transform
+		FTransform SpawnTransform = CardSpawnDirectionArea->GetComponentTransform();
+
+		// Update the Y position
+		FVector NewLocation = SpawnTransform.GetLocation();
+		NewLocation.Y += Hand.Num() * CardSpace;
+		SpawnTransform.SetLocation(NewLocation);
+		// Spawn the card actor deferred
+		// Set default class for the card
+		if (!CardClass)
+		{
+			static ConstructorHelpers::FClassFinder<ACardBase> CardBaseBPClass(TEXT("Blueprint'/Game/FrameWork/Blueprint/Card/BP_CardBase.BP_CardBase'"));
+			if (CardBaseBPClass.Succeeded())
+			{
+				CardClass = CardBaseBPClass.Class;
+			}
+		}
+		if (ACardBase* DrawnCard = GetWorld()->SpawnActorDeferred<ACardBase>(
+			CardClass, // Ensure this is set to a valid class
+			SpawnTransform,
+			this,
+			nullptr,
+			ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn
+		))
+		{
+			// Set the CardInfo property which is marked ExposeOnSpawn
+			DrawnCard->CardInfo = CardInfoStruct;
+
+			// Finish spawning the card actor
+			DrawnCard->FinishSpawning(SpawnTransform);
+
+			// Add DrawnCard to Hand Array
+			Hand.Add(DrawnCard);
+
+			// Reposition Cards in Hand
+			RepositionCardInHand();
+		}
+	}
 }
+
+void ATbfCharacter::PlaySelectedCard()
+{
+	if (MoveCountPerTurn > 0)
+	{
+		if (!SelectedCard)
+		{
+			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("Select A Card"));
+			return;
+		}
+		if (!TargetedCell)
+		{
+			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("Select A Cell for Card to Move To"));
+			return;
+		}
+		if(Hand.Contains(SelectedCard))
+		{
+			FVector CellLocation = TargetedCell->SpawnDirectionArrow->GetComponentLocation();
+			FRotator CellRotator = TargetedCell->SpawnDirectionArrow->GetComponentRotation();
+			SelectedCard->SetActorRotation(CellRotator);
+			SelectedCard->MoveToLocation(CellLocation);
+			Hand.Remove(SelectedCard);
+			CardOnField.Add(SelectedCard);
+		};
+		MoveCountPerTurn -= 1;
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("You Are Out of Card Moves"));
+		CurrentState = EPlayerState::Battle;
+	}
+}
+
+void ATbfCharacter::RepositionCardInHand()
+{
+	// Define spawn transform
+	FTransform SpawnTransform = CardSpawnDirectionArea->GetComponentTransform();
+	for (int i = 0; i < Hand.Num(); ++i)
+	{
+		ACardBase* Card = Hand[i];
+		
+		// Update the Y position
+		FVector NewLocation = SpawnTransform.GetLocation();
+		NewLocation.Y += i * CardSpace;
+		Card->MoveToLocation(NewLocation);
+	}
+}
+
 
 // Called when the game starts or when spawned
 void ATbfCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	// Set User Player in Game Instance Player One
-	UTbfGameInstance* GI = Cast<UTbfGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-	GI->PlayerOne = this;
 }
 
-void ATbfCharacter::InitAbilityActorInfo()
-{
-	//Init ability actor info for the server
-	ATbfPlayerState* TbfPlayerState = GetPlayerState<ATbfPlayerState>();
-	check(TbfPlayerState);
-	TbfPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(TbfPlayerState, this);
 
-	AbilitySystemComponent = TbfPlayerState->GetAbilitySystemComponent();
-	AttributeSet = TbfPlayerState->GetAttributeSet();
-}
 

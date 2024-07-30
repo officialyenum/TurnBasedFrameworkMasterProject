@@ -26,10 +26,10 @@ public:
 	TObjectPtr<UTbfGameInstance> GI;
 	
 	UFUNCTION(BlueprintCallable, Category = "Game Functions Players")
-	ATbfCharacterBase* GetPlayerOne() const;
+	ATbfCharacter* GetPlayerOne() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Game Functions Players")
-	ATbfCharacterBase* GetPlayerTwo() const;
+	ATbfCharacter* GetPlayerTwo() const;
 	
 	UFUNCTION(BlueprintCallable, Category = "Game Functions Turn")
 	bool GetIsPlayerOneTurn() const;
@@ -42,7 +42,6 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category="Game Properties")
 	TObjectPtr<ATbfCharacterBase> PlayerTwo;
 
-	bool bIsPlayerOneTurn = true;
 	UFUNCTION(BlueprintNativeEvent, Category="Game Functions")
 	void SetUpPlayers();
 	UFUNCTION(BlueprintNativeEvent, Category="Game Functions")

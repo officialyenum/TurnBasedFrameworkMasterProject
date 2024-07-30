@@ -23,12 +23,31 @@ ATbfCharacterUnit::ATbfCharacterUnit()
 
 void ATbfCharacterUnit::HighlightActor()
 {
-	GetMesh()->SetRenderCustomDepth(true);
-	GetMesh()->SetCustomDepthStencilValue(CUSTOM_DEPTH_BLUE);
+	if (!bIsActorSelected)
+	{
+		GetMesh()->SetRenderCustomDepth(true);
+		GetMesh()->SetCustomDepthStencilValue(CUSTOM_DEPTH_BLUE);
+	}
 }
 
 void ATbfCharacterUnit::UnHighlightActor()
 {
+	if (!bIsActorSelected)
+	{
+		GetMesh()->SetRenderCustomDepth(false);
+	}
+}
+
+void ATbfCharacterUnit::SelectActor()
+{
+	bIsActorSelected = true;
+	GetMesh()->SetRenderCustomDepth(true);
+	GetMesh()->SetCustomDepthStencilValue(CUSTOM_DEPTH_BLUE);
+}
+
+void ATbfCharacterUnit::UnSelectActor()
+{
+	bIsActorSelected = false;
 	GetMesh()->SetRenderCustomDepth(false);
 }
 

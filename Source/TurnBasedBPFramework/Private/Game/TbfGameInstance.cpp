@@ -4,7 +4,7 @@
 #include "Game/TbfGameInstance.h"
 
 #include "Actor/CardBase.h"
-#include "Character/TbfCharacterBase.h"
+#include "Character/TbfCharacter.h"
 
 UTbfGameInstance::UTbfGameInstance()
 {

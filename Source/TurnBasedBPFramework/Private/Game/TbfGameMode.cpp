@@ -29,7 +29,7 @@ void ATbfGameMode::SetUpPlayers_Implementation()
 }
 
 
-ATbfCharacterBase* ATbfGameMode::GetPlayerOne() const
+ATbfCharacter* ATbfGameMode::GetPlayerOne() const
 {
 	if (GI)
 	{
@@ -38,7 +38,7 @@ ATbfCharacterBase* ATbfGameMode::GetPlayerOne() const
 	return nullptr;
 }
 
-ATbfCharacterBase* ATbfGameMode::GetPlayerTwo() const
+ATbfCharacter* ATbfGameMode::GetPlayerTwo() const
 {
 	if (GI)
 	{

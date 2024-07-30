@@ -53,7 +53,8 @@ void ATbfCharacterAI::PerformMainPhase()
 	int32 CardIndex = ChooseCardToPlay();
 	if (CardIndex != INDEX_NONE)
 	{
-		PlayCard(CardIndex);
+		SelectedCard = Hand[CardIndex];
+		PlaySelectedCard();
 	}
 	// Additional logic for the AI's main phase
 }
@@ -108,7 +109,8 @@ int32 ATbfCharacterAI::AlphaBetaPruning(int32 Depth, int32 Alpha, int32 Beta, bo
 		for (int32 i = 0; i < Hand.Num(); ++i)
 		{
 			// Hypothetical play card from hand
-			PlayCard(i);
+			SelectedCard = Hand[i];
+			PlaySelectedCard();
 			int32 Eval = AlphaBetaPruning(Depth - 1, Alpha, Beta, false);
 			MaxEval = FMath::Max(MaxEval, Eval);
 			Alpha = FMath::Max(Alpha, Eval);
@@ -127,7 +129,8 @@ int32 ATbfCharacterAI::AlphaBetaPruning(int32 Depth, int32 Alpha, int32 Beta, bo
 		for (int32 i = 0; i < Hand.Num(); ++i)
 		{
 			// Hypothetical opponent plays card
-			PlayCard(i);
+			SelectedCard = Hand[i];
+			PlaySelectedCard();
 			int32 Eval = AlphaBetaPruning(Depth - 1, Alpha, Beta, true);
 			MinEval = FMath::Min(MinEval, Eval);
 			Beta = FMath::Min(Beta, Eval);
@@ -162,7 +165,8 @@ int32 ATbfCharacterAI::MonteCarloSimulation(int32 Simulations)
 		for (int32 j = 0; j < Hand.Num(); ++j)
 		{
 			// Simulate playing card j
-			PlayCard(j);
+			SelectedCard = Hand[i];
+			PlaySelectedCard();
 
 			// Simulate the rest of the game randomly
 			// ...

@@ -6,9 +6,9 @@
 #include "Engine/GameInstance.h"
 #include "TbfGameInstance.generated.h"
 
+class ATbfCharacter;
 class ATbfCharacterUnit;
 class ACardBase;
-class ATbfCharacterBase;
 /**
  * 
  */
@@ -24,10 +24,10 @@ public:
 	bool bIsPlayerOneTurn;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Players")
-	TObjectPtr<ATbfCharacterBase> PlayerOne;
+	TObjectPtr<ATbfCharacter> PlayerOne;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Players")
-	TObjectPtr<ATbfCharacterBase> PlayerTwo;
+	TObjectPtr<ATbfCharacter> PlayerTwo;
 
 	UFUNCTION(BlueprintCallable, Category= "Card Trackers")
 	TArray<ACardBase*> PlayerOneFieldedCards();

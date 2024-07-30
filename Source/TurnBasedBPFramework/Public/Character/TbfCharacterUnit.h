@@ -16,6 +16,8 @@ public:
 	ATbfCharacterUnit();
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
+	virtual void SelectActor() override;
+	virtual void UnSelectActor() override;
 protected:
 	virtual void BeginPlay() override;
 };

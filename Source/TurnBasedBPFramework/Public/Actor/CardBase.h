@@ -60,10 +60,14 @@ public:
 	virtual void SetUpCard() override;
 	virtual void ActivateCard() override;
 	virtual void MoveCardToBoard() override;
-	virtual void MoveCardToHandLocation(FVector& Location) override;
+	
+	UFUNCTION(BlueprintNativeEvent, Category="Card Blueprint Event")
+	void MoveToLocation(FVector& Location);
 
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
+	virtual void SelectActor() override;
+	virtual void UnSelectActor() override;
 
 	UPROPERTY(EditAnywhere, Category="Modifier")
 	bool bOpponentCanSee = false;
