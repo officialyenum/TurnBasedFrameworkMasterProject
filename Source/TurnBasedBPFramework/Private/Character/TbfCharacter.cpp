@@ -3,6 +3,9 @@
 
 #include "Character/TbfCharacter.h"
 
+#include "Game/TbfGameInstance.h"
+#include "Game/TbfGameMode.h"
+#include "Kismet/GameplayStatics.h"
 #include "Player/TbfPlayerState.h"
 
 
@@ -38,11 +41,14 @@ void ATbfCharacter::OnRep_PlayerState()
 void ATbfCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	// Set User Player in Game Instance Player One
+	UTbfGameInstance* GI = Cast<UTbfGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	GI->PlayerOne = this;
 }
 
 void ATbfCharacter::InitAbilityActorInfo()
-{//Init ability actor info for the server
+{
+	//Init ability actor info for the server
 	ATbfPlayerState* TbfPlayerState = GetPlayerState<ATbfPlayerState>();
 	check(TbfPlayerState);
 	TbfPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(TbfPlayerState, this);

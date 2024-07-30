@@ -22,7 +22,7 @@ enum class ECardType: uint8
 };
 
 USTRUCT(BlueprintType)
-struct FTbfCardInfo
+struct FTbfCardInfo : public FTableRowBase
 {
 	GENERATED_BODY()
 
@@ -65,6 +65,11 @@ public:
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
 
+	UPROPERTY(EditAnywhere, Category="Modifier")
+	bool bOpponentCanSee = false;
+	
+	UPROPERTY(BlueprintReadOnly, meta=(ExposeOnSpawn="true"))
+	FTbfCardInfo CardInfo;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -78,7 +83,5 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Components")
 	TObjectPtr<UArrowComponent> SpawnDirectionArrow;
 	
-	
-	UPROPERTY(BlueprintReadOnly, meta=(ExposeOnSpawn="true"))
-	FTbfCardInfo CardInfo;
+
 };

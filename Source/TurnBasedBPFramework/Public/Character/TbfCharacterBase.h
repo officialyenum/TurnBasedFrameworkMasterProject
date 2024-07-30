@@ -25,6 +25,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Gameplay Actions")
 	void PlayCard(int32 CardIndex);
 	
+	UFUNCTION(BlueprintCallable, Category="Gameplay Actions")
+	void RepositionCardInHand();
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player")
 	TArray<ACardBase*> Deck;
 
@@ -37,6 +40,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player")
 	TArray<ATbfCharacterUnit*> UnitOnField;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+	UDataTable* DT;
 protected:
 	virtual void BeginPlay() override;
 

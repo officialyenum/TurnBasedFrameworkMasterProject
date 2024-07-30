@@ -6,6 +6,7 @@
 #include "AbilitySystem/TbfAbilitySystemComponent.h"
 #include "AbilitySystem/TbfAttributeSet.h"
 #include "Character/TbfCharacter.h"
+#include "Game/TbfGameInstance.h"
 #include "Game/TbfGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/TbfPlayerState.h"
@@ -28,7 +29,9 @@ void ATbfCharacterAI::BeginPlay()
 {
 	Super::BeginPlay();
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
-	
+	// Set AI Player in Game Instance Player Two
+	UTbfGameInstance* GI = Cast<UTbfGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	GI->PlayerTwo = this;
 }
 
 void ATbfCharacterAI::MakeMove()
