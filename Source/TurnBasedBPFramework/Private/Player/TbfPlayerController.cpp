@@ -16,6 +16,8 @@
 ATbfPlayerController::ATbfPlayerController()
 {
 	bReplicates = true;
+	LastActor = nullptr;
+	ThisActor = nullptr;
 }
 
 void ATbfPlayerController::BeginPlay()
@@ -87,9 +89,11 @@ void ATbfPlayerController::Draw(const FInputActionValue& InputActionValue)
 	// Get Player Character
 	if (ATbfCharacterPlayer* PlayerCharacter = Cast<ATbfCharacterPlayer>(GetCharacter()))
 	{
+		UE_LOG(LogTemp, Error, TEXT("Player Found"));
 		// if player is in Draw State Call Draw Function on Player Character
 		if (PlayerCharacter->CurrentState == EPlayerState::Draw)
 		{
+			UE_LOG(LogTemp, Error, TEXT("Player State In Draw"));
 			PlayerCharacter->DrawCard();
 		}
 	}

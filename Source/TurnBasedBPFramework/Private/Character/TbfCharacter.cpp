@@ -52,7 +52,7 @@ void ATbfCharacter::DrawCard()
 		// Set default class for the card
 		if (!CardClass)
 		{
-			static ConstructorHelpers::FClassFinder<ACardBase> CardBaseBPClass(TEXT("Blueprint'/Game/FrameWork/Blueprint/Card/BP_CardBase.BP_CardBase'"));
+			static ConstructorHelpers::FClassFinder<ACardBase> CardBaseBPClass(TEXT("Blueprint'/Game/rameworkV2/Blueprints/Actors/Card/BP_TbfCard.BP_TbfCard'"));
 			if (CardBaseBPClass.Succeeded())
 			{
 				CardClass = CardBaseBPClass.Class;

@@ -12,28 +12,12 @@ ATbfGameMode::ATbfGameMode()
 	GI = Cast<UTbfGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 }
 
-void ATbfGameMode::StartGame_Implementation()
-{
-}
-
-void ATbfGameMode::PauseGame_Implementation()
-{
-}
-
-void ATbfGameMode::QuitGame_Implementation()
-{
-}
-
-void ATbfGameMode::SetUpPlayers_Implementation()
-{
-}
-
-
 ATbfCharacter* ATbfGameMode::GetPlayerOne() const
 {
 	if (GI)
 	{
-		return GI->PlayerOne;
+		ATbfCharacter* Player = GI->PlayerOne;
+		return Player;
 	}
 	return nullptr;
 }
@@ -42,7 +26,8 @@ ATbfCharacter* ATbfGameMode::GetPlayerTwo() const
 {
 	if (GI)
 	{
-		return GI->PlayerOne;
+		ATbfCharacter* Player = GI->PlayerTwo;
+		return Player;
 	}
 	GEngine->AddOnScreenDebugMessage(-1,2.0f,FColor::Red,TEXT("GameInstance not Initialized in C++ GameMode"));
 	return nullptr;

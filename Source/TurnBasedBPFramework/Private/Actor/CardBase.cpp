@@ -41,7 +41,7 @@ ACardBase::ACardBase(): CardInfo()
 	
 	
 	// Optionally, set the widget class here if you have a specific widget class
-	static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Game/FrameWork/UI/Widgets/WB_Card"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Game/rameworkV2/Blueprints/UI/Widgets/BP_TbfCard"));
 	if (WidgetClass.Succeeded())
 	{
 		FrontWidget->SetWidgetClass(WidgetClass.Class);

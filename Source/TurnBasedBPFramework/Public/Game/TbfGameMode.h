@@ -42,12 +42,12 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category="Game Properties")
 	TObjectPtr<ATbfCharacterBase> PlayerTwo;
 
-	UFUNCTION(BlueprintNativeEvent, Category="Game Functions")
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category="Game Functions")
 	void SetUpPlayers();
-	UFUNCTION(BlueprintNativeEvent, Category="Game Functions")
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category="Game Functions")
 	void StartGame();
-	UFUNCTION(BlueprintNativeEvent, Category="Game Functions")
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category="Game Functions")
 	void PauseGame();
-	UFUNCTION(BlueprintNativeEvent, Category="Game Functions")
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category="Game Functions")
 	void QuitGame();
 };
