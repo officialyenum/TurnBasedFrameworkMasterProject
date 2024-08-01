@@ -19,7 +19,7 @@ class TURNBASEDBPFRAMEWORK_API ATbfHUD : public AHUD
 	GENERATED_BODY()
 public:
 	
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, Category="Overlay Widget")
 	TObjectPtr<UTbfUserWidget> OverlayWidget;
 	
 	UOverlayWidgetController* GetOverlayWidgetController(const FWidgetControllerParams& WCParams);

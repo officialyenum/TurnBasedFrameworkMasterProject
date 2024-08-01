@@ -72,3 +72,22 @@ ATbfGridCell* UTbfGameFunctionLibrary::GetRandomCellForPlayer(const ATbfCharacte
 	return nullptr;
 }
 
+FString UTbfGameFunctionLibrary::PlayerStateToString(EPlayerState State)
+{
+	switch (State)
+	{
+	case EPlayerState::Waiting:
+		return TEXT("Waiting");
+	case EPlayerState::Draw:
+		return TEXT("Draw");
+	case EPlayerState::MainOne:
+		return TEXT("Main One");
+	case EPlayerState::Battle:
+		return TEXT("Battle");
+	case EPlayerState::MainTwo:
+		return TEXT("Main Two");
+	default:
+		return TEXT("Unknown");
+	}
+}
+

@@ -4,10 +4,13 @@
 #include "Character/TbfCharacterPlayer.h"
 
 #include "AbilitySystemComponent.h"
+#include "AI/TbfAIController.h"
 #include "Game/TbfGameInstance.h"
 #include "Game/TbfGameMode.h"
 #include "Kismet/GameplayStatics.h"
+#include "Player/TbfPlayerController.h"
 #include "Player/TbfPlayerState.h"
+#include "UI/HUD/TbfHUD.h"
 
 // Sets default values
 ATbfCharacterPlayer::ATbfCharacterPlayer()
@@ -44,6 +47,23 @@ void ATbfCharacterPlayer::InitAbilityActorInfo()
 
 	AbilitySystemComponent = TbfPlayerState->GetAbilitySystemComponent();
 	AttributeSet = TbfPlayerState->GetAttributeSet();
+	
+	if (ATbfPlayerController* TbfPlayerController = Cast<ATbfPlayerController>(GetController()))
+	{
+		if (ATbfHUD* YegunHUD = Cast<ATbfHUD>(TbfPlayerController->GetHUD()))
+		{
+			// Iterate over all controllers to find the AI controller
+			for (FConstControllerIterator It = GetWorld()->GetControllerIterator(); It; ++It)
+			{
+				if (ATbfAIController* TbfAIController = Cast<ATbfAIController>(*It))
+				{
+					// We found the AI controller, now we can initialize the HUD
+					YegunHUD->InitOverlay(TbfPlayerController, TbfAIController, TbfPlayerState, AbilitySystemComponent, AttributeSet);
+					break; // Exit the loop as we found our AI controller
+				}
+			}
+		}
+	}
 }
 
 // Called when the game starts or when spawned

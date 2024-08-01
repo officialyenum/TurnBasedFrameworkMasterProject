@@ -5,6 +5,7 @@
 
 #include "AbilitySystem/TbfAbilitySystemComponent.h"
 #include "AbilitySystem/TbfAttributeSet.h"
+#include "AI/TbfUnitAIController.h"
 #include "TurnBasedBPFramework/TurnBasedBPFramework.h"
 
 
@@ -19,6 +20,10 @@ ATbfCharacterUnit::ATbfCharacterUnit()
 	AbilitySystemComponent->SetIsReplicated(true);
 
 	AttributeSet = CreateDefaultSubobject<UTbfAttributeSet>("AttributeSet");
+
+	
+	// Set AIControllerClass to ATbfAIController
+	AIControllerClass = ATbfUnitAIController::StaticClass();
 }
 
 void ATbfCharacterUnit::HighlightActor()

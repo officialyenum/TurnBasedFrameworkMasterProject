@@ -9,6 +9,7 @@
 #include "Game/TbfGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "Library/TbfCardFunctionLibrary.h"
+#include "Library/TbfGameFunctionLibrary.h"
 
 
 // Sets default values
@@ -92,7 +93,7 @@ void ATbfCharacter::DrawCard()
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("%d Draw Left Switch to Main State to Proceed"), DrawCountPerTurn));
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("%d Cards Left in Deck, Switch to Main State to Proceed"), Deck));
 	}
-	
+	UpdateUIStat();
 	UE_LOG(LogTemp, Error, TEXT("No Deck"));
 }
 
@@ -126,26 +127,20 @@ void ATbfCharacter::PlaySelectedCard()
 	else
 	{
 		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("You Are Out of Card Moves"));
-		if (CurrentState == EPlayerState::MainOne)
+		if (CurrentState == EPlayerState::MainTwo)
 		{
-			CurrentState = EPlayerState::Battle;
-		}
-		else
-		{
-			if (CurrentState == EPlayerState::MainTwo)
+			if (bIsPlayer)
 			{
-				if (bIsPlayer)
-				{
-					Cast<UTbfGameInstance>(GetGameInstance())->bIsPlayerOneTurn = false;
-				}
-				else
-				{
-					Cast<UTbfGameInstance>(GetGameInstance())->bIsPlayerOneTurn = true;
-				}
-				CurrentState = EPlayerState::Waiting;
+				Cast<UTbfGameInstance>(GetGameInstance())->bIsPlayerOneTurn = false;
+			}
+			else
+			{
+				Cast<UTbfGameInstance>(GetGameInstance())->bIsPlayerOneTurn = true;
 			}
 		}
+		GoToNextState();
 	}
+	UpdateUIStat();
 }
 
 void ATbfCharacter::RepositionCardInHand()
@@ -163,11 +158,45 @@ void ATbfCharacter::RepositionCardInHand()
 	}
 }
 
+void ATbfCharacter::GoToNextState()
+{
+	switch (CurrentState)
+	{
+		case EPlayerState::Waiting:
+			CurrentState = EPlayerState::Draw;// Show Message
+			break;
+		case EPlayerState::Draw:
+			CurrentState = EPlayerState::MainOne;
+			break;
+		case EPlayerState::MainOne:
+			CurrentState = EPlayerState::Battle;
+			break;
+		case EPlayerState::Battle:
+			CurrentState = EPlayerState::MainTwo;
+			break;
+		case EPlayerState::MainTwo:
+			CurrentState = EPlayerState::Waiting;
+			break;
+	}
+	FText Message = FText::Format(
+		FText::FromString("{0} {1} State"),
+		FText::FromName(Name),
+		FText::FromString(UTbfGameFunctionLibrary::PlayerStateToString(CurrentState)));
+	ShowMessageInUI(Message);
+}
+
+
 
 // Called when the game starts or when spawned
 void ATbfCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	UpdateUIStat();
+	FText Message = FText::Format(
+		FText::FromString("{0} {1} State"),
+		FText::FromName(Name),
+		FText::FromString(UTbfGameFunctionLibrary::PlayerStateToString(CurrentState)));
+	ShowMessageInUI(Message);
 }
 
 

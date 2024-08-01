@@ -5,6 +5,7 @@
 
 #include "AbilitySystem/TbfAbilitySystemComponent.h"
 #include "AbilitySystem/TbfAttributeSet.h"
+#include "AI/TbfAIController.h"
 #include "Character/TbfCharacter.h"
 #include "Game/TbfGameInstance.h"
 #include "Game/TbfGameMode.h"
@@ -22,6 +23,9 @@ ATbfCharacterAI::ATbfCharacterAI()
 	AbilitySystemComponent->SetIsReplicated(true);
 
 	AttributeSet = CreateDefaultSubobject<UTbfAttributeSet>("AttributeSet");
+
+	// Set AIControllerClass to ATbfAIController
+	AIControllerClass = ATbfAIController::StaticClass();
 }
 
 // Called when the game starts or when spawned

@@ -39,6 +39,18 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Gameplay Actions")
 	void RepositionCardInHand();
 	
+	UFUNCTION(BlueprintCallable, Category="Gameplay Actions")
+	void GoToNextState();
+
+	// START UI RELATED LOGIC
+	UFUNCTION(BlueprintImplementableEvent, Category="Gameplay Actions")
+	void UpdateUIStat();
+	
+	UFUNCTION(BlueprintImplementableEvent, Category="Gameplay Actions")
+	void ShowMessageInUI(const FText& Text);
+	// END UI RELATED LOGIC
+	
+	// START Player Param
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Params" )
 	int32 id = 1;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Params" )
@@ -78,6 +90,8 @@ public:
 	ACardBase* TargetedCard;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Params")
 	ATbfGridCell* TargetedCell;
+	// End Player Param
+	
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player Params")
 	TSubclassOf<ACardBase> CardClass;
