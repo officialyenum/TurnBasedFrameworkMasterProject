@@ -54,8 +54,7 @@ ATbfGridCell::ATbfGridCell()
 	SelectionDecal->SetRelativeLocation(FVector(100.0f, 100.0f, 0.0f));
 	SelectionDecal->SetRelativeRotation(FRotator3d(90.0f, 0.0f, 0.0f));
 	SelectionDecal->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
-	
-	static ConstructorHelpers::FObjectFinder<UMaterialInstance> MaterialClass(TEXT("Material'/Game/Cursor/M_Target.M_Target'"));
+	static ConstructorHelpers::FObjectFinder<UMaterialInstance> MaterialClass(TEXT("/Game/Cursor/M_Target"));
 	if (MaterialClass.Succeeded())
 	{
 		SelectionDecal->SetDecalMaterial(MaterialClass.Object);
@@ -70,6 +69,19 @@ ATbfGridCell::ATbfGridCell()
 
 	// Enable input for this actor
 	AutoReceiveInput = EAutoReceiveInput::Player0;
+}
+
+void ATbfGridCell::SetupDirection()
+{
+	FRotator Rot = FRotator(0,0,0);
+	if (ColIndex >= 0 && ColIndex <= 1)
+	{
+		SpawnDirectionArrow->SetWorldRotation(Rot);
+	}else
+	{
+		Rot.Yaw = -180;
+		SpawnDirectionArrow->SetWorldRotation(Rot);
+	}
 }
 
 void ATbfGridCell::HighlightActor()
@@ -115,6 +127,7 @@ void ATbfGridCell::UnSelectActor()
 	{
 		GI->PlayerTwo->TargetedCell = nullptr;
 	}
+	TileMesh->SetRenderCustomDepth(false);
 }
 
 void ATbfGridCell::Tick(float DeltaTime)

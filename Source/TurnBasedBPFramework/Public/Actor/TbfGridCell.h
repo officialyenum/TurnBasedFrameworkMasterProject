@@ -28,6 +28,9 @@ public:
 	ATbfGridCell();
 	
 	UFUNCTION(BlueprintCallable, Category="Cell Actions")
+	void SetupDirection();
+	
+	UFUNCTION(BlueprintCallable, Category="Cell Actions")
 	virtual void HighlightActor() override;
 	
 	UFUNCTION(BlueprintCallable, Category="Cell Actions")
@@ -56,9 +59,21 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cell Grid Params", meta=(ExposeOnSpawn="true"))
 	ECellType CellType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cell Grid Params", meta=(ExposeOnSpawn="true"))
+	int32 ColIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cell Grid Params", meta=(ExposeOnSpawn="true"))
+	int32 RowIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cell Grid Params", meta=(ExposeOnSpawn="true"))
+    bool bIsPlayerCell;	
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Modifier")
 	bool bCellIsSelected = false;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Modifier")
+	bool bCellIsOccupied = false;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
