@@ -28,7 +28,13 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Players")
 	TObjectPtr<ATbfCharacter> PlayerTwo;
-
+	
+	UFUNCTION(BlueprintCallable, Category= "Player Setup")
+	void SetPlayerOne(ATbfCharacter* Player);
+	
+	UFUNCTION(BlueprintCallable, Category= "Player Setup")
+	void SetPlayerTwo(ATbfCharacter* Player);
+	
 	UFUNCTION(BlueprintCallable, Category= "Card Trackers")
 	TArray<ACardBase*> PlayerOneFieldedCards();
 	UFUNCTION(BlueprintCallable, Category= "Card Trackers")

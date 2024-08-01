@@ -90,16 +90,23 @@ void ACardBase::SelectActor()
 	bCardIsSelected = true;
 	CardMesh->SetRenderCustomDepth(true);
 	CardMesh->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
-
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("Actor Selected %s"), *CardInfo.Name.ToString()));
+		
 	UTbfGameInstance* GI = Cast<UTbfGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	if (GI->bIsPlayerOneTurn)
 	{
 		GI->PlayerOne->SelectedCard = this;
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("Player One Selected Card Name %s"), *CardInfo.Name.ToString()));
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("Calling Show Card In UI %s"), *CardInfo.Name.ToString()));
+		ShowCardInUI();
 	}
 	else
 	{
 		GI->PlayerTwo->SelectedCard = this;
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("Player Two Selected Card Name %s"), *CardInfo.Name.ToString()));
+	
 	}
+	
 }
 
 void ACardBase::UnSelectActor()

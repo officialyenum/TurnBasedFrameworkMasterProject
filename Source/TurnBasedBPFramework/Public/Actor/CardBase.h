@@ -60,6 +60,8 @@ public:
 	virtual void AddCardToHand(ATbfCharacterBase* PlayerToGive) override;
 	UFUNCTION(BlueprintImplementableEvent, Category="Card Actions")
 	void SetUpCard();
+	UFUNCTION(BlueprintImplementableEvent, Category="Card Actions")
+	void ShowCardInUI();
 	UFUNCTION(BlueprintCallable, Category="Card Actions")
 	virtual void ActivateCard() override;
 	UFUNCTION(BlueprintCallable, Category="Card Actions")

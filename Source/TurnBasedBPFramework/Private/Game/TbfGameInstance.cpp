@@ -13,6 +13,16 @@ UTbfGameInstance::UTbfGameInstance()
 	PlayerTwo = nullptr;
 }
 
+void UTbfGameInstance::SetPlayerOne(ATbfCharacter* Player)
+{
+	PlayerOne = Player;
+}
+
+void UTbfGameInstance::SetPlayerTwo(ATbfCharacter* Player)
+{
+	PlayerTwo = Player;
+}
+
 TArray<ACardBase*> UTbfGameInstance::PlayerOneFieldedCards()
 {
 	TArray<ACardBase*> FilteredCard;
