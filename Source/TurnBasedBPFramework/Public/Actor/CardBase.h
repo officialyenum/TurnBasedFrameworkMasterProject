@@ -65,6 +65,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Card Actions")
 	virtual void ActivateCard() override;
 	UFUNCTION(BlueprintCallable, Category="Card Actions")
+	void SpawnCardUnit();
+	
+	UFUNCTION(BlueprintImplementableEvent)
+	void ActivateSpellWithGameplayEffect();
+	
+	UFUNCTION(BlueprintImplementableEvent)
+	void ActivateTrapWithGameplayEffect();
+	
+	UFUNCTION(BlueprintCallable, Category="Card Actions")
 	virtual void MoveCardToBoard() override;
 	
 	

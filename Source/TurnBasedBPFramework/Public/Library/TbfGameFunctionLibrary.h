@@ -20,5 +20,10 @@ class TURNBASEDBPFRAMEWORK_API UTbfGameFunctionLibrary : public UBlueprintFuncti
 public:
 	static ATbfGridCell* GetRandomCellForPlayer(const ATbfCharacter* Player);
 
+	static ATbfCharacterUnit* GetRandomUnitForPlayer(const ATbfCharacter* Player);
+	static TArray<ATbfCharacterUnit*> GetAllUnitForPlayer(const ATbfCharacter* Player);
+
+	
+	
 	static FString PlayerStateToString(EPlayerState State);
 };

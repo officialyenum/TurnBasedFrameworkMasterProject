@@ -7,6 +7,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Blueprint/UserWidget.h"
 #include "Character/TbfCharacter.h"
+#include "Character/TbfCharacterUnit.h"
 #include "Components/ArrowComponent.h"
 #include "Game/TbfGameInstance.h"
 #include "Game/TbfGameMode.h"
@@ -126,6 +127,51 @@ void ACardBase::UnSelectActor()
 
 void ACardBase::ActivateCard()
 {
+	switch (CardInfo.Type)
+	{
+		case ECardType::Unit:
+			SpawnCardUnit();
+			break;
+		case ECardType::Spell:
+			ActivateSpellWithGameplayEffect();
+			break;
+		case ECardType::Trap:
+			ActivateTrapWithGameplayEffect();
+			break;
+	}
+}
+
+void ACardBase::SpawnCardUnit()
+{
+	// Define spawn transform
+	FTransform SpawnTransform = SpawnDirectionArrow->GetComponentTransform();
+	
+	const UTbfGameInstance* GI = Cast<UTbfGameInstance>(GetGameInstance());
+	ATbfCharacter* UnitOwner;
+	if (GI->bIsPlayerOneTurn)
+	{
+		UnitOwner = GI->PlayerOne;
+	}
+	else
+	{
+		UnitOwner = GI->PlayerTwo;
+	}
+	ATbfCharacterUnit* Unit = GetWorld()->SpawnActorDeferred<ATbfCharacterUnit>(
+		CardInfo.UnitClass, // Ensure this is set to a valid class
+		SpawnTransform,
+		UnitOwner,
+		UnitOwner,
+		ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn
+	);
+		
+	// Finish spawning the unit actor
+	Unit->FinishSpawning(SpawnTransform);
+	// Remove this card from fielded cards
+	UnitOwner->CardOnField.Remove(this);
+	// Add Unit to Help Player Track
+	UnitOwner->UnitOnField.Add(Unit);
+	// Play Animation to Destroy
+	Destroy();
 }
 
 void ACardBase::MoveCardToBoard()

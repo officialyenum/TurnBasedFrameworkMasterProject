@@ -127,20 +127,30 @@ void ATbfCharacter::PlaySelectedCard()
 	else
 	{
 		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("You Are Out of Card Moves"));
-		if (CurrentState == EPlayerState::MainTwo)
-		{
-			if (bIsPlayer)
-			{
-				Cast<UTbfGameInstance>(GetGameInstance())->bIsPlayerOneTurn = false;
-			}
-			else
-			{
-				Cast<UTbfGameInstance>(GetGameInstance())->bIsPlayerOneTurn = true;
-			}
-		}
 		GoToNextState();
 	}
 	UpdateUIStat();
+}
+
+void ATbfCharacter::ActivateSelectedCard()
+{
+	if (ActivateCountPerTurn <= 0)
+	{
+		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("You Are Out of Activation Moves, Wait for Next Turn"));
+	}
+	
+}
+
+void ATbfCharacter::BattleTargetUnit()
+{
+}
+
+void ATbfCharacter::ResetCounters()
+{
+	MoveCountPerTurn += 2;
+	ActivateCountPerTurn += 2;
+	BattleCountPerTurn += 2;
+	DrawCountPerTurn += 1;
 }
 
 void ATbfCharacter::RepositionCardInHand()
@@ -163,7 +173,7 @@ void ATbfCharacter::GoToNextState()
 	switch (CurrentState)
 	{
 		case EPlayerState::Waiting:
-			CurrentState = EPlayerState::Draw;// Show Message
+			CurrentState = EPlayerState::Draw;
 			break;
 		case EPlayerState::Draw:
 			CurrentState = EPlayerState::MainOne;
@@ -176,6 +186,21 @@ void ATbfCharacter::GoToNextState()
 			break;
 		case EPlayerState::MainTwo:
 			CurrentState = EPlayerState::Waiting;
+			if (bIsPlayer)
+			{
+				//Player One Ends Turn and Waits
+				Cast<UTbfGameInstance>(GetGameInstance())->bIsPlayerOneTurn = false;
+				//Player Two Switches from Waiting to Draw State
+				Cast<UTbfGameInstance>(GetGameInstance())->PlayerTwo->GoToNextState();
+			}
+			else
+			{
+				//Player Two Ends Turn and Waits
+				Cast<UTbfGameInstance>(GetGameInstance())->bIsPlayerOneTurn = true;
+				//Player One Switches from Waiting to Draw State
+				Cast<UTbfGameInstance>(GetGameInstance())->PlayerOne->GoToNextState();
+			}
+			ResetCounters();
 			break;
 	}
 	FText Message = FText::Format(

@@ -4,6 +4,7 @@
 #include "Library/TbfCardFunctionLibrary.h"
 
 #include "Actor/CardBase.h"
+#include "Character/TbfCharacter.h"
 #include "Engine/DataTable.h"
 #include "UObject/ConstructorHelpers.h"
 
@@ -81,5 +82,16 @@ FTbfCardInfo UTbfCardFunctionLibrary::GetRandomSpellCard(UDataTable* DataTable)
 FTbfCardInfo UTbfCardFunctionLibrary::GetRandomTrapCard(UDataTable* DataTable)
 {
     return GetRandomCardByType(DataTable, ECardType::Trap);
+}
+
+ACardBase* UTbfCardFunctionLibrary::GetRandomCardForPlayer(const ATbfCharacter* Player)
+{
+    int32 RandomIndex = FMath::RandRange(0, Player->CardOnField.Num() - 1);
+    return Player->CardOnField[RandomIndex];
+}
+
+TArray<ACardBase*> UTbfCardFunctionLibrary::GetAllCardForPlayer(const ATbfCharacter* Player)
+{
+    return Player->CardOnField;
 }
 

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Actor/CardBase.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "TbfCardFunctionLibrary.generated.h"
 
@@ -30,4 +31,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Card DataTable")
 	static FTbfCardInfo GetRandomTrapCard(UDataTable* DataTable);
+	
+	UFUNCTION(BlueprintCallable, Category = "Card Library")
+	static ACardBase* GetRandomCardForPlayer(const ATbfCharacter* Player);
+	
+	UFUNCTION(BlueprintCallable, Category = "Card Library")
+	static TArray<ACardBase*> GetAllCardForPlayer(const ATbfCharacter* Player);
 };

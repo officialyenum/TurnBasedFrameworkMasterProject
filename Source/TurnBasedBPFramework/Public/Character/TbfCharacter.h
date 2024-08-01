@@ -37,6 +37,15 @@ public:
 	void PlaySelectedCard();
 	
 	UFUNCTION(BlueprintCallable, Category="Gameplay Actions")
+	void ActivateSelectedCard();
+	
+	UFUNCTION(BlueprintCallable, Category="Gameplay Actions")
+	void BattleTargetUnit();
+	
+	UFUNCTION(BlueprintCallable, Category="Gameplay Modifiers")
+	void ResetCounters();
+	
+	UFUNCTION(BlueprintCallable, Category="Gameplay Modifiers")
 	void RepositionCardInHand();
 	
 	UFUNCTION(BlueprintCallable, Category="Gameplay Actions")
