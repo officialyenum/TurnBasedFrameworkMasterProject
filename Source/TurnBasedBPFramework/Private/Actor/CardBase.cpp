@@ -7,7 +7,6 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Blueprint/UserWidget.h"
 #include "Character/TbfCharacter.h"
-#include "Character/TbfCharacterPlayer.h"
 #include "Components/ArrowComponent.h"
 #include "Game/TbfGameInstance.h"
 #include "Game/TbfGameMode.h"
@@ -41,7 +40,7 @@ ACardBase::ACardBase(): CardInfo()
 	
 	
 	// Optionally, set the widget class here if you have a specific widget class
-	static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Game/rameworkV2/Blueprints/UI/Widgets/BP_TbfCard"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Game/FrameworkV2/Blueprints/UI/Widgets/WBP_TbfCard"));
 	if (WidgetClass.Succeeded())
 	{
 		FrontWidget->SetWidgetClass(WidgetClass.Class);
@@ -60,6 +59,10 @@ void ACardBase::BeginPlay()
 {
 	Super::BeginPlay();
 	InfiniteGameplayEffectClass = CardInfo.GameplayEffectClass;
+	SetUpCard();
+	check(GEngine)
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("Card Name %s"), *CardInfo.Name.ToString()));
+
 }
 
 void ACardBase::AddCardToHand(ATbfCharacterBase* PlayerToGive)
@@ -112,10 +115,6 @@ void ACardBase::UnSelectActor()
 	{
 		GI->PlayerTwo->SelectedCard = nullptr;
 	}
-}
-
-void ACardBase::SetUpCard()
-{
 }
 
 void ACardBase::ActivateCard()

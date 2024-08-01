@@ -58,8 +58,8 @@ public:
 	ACardBase();
 	UFUNCTION(BlueprintCallable, Category="Card Actions")
 	virtual void AddCardToHand(ATbfCharacterBase* PlayerToGive) override;
-	UFUNCTION(BlueprintCallable, Category="Card Actions")
-	virtual void SetUpCard() override;
+	UFUNCTION(BlueprintImplementableEvent, Category="Card Actions")
+	void SetUpCard();
 	UFUNCTION(BlueprintCallable, Category="Card Actions")
 	virtual void ActivateCard() override;
 	UFUNCTION(BlueprintCallable, Category="Card Actions")
@@ -84,7 +84,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Modifier")
 	bool bCardIsSelected = false;
 	
-	UPROPERTY(BlueprintReadOnly, meta=(ExposeOnSpawn="true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Card Param", meta=(ExposeOnSpawn="true"))
 	FTbfCardInfo CardInfo;
 protected:
 	// Called when the game starts or when spawned
@@ -93,7 +93,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Components")
 	TObjectPtr<UStaticMeshComponent> CardMesh;
 
-	UPROPERTY(EditAnywhere, Category="Components")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Components")
 	TObjectPtr<UWidgetComponent> FrontWidget;
 
 	UPROPERTY(EditAnywhere, Category="Components")

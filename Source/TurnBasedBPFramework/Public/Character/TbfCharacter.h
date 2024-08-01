@@ -46,7 +46,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Params" )
 	bool bIsPlayer;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Params")
-	TArray<ACardBase*> Deck;
+	int32 Deck = 40;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Params")
 	TArray<ACardBase*> Hand;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Params")
@@ -54,7 +54,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Params")
 	TArray<ATbfCharacterUnit*> UnitOnField;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Params" )
-	int32 CardSpace = 200;
+	int32 CardSpace = 100;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Params" )
 	int32 DrawCountPerTurn = 2;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Params" )

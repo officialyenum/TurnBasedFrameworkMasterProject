@@ -208,7 +208,7 @@ void ATbfCharacterAI::SaveGameState(const UObject* WorldContextObject)
 	UTbfAttributeSet* AS = Cast<UTbfAttributeSet>(AttributeSet);
 	InitialGameState.LifePoints = AS->GetHealth();
 	InitialGameState.OpponentLifePoints = OpponentAS->GetHealth();
-	InitialGameState.Deck = Deck;
+	InitialGameState.Deck = 40;
 	InitialGameState.Hand = Hand;
 	InitialGameState.CardField = CardOnField;
 	InitialGameState.OpponentCardField = Opponent->CardOnField;
@@ -227,7 +227,7 @@ void ATbfCharacterAI::RestoreGameState(const UObject* WorldContextObject)
 	UTbfAttributeSet* AS = Cast<UTbfAttributeSet>(AttributeSet);
 	AS->SetHealth(InitialGameState.LifePoints);
 	OpponentAS->SetHealth(InitialGameState.OpponentLifePoints);
-	Deck = InitialGameState.Deck;
+	Deck = 40;
 	Hand = InitialGameState.Hand;
 	CardOnField = InitialGameState.CardField;
 	Opponent->CardOnField = InitialGameState.OpponentCardField;

@@ -8,7 +8,7 @@ struct FGameState
 {
 	int32 LifePoints;
 	int32 OpponentLifePoints;
-	TArray<ACardBase*> Deck;
+	int32 Deck;
 	TArray<ACardBase*> Hand;
 	TArray<ACardBase*> CardField;
 	TArray<ACardBase*> OpponentCardField;

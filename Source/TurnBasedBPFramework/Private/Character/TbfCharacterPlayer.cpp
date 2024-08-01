@@ -51,9 +51,9 @@ void ATbfCharacterPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 	// Set User Player in Game Instance Player One
-	//UTbfGameInstance* GI = Cast<UTbfGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-	//if (GI->PlayerOne)
-	//{
-		//GI->PlayerOne = this;
-	//}
+	UTbfGameInstance* GI = Cast<UTbfGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if (GI->PlayerOne)
+	{
+		GI->PlayerOne = this;
+	}
 }

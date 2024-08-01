@@ -19,20 +19,23 @@ ATbfCharacter::ATbfCharacter()
 
 	
 	CardSpawnDirectionArea = CreateDefaultSubobject<UArrowComponent>("CardSpawnDirectionArea");
-	CardSpawnDirectionArea->SetRelativeLocation(FVector(190.0f,-200.0f,100.0f));
-	CardSpawnDirectionArea->SetRelativeRotation(FRotator(90.0f,0.0f,0.0f));
+	CardSpawnDirectionArea->SetRelativeLocation(FVector(50.0f,250.0f,100.0f));
+	CardSpawnDirectionArea->SetRelativeRotation(FRotator(320.0f,-90.0f,0.0f));
 	CardSpawnDirectionArea->SetArrowSize(1.0f);
-	CardSpawnDirectionArea->SetArrowLength(80.0f);
+	CardSpawnDirectionArea->SetArrowLength(150.0f);
+	CardSpawnDirectionArea->SetHiddenInGame(false);
+	CardSpawnDirectionArea->SetVisibility(true);
+	CardSpawnDirectionArea->SetupAttachment(GetMesh());
 }
 
 void ATbfCharacter::DrawCard()
 {
-	if (Deck.Num() > 0 && DrawCountPerTurn > 0)
+	if (Deck > 0 && DrawCountPerTurn > 0)
 	{
 		// Get Card Datatable List
 		if (!DT)
 		{
-			ConstructorHelpers::FObjectFinder<UDataTable> CardDataTable_BP(TEXT("DataTable'/Game/FrameWork/Blueprint/Data/DT_CardDeckList.DT_CardDeckList'"));
+			ConstructorHelpers::FObjectFinder<UDataTable> CardDataTable_BP(TEXT("/Game/FrameWork/Blueprint/Data/DT_CardDeckList"));
 			if (CardDataTable_BP.Succeeded())
 			{
 				DT = CardDataTable_BP.Object;
@@ -40,7 +43,7 @@ void ATbfCharacter::DrawCard()
 		}
 
 		FTbfCardInfo CardInfoStruct = UTbfCardFunctionLibrary::GetRandomCardFromDataTable(DT);
-
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("Found Card Name %s"), *CardInfoStruct.Name.ToString()));
 		// Define spawn transform
 		FTransform SpawnTransform = CardSpawnDirectionArea->GetComponentTransform();
 
@@ -78,7 +81,19 @@ void ATbfCharacter::DrawCard()
 			// Reposition Cards in Hand
 			RepositionCardInHand();
 		}
+		Deck--;
+		DrawCountPerTurn--;
+		
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("%d Cards Left in Deck"), Deck));
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("%d Draw Left for this turn"), DrawCountPerTurn));
 	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("%d Draw Left Switch to Main State to Proceed"), DrawCountPerTurn));
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("%d Cards Left in Deck, Switch to Main State to Proceed"), Deck));
+	}
+	
+	UE_LOG(LogTemp, Error, TEXT("No Deck"));
 }
 
 void ATbfCharacter::PlaySelectedCard()
