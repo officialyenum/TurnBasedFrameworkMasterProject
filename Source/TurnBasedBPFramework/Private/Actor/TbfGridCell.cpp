@@ -139,6 +139,9 @@ void ATbfGridCell::Tick(float DeltaTime)
 void ATbfGridCell::BeginPlay()
 {
 	Super::BeginPlay();
+	FText Message = FText::Format(
+		FText::FromString("Col : {0}, Row: {1}"),ColIndex,RowIndex);
+	TextRender->SetText(Message);
 	
 }
 
