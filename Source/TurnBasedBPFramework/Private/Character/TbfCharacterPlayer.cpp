@@ -8,6 +8,7 @@
 #include "Game/TbfGameInstance.h"
 #include "Game/TbfGameMode.h"
 #include "Kismet/GameplayStatics.h"
+#include "Library/TbfGameFunctionLibrary.h"
 #include "Player/TbfPlayerController.h"
 #include "Player/TbfPlayerState.h"
 #include "UI/HUD/TbfHUD.h"
@@ -73,4 +74,10 @@ void ATbfCharacterPlayer::BeginPlay()
 	// Set User Player in Game Instance Player One
 	UTbfGameInstance* GI = Cast<UTbfGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	GI->PlayerOne = this;
+	UpdateUIStat();
+	FText Message = FText::Format(
+		FText::FromString("{0} {1} State"),
+		FText::FromName(Name),
+		FText::FromString(UTbfGameFunctionLibrary::PlayerStateToString(CurrentState)));
+	ShowMessageInUI(Message);
 }

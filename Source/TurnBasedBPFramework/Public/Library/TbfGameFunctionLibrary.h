@@ -22,8 +22,6 @@ public:
 
 	static ATbfCharacterUnit* GetRandomUnitForPlayer(const ATbfCharacter* Player);
 	static TArray<ATbfCharacterUnit*> GetAllUnitForPlayer(const ATbfCharacter* Player);
-
-	
 	
 	static FString PlayerStateToString(EPlayerState State);
 };

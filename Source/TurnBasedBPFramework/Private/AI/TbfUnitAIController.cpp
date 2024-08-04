@@ -3,24 +3,26 @@
 
 #include "AI/TbfUnitAIController.h"
 
+#include "BehaviorTree/BehaviorTree.h"
+#include "Character/TbfCharacterUnit.h"
 
-// Sets default values
-ATbfUnitAIController::ATbfUnitAIController()
+
+ATbfUnitAIController::ATbfUnitAIController(FObjectInitializer const& ObjectInitializer)
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
 }
 
-// Called when the game starts or when spawned
-void ATbfUnitAIController::BeginPlay()
+void ATbfUnitAIController::OnPossess(APawn* InPawn)
 {
-	Super::BeginPlay();
-	
+	Super::OnPossess(InPawn);
+	if (ATbfCharacterUnit* const AI = Cast<ATbfCharacterUnit>(InPawn))
+	{
+		if (UBehaviorTree* const tree = AI->GetBehaviorTree())
+		{
+			UBlackboardComponent* b;
+			UseBlackboard(tree->BlackboardAsset, b);
+			Blackboard = b;
+			RunBehaviorTree(tree);
+			
+		}
+	}
 }
-
-// Called every frame
-void ATbfUnitAIController::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-

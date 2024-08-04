@@ -84,7 +84,8 @@ void ATbfPlayerController::PauseGame(const FInputActionValue& InputActionValue)
 
 void ATbfPlayerController::Draw(const FInputActionValue& InputActionValue)
 {
-	UE_LOG(LogTemp, Error, TEXT("Draw Pressed"));
+	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Green,TEXT("Draw Pressed"));
+	
 	//if player is in Draw State Call Draw Function on Player Character
 	// Get Player Character
 	if (ATbfCharacterPlayer* PlayerCharacter = Cast<ATbfCharacterPlayer>(GetCharacter()))
@@ -101,7 +102,8 @@ void ATbfPlayerController::Draw(const FInputActionValue& InputActionValue)
 
 void ATbfPlayerController::Move(const FInputActionValue& InputActionValue)
 {
-	UE_LOG(LogTemp, Error, TEXT("Move Pressed"));
+	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Green,TEXT("Move Pressed"));
+	
 	//Get Player Character
 	if (ATbfCharacterPlayer* PlayerCharacter = Cast<ATbfCharacterPlayer>(GetCharacter()))
 	{
@@ -119,7 +121,8 @@ void ATbfPlayerController::Move(const FInputActionValue& InputActionValue)
 
 void ATbfPlayerController::Activate(const FInputActionValue& InputActionValue)
 {
-	UE_LOG(LogTemp, Error, TEXT("Activate Pressed"));
+	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Green,TEXT("Activate Pressed"));
+			
 	//Get Player Character
 	////if player is in Main One Or Main Two State Call Activate Function to Activate the Selected Card On Field
 	if (ATbfCharacterPlayer* PlayerCharacter = Cast<ATbfCharacterPlayer>(GetCharacter()))
@@ -148,7 +151,7 @@ void ATbfPlayerController::Attack(const FInputActionValue& InputActionValue)
 		{
 			if (PlayerCharacter->SelectedUnit && PlayerCharacter->TargetedUnit)
 			{
-				UE_LOG(LogTemp, Error, TEXT("Attack Not Implemented Yet: See TbfPlayerController.cpp line 152"));
+				GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("Attack Not Implemented Yet: See TbfPlayerController.cpp line 154"));
 				//PlayerCharacter->SelectedUnit->Attack(PlayerCharacter->SelectedTargetUnit);
 			}
 		}

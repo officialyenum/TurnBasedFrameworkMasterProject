@@ -26,6 +26,11 @@ ATbfCharacterUnit::ATbfCharacterUnit()
 	AIControllerClass = ATbfUnitAIController::StaticClass();
 }
 
+UBehaviorTree* ATbfCharacterUnit::GetBehaviorTree() const
+{
+	return Tree;
+}
+
 void ATbfCharacterUnit::HighlightActor()
 {
 	if (!bUnitIsSelected)

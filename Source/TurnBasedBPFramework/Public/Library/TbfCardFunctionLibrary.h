@@ -17,6 +17,12 @@ class TURNBASEDBPFRAMEWORK_API UTbfCardFunctionLibrary : public UBlueprintFuncti
 	GENERATED_BODY()
 
 public:
+	
+	UFUNCTION(BlueprintCallable, Category = "Card DataTable")
+	static TArray<FTbfCardInfoSim> GetDeckSim(UDataTable* DataTable);
+	UFUNCTION(BlueprintCallable, Category = "Card DataTable")
+	static TArray<FTbfCardInfo> GetDeck(UDataTable* DataTable);
+	
 	UFUNCTION(BlueprintCallable, Category = "Card DataTable")
 	static FTbfCardInfo GetRandomCardFromDataTable(UDataTable* DataTable);
 

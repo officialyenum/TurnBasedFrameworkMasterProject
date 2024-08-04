@@ -7,6 +7,7 @@
 #include "TbfCharacterBase.h"
 #include "TbfCharacter.generated.h"
 
+struct FTbfCardInfo;
 class ATbfGridCell;
 
 UENUM(BlueprintType)
@@ -67,7 +68,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Params" )
 	bool bIsPlayer;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Params")
-	int32 Deck = 40;
+	TArray<FTbfCardInfo>  Deck;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Params")
 	TArray<ACardBase*> Hand;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Params")
@@ -87,7 +88,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Params" )
 	EPlayerState CurrentState = EPlayerState::Waiting;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Params")
-	UDataTable* DT;
+	UDataTable* DeckDT;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Params")
 	ATbfCharacterUnit* SelectedUnit;

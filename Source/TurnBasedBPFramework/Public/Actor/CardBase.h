@@ -4,11 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "TbfEffectActor.h"
+#include "Character/TbfCharacterUnit.h"
 #include "Interactions/CardInterface.h"
 #include "Interactions/SelectionInterface.h"
 #include "CardBase.generated.h"
 
 
+struct FTbfUnitInfoSim;
 class UWidgetComponent;
 // Forward declaration
 class ATbfCharacterUnit;
@@ -19,6 +21,24 @@ enum class ECardType: uint8
 	Unit,
 	Spell,
 	Trap
+};
+
+UENUM(BlueprintType)
+enum class EModifierType: uint8
+{
+	Add,
+	Override,
+	Multiply,
+};
+
+UENUM(BlueprintType)
+enum class EModifierParam: uint8
+{
+	None,
+	Both,
+	Health,
+	Attack,
+	Defence,
 };
 
 USTRUCT(BlueprintType)
@@ -46,6 +66,29 @@ struct FTbfCardInfo : public FTableRowBase
 	float Attack = 0.f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float Defence = 0.f;
+};
+
+USTRUCT(BlueprintType)
+struct FTbfCardInfoSim : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FName Name = FName();
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FText Info = FText();
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float Rank = 1.f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	ECardType Type = ECardType::Unit;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FTbfUnitInfoSim Unit;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	EModifierParam ModifierParam = EModifierParam::None;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	EModifierType ModifierType = EModifierType::Add;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float ModifierValue = 0.f;
 };
 
 UCLASS()

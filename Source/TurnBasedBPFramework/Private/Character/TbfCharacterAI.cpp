@@ -10,6 +10,8 @@
 #include "Game/TbfGameInstance.h"
 #include "Game/TbfGameMode.h"
 #include "Kismet/GameplayStatics.h"
+#include "Library/TbfCardFunctionLibrary.h"
+#include "Library/TbfGameFunctionLibrary.h"
 #include "Player/TbfPlayerState.h"
 
 
@@ -26,6 +28,21 @@ ATbfCharacterAI::ATbfCharacterAI()
 
 	// Set AIControllerClass to ATbfAIController
 	AIControllerClass = ATbfAIController::StaticClass();
+
+	if (!DeckDTSim)
+	{
+		ConstructorHelpers::FObjectFinder<UDataTable> CardDataTable_BP(TEXT("/Game/FrameworkV2/Data/DT_CardDeckSim"));
+		if (CardDataTable_BP.Succeeded())
+		{
+			DeckDTSim = CardDataTable_BP.Object;
+			GameStateSim.Deck = UTbfCardFunctionLibrary::GetDeckSim(DeckDTSim);
+		}
+	}
+}
+
+UBehaviorTree* ATbfCharacterAI::GetBehaviorTree() const
+{
+	return Tree;
 }
 
 // Called when the game starts or when spawned
@@ -54,7 +71,7 @@ void ATbfCharacterAI::PerformDrawPhase()
 
 void ATbfCharacterAI::PerformMainPhase()
 {
-	int32 CardIndex = ChooseCardToPlay();
+	int32 CardIndex = ChooseCardInHand();
 	if (CardIndex != INDEX_NONE)
 	{
 		SelectedCard = Hand[CardIndex];
@@ -78,7 +95,7 @@ void ATbfCharacterAI::PerformEndPhase()
 	// Implement logic for the AI's end phase
 }
 
-int32 ATbfCharacterAI::ChooseCardToPlay() const
+int32 ATbfCharacterAI::ChooseCardInHand() const
 {
 	// Simple heuristic for choosing a card to play: choose the first card in hand
 	if (Hand.Num() > 0)
@@ -87,6 +104,22 @@ int32 ATbfCharacterAI::ChooseCardToPlay() const
 	}
 	return INDEX_NONE;
 }
+
+int32 ATbfCharacterAI::ChooseCardOnField() const
+{
+	// Simple heuristic for choosing a card to play: choose the first card in hand
+	if (CardOnField.Num() > 0)
+	{
+		return 0;
+	}
+	return INDEX_NONE;
+}
+
+ATbfGridCell* ATbfCharacterAI::ChooseCell() const
+{
+	return UTbfGameFunctionLibrary::GetRandomCellForPlayer(this);
+}
+
 
 int32 ATbfCharacterAI::ChooseCardToAttack()
 {
@@ -212,7 +245,6 @@ void ATbfCharacterAI::SaveGameState(const UObject* WorldContextObject)
 	UTbfAttributeSet* AS = Cast<UTbfAttributeSet>(AttributeSet);
 	InitialGameState.LifePoints = AS->GetHealth();
 	InitialGameState.OpponentLifePoints = OpponentAS->GetHealth();
-	InitialGameState.Deck = 40;
 	InitialGameState.Hand = Hand;
 	InitialGameState.CardField = CardOnField;
 	InitialGameState.OpponentCardField = Opponent->CardOnField;
@@ -231,13 +263,43 @@ void ATbfCharacterAI::RestoreGameState(const UObject* WorldContextObject)
 	UTbfAttributeSet* AS = Cast<UTbfAttributeSet>(AttributeSet);
 	AS->SetHealth(InitialGameState.LifePoints);
 	OpponentAS->SetHealth(InitialGameState.OpponentLifePoints);
-	Deck = 40;
 	Hand = InitialGameState.Hand;
 	CardOnField = InitialGameState.CardField;
 	Opponent->CardOnField = InitialGameState.OpponentCardField;
 	UnitOnField = InitialGameState.UnitField;
 	Opponent->UnitOnField = InitialGameState.OpponentUnitField;
 	// Restore other game state variables as needed
+}
+
+// Simulation Area
+
+
+void ATbfCharacterAI::PopulateDeck_Sim()
+{
+}
+
+void ATbfCharacterAI::SelectCardAndCell_Sim()
+{
+}
+
+void ATbfCharacterAI::MoveCardToCell_Sim()
+{
+}
+
+void ATbfCharacterAI::ActivateCard_Sim()
+{
+}
+
+void ATbfCharacterAI::SelectUnitAndTarget_Sim()
+{
+}
+
+void ATbfCharacterAI::AttackUnitTarget_Sim()
+{
+}
+
+void ATbfCharacterAI::AttackPlayer_Sim()
+{
 }
 
 

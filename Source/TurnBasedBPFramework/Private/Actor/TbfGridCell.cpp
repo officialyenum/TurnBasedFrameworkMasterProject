@@ -63,9 +63,10 @@ ATbfGridCell::ATbfGridCell()
 
 	SpawnDirectionArrow = CreateDefaultSubobject<UArrowComponent>("SpawnDirectionArrow");
 	SpawnDirectionArrow->SetupAttachment(TileMesh);
-	SpawnDirectionArrow->SetWorldLocation(FVector(100.0f, 100.0f, 50.0f));
+	SpawnDirectionArrow->SetRelativeLocation(FVector(100.0f, 100.0f, 100.0f));
 	SpawnDirectionArrow->SetArrowSize(1.0f);
 	SpawnDirectionArrow->SetArrowLength(100.0f);
+	SpawnDirectionArrow->SetupAttachment(TileMesh);
 
 	// Enable input for this actor
 	AutoReceiveInput = EAutoReceiveInput::Player0;
@@ -76,11 +77,11 @@ void ATbfGridCell::SetupDirection()
 	FRotator Rot = FRotator(0,0,0);
 	if (ColIndex >= 0 && ColIndex <= 1)
 	{
-		SpawnDirectionArrow->SetWorldRotation(Rot);
+		SpawnDirectionArrow->SetRelativeRotation(Rot);
 	}else
 	{
 		Rot.Yaw = -180;
-		SpawnDirectionArrow->SetWorldRotation(Rot);
+		SpawnDirectionArrow->SetRelativeRotation(Rot);
 	}
 }
 
@@ -106,10 +107,19 @@ void ATbfGridCell::SelectActor()
 	UTbfGameInstance* GI = Cast<UTbfGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	if (GI->bIsPlayerOneTurn)
 	{
+		if (GI->PlayerOne->TargetedCell)
+		{
+			GI->PlayerOne->TargetedCell->UnSelectActor();
+		}
+		
 		GI->PlayerOne->TargetedCell = this;
 	}
 	else
 	{
+		if (GI->PlayerTwo->TargetedCell)
+		{
+			GI->PlayerTwo->TargetedCell->UnSelectActor();
+		}
 		GI->PlayerTwo->TargetedCell = this;
 	}
 }
@@ -142,7 +152,7 @@ void ATbfGridCell::BeginPlay()
 	FText Message = FText::Format(
 		FText::FromString("Col : {0}, Row: {1}"),ColIndex,RowIndex);
 	TextRender->SetText(Message);
-	
+	SetupDirection();
 }
 
 

@@ -89,13 +89,15 @@ void ACardBase::UnHighlightActor()
 void ACardBase::SelectActor()
 {
 	bCardIsSelected = true;
-	CardMesh->SetRenderCustomDepth(true);
-	CardMesh->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("Actor Selected %s"), *CardInfo.Name.ToString()));
 		
 	UTbfGameInstance* GI = Cast<UTbfGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	if (GI->bIsPlayerOneTurn)
 	{
+		if (GI->PlayerOne->SelectedCard)
+		{
+			GI->PlayerOne->SelectedCard->UnSelectActor();
+		}
 		GI->PlayerOne->SelectedCard = this;
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("Player One Selected Card Name %s"), *CardInfo.Name.ToString()));
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("Calling Show Card In UI %s"), *CardInfo.Name.ToString()));
@@ -103,6 +105,10 @@ void ACardBase::SelectActor()
 	}
 	else
 	{
+		if (GI->PlayerTwo->SelectedCard)
+		{
+			GI->PlayerTwo->SelectedCard->UnSelectActor();
+		}
 		GI->PlayerTwo->SelectedCard = this;
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("Player Two Selected Card Name %s"), *CardInfo.Name.ToString()));
 	
@@ -144,8 +150,6 @@ void ACardBase::ActivateCard()
 void ACardBase::SpawnCardUnit()
 {
 	// Define spawn transform
-	FTransform SpawnTransform = SpawnDirectionArrow->GetComponentTransform();
-	
 	const UTbfGameInstance* GI = Cast<UTbfGameInstance>(GetGameInstance());
 	ATbfCharacter* UnitOwner;
 	if (GI->bIsPlayerOneTurn)
@@ -156,6 +160,9 @@ void ACardBase::SpawnCardUnit()
 	{
 		UnitOwner = GI->PlayerTwo;
 	}
+	FTransform SpawnTransform = GetActorTransform();
+	FVector Loc = FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z - 10.0f);
+	SpawnTransform.SetLocation(Loc);
 	ATbfCharacterUnit* Unit = GetWorld()->SpawnActorDeferred<ATbfCharacterUnit>(
 		CardInfo.UnitClass, // Ensure this is set to a valid class
 		SpawnTransform,
@@ -170,6 +177,8 @@ void ACardBase::SpawnCardUnit()
 	UnitOwner->CardOnField.Remove(this);
 	// Add Unit to Help Player Track
 	UnitOwner->UnitOnField.Add(Unit);
+	// Update Character UI Stat
+	UnitOwner->UpdateUIStat();
 	// Play Animation to Destroy
 	Destroy();
 }

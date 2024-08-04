@@ -6,6 +6,7 @@
 #include "Actor/CardBase.h"
 #include "Actor/TbfGridCell.h"
 #include "Components/ArrowComponent.h"
+#include "Field/FieldSystemNoiseAlgo.h"
 #include "Game/TbfGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "Library/TbfCardFunctionLibrary.h"
@@ -27,24 +28,28 @@ ATbfCharacter::ATbfCharacter()
 	CardSpawnDirectionArea->SetHiddenInGame(false);
 	CardSpawnDirectionArea->SetVisibility(true);
 	CardSpawnDirectionArea->SetupAttachment(GetMesh());
+
+	if (!DeckDT)
+	{
+		ConstructorHelpers::FObjectFinder<UDataTable> CardDataTable_BP(TEXT("/Game/FrameWork/Blueprint/Data/DT_CardDeckList"));
+		if (CardDataTable_BP.Succeeded())
+		{
+			DeckDT = CardDataTable_BP.Object;
+			Deck = UTbfCardFunctionLibrary::GetDeck(DeckDT);
+		}
+	}
 }
 
 void ATbfCharacter::DrawCard()
 {
-	if (Deck > 0 && DrawCountPerTurn > 0)
+	
+	if (Deck.Num() > 0 && DrawCountPerTurn > 0)
 	{
 		// Get Card Datatable List
-		if (!DT)
-		{
-			ConstructorHelpers::FObjectFinder<UDataTable> CardDataTable_BP(TEXT("/Game/FrameWork/Blueprint/Data/DT_CardDeckList"));
-			if (CardDataTable_BP.Succeeded())
-			{
-				DT = CardDataTable_BP.Object;
-			}
-		}
-
-		FTbfCardInfo CardInfoStruct = UTbfCardFunctionLibrary::GetRandomCardFromDataTable(DT);
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("Found Card Name %s"), *CardInfoStruct.Name.ToString()));
+		int32 CardIndex = FMath::RandRange(0, Deck.Num() - 1);
+		const FTbfCardInfo* CardInfoStruct = &Deck[CardIndex];
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("Found Card Name %s"), *CardInfoStruct->Name.ToString()));
+        
 		// Define spawn transform
 		FTransform SpawnTransform = CardSpawnDirectionArea->GetComponentTransform();
 
@@ -63,7 +68,7 @@ void ATbfCharacter::DrawCard()
 			}
 		}
 		if (ACardBase* DrawnCard = GetWorld()->SpawnActorDeferred<ACardBase>(
-			CardClass, // Ensure this is set to a valid class
+			CardClass,
 			SpawnTransform,
 			this,
 			nullptr,
@@ -71,7 +76,7 @@ void ATbfCharacter::DrawCard()
 		))
 		{
 			// Set the CardInfo property which is marked ExposeOnSpawn
-			DrawnCard->CardInfo = CardInfoStruct;
+			DrawnCard->CardInfo = *CardInfoStruct;
 
 			// Finish spawning the card actor
 			DrawnCard->FinishSpawning(SpawnTransform);
@@ -82,16 +87,16 @@ void ATbfCharacter::DrawCard()
 			// Reposition Cards in Hand
 			RepositionCardInHand();
 		}
-		Deck--;
+		Deck.RemoveAt(CardIndex);
 		DrawCountPerTurn--;
 		
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("%d Cards Left in Deck"), Deck));
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("%d Cards Left in Deck"), Deck.Num()));
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("%d Draw Left for this turn"), DrawCountPerTurn));
 	}
 	else
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("%d Draw Left Switch to Main State to Proceed"), DrawCountPerTurn));
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("%d Cards Left in Deck, Switch to Main State to Proceed"), Deck));
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("%d Cards Left in Deck, Switch to Main State to Proceed"), Deck.Num()));
 	}
 	UpdateUIStat();
 	UE_LOG(LogTemp, Error, TEXT("No Deck"));
@@ -137,8 +142,19 @@ void ATbfCharacter::ActivateSelectedCard()
 	if (ActivateCountPerTurn <= 0)
 	{
 		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("You Are Out of Activation Moves, Wait for Next Turn"));
+		return;
 	}
-	
+	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("Activation Triggered"));
+	if (Hand.Contains(SelectedCard), CardOnField.Contains(SelectedCard))
+	{
+		SelectedCard->ActivateCard();
+		ActivateCountPerTurn--;
+		if (ActivateCountPerTurn <= 0)
+		{
+			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("Moved To Next State Since you are out of Activation"));
+			GoToNextState();
+		}
+	}
 }
 
 void ATbfCharacter::BattleTargetUnit()
@@ -216,12 +232,6 @@ void ATbfCharacter::GoToNextState()
 void ATbfCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	UpdateUIStat();
-	FText Message = FText::Format(
-		FText::FromString("{0} {1} State"),
-		FText::FromName(Name),
-		FText::FromString(UTbfGameFunctionLibrary::PlayerStateToString(CurrentState)));
-	ShowMessageInUI(Message);
 }
 
 

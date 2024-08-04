@@ -8,6 +8,60 @@
 #include "Engine/DataTable.h"
 #include "UObject/ConstructorHelpers.h"
 
+TArray<FTbfCardInfoSim> UTbfCardFunctionLibrary::GetDeckSim(UDataTable* DataTable)
+{
+    TArray<FTbfCardInfoSim> Cards;
+    if (!DataTable)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Invalid DataTable"));
+        return Cards;
+    }
+
+    // Get all row names in the DataTable
+    TArray<FName> RowNames = DataTable->GetRowNames();
+    
+    if (RowNames.Num() == 0)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("No rows in DataTable"));
+        return Cards;
+    }
+
+    // Generate a Deck
+    for (int i = 0; i < RowNames.Num(); ++i)
+    {
+        static const FString ContextString(TEXT("CardDataTableFunctionLibrary"));
+        Cards.Add(*DataTable->FindRow<FTbfCardInfoSim>(RowNames[i], ContextString));
+    }
+    return Cards;
+}
+
+TArray<FTbfCardInfo> UTbfCardFunctionLibrary::GetDeck(UDataTable* DataTable)
+{
+    TArray<FTbfCardInfo> Cards;
+    if (!DataTable)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Invalid DataTable"));
+        return Cards;
+    }
+
+    // Get all row names in the DataTable
+    TArray<FName> RowNames = DataTable->GetRowNames();
+    
+    if (RowNames.Num() == 0)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("No rows in DataTable"));
+        return Cards;
+    }
+
+    // Generate a Deck
+    for (int i = 0; i < RowNames.Num(); ++i)
+    {
+        static const FString ContextString(TEXT("CardDataTableFunctionLibrary"));
+        Cards.Add(*DataTable->FindRow<FTbfCardInfo>(RowNames[i], ContextString));
+    }
+    return Cards;
+}
+
 FTbfCardInfo UTbfCardFunctionLibrary::GetRandomCardFromDataTable(UDataTable* DataTable)
 {
     if (!DataTable)
