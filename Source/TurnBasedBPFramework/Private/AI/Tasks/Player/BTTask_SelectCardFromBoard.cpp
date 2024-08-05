@@ -21,11 +21,17 @@ EBTNodeResult::Type UBTTask_SelectCardFromBoard::ExecuteTask(UBehaviorTreeCompon
 		{
 			// Perform CardSelection Here
 			int32 CardIndex = OwnerCharacter->ChooseCardOnField();
-			OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), OwnerCharacter->CardOnField[CardIndex]);
-			// finish with success
-			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-			return EBTNodeResult::Succeeded;
+			if(CardIndex >= 0)
+			{
+				OwnerCharacter->SelectedCard = OwnerCharacter->CardOnField[CardIndex];
+				OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), OwnerCharacter->CardOnField[CardIndex]);
+				// finish with success
+				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+				return EBTNodeResult::Succeeded;
+			}
+			return EBTNodeResult::Failed;
 		}
+		return EBTNodeResult::Failed;
 	}
 	return EBTNodeResult::Failed;
 }

@@ -74,8 +74,12 @@ ATbfGridCell* UTbfGameFunctionLibrary::GetRandomCellForPlayer(const ATbfCharacte
 
 ATbfCharacterUnit* UTbfGameFunctionLibrary::GetRandomUnitForPlayer(const ATbfCharacter* Player)
 {
-	int32 RandomIndex = FMath::RandRange(0, Player->UnitOnField.Num() - 1);
-	return Player->UnitOnField[RandomIndex];
+	if(Player->UnitOnField.Num() > 0)
+	{
+		int32 RandomIndex = FMath::RandRange(0, Player->UnitOnField.Num() - 1);
+		return Player->UnitOnField[RandomIndex];
+	}
+	return nullptr;
 }
 
 TArray<ATbfCharacterUnit*> UTbfGameFunctionLibrary::GetAllUnitForPlayer(const ATbfCharacter* Player)

@@ -22,7 +22,6 @@ EBTNodeResult::Type UBTTask_SelectUnit::ExecuteTask(UBehaviorTreeComponent& Owne
 		if (ATbfCharacterAI* const OwnerCharacter = Cast<ATbfCharacterAI>( OwnerController->GetPawn()))
 		{
 			// Perform Unit Selection Here
-			int32 CardIndex = OwnerCharacter->ChooseCardOnField();
 			ATbfCharacterUnit* Unit = UTbfGameFunctionLibrary::GetRandomUnitForPlayer(OwnerCharacter);
 			OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), Unit);
 			// finish with success

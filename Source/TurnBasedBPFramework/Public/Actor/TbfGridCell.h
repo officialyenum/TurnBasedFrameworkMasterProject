@@ -72,8 +72,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Modifier")
 	bool bCellIsSelected = false;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Modifier")
-	bool bCellIsOccupied = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Cell Tracker")
+	AActor* OccupyingActor;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

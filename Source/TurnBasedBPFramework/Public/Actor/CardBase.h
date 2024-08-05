@@ -138,6 +138,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Modifier")
 	bool bCardIsSelected = false;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Unit Cell Tracker")
+	AActor* CellOccupied;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Card Param", meta=(ExposeOnSpawn="true"))
 	FTbfCardInfo CardInfo;
 protected:

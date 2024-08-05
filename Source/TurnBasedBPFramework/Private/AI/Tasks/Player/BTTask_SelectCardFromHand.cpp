@@ -23,11 +23,18 @@ EBTNodeResult::Type UBTTask_SelectCardFromHand::ExecuteTask(UBehaviorTreeCompone
 		{
 			// Perform Card Selection
 			int32 CardIndex = OwnerCharacter->ChooseCardInHand();
-			OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), OwnerCharacter->Hand[CardIndex]);
-			// finish with success
-			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-			return EBTNodeResult::Succeeded;
+			if (CardIndex >= 0)
+			{
+				OwnerCharacter->SelectedCard = OwnerCharacter->Hand[CardIndex];
+				OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), OwnerCharacter->Hand[CardIndex]);
+				// finish with success
+				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+				return EBTNodeResult::Succeeded;
+			}
+			OwnerCharacter->GoToNextState();
+			return EBTNodeResult::Failed;
 		}
+		return EBTNodeResult::Failed;
 	}
 	return EBTNodeResult::Failed;
 }

@@ -3,6 +3,7 @@
 
 #include "Actor/TbfGridCell.h"
 
+#include "Actor/CardBase.h"
 #include "Character/TbfCharacter.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/TextRenderComponent.h"
@@ -87,8 +88,11 @@ void ATbfGridCell::SetupDirection()
 
 void ATbfGridCell::HighlightActor()
 {
+	if (OccupyingActor == nullptr)
+	{
 		TileMesh->SetRenderCustomDepth(true);
 		TileMesh->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
+	}
 }
 
 void ATbfGridCell::UnHighlightActor()
@@ -101,26 +105,24 @@ void ATbfGridCell::UnHighlightActor()
 
 void ATbfGridCell::SelectActor()
 {
-	bCellIsSelected = true;
-	SelectionDecal->SetVisibility(true);
-	
-	UTbfGameInstance* GI = Cast<UTbfGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-	if (GI->bIsPlayerOneTurn)
+	const UTbfGameInstance* GI = Cast<UTbfGameInstance>(GetGameInstance());
+	ATbfCharacter* ActivePlayer = GI->bIsPlayerOneTurn ? GI->PlayerOne : GI->PlayerTwo;
+
+	if (ActivePlayer && ActivePlayer->SelectedCard)
 	{
-		if (GI->PlayerOne->TargetedCell)
+		bool bValidUnit = ActivePlayer->SelectedCard->CardInfo.Type == ECardType::Unit && CellType == ECellType::PlayerOneUnit;
+		bool bValidSpellOrTrap = (ActivePlayer->SelectedCard->CardInfo.Type == ECardType::Spell || ActivePlayer->SelectedCard->CardInfo.Type == ECardType::Trap) && CellType == ECellType::PlayerOneSpell;
+
+		if ((bValidUnit || bValidSpellOrTrap) && OccupyingActor == nullptr)
 		{
-			GI->PlayerOne->TargetedCell->UnSelectActor();
+			bCellIsSelected = true;
+			SelectionDecal->SetVisibility(true);
+			if (ActivePlayer->TargetedCell)
+			{
+				ActivePlayer->TargetedCell->UnSelectActor();
+			}
+			ActivePlayer->TargetedCell = this;
 		}
-		
-		GI->PlayerOne->TargetedCell = this;
-	}
-	else
-	{
-		if (GI->PlayerTwo->TargetedCell)
-		{
-			GI->PlayerTwo->TargetedCell->UnSelectActor();
-		}
-		GI->PlayerTwo->TargetedCell = this;
 	}
 }
 

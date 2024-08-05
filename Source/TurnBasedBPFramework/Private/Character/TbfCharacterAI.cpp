@@ -97,6 +97,7 @@ void ATbfCharacterAI::PerformEndPhase()
 
 int32 ATbfCharacterAI::ChooseCardInHand() const
 {
+	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("AI Choosing a Card In Hand"));
 	// Simple heuristic for choosing a card to play: choose the first card in hand
 	if (Hand.Num() > 0)
 	{
@@ -107,6 +108,7 @@ int32 ATbfCharacterAI::ChooseCardInHand() const
 
 int32 ATbfCharacterAI::ChooseCardOnField() const
 {
+	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("AI Choosing a Card On Board"));
 	// Simple heuristic for choosing a card to play: choose the first card in hand
 	if (CardOnField.Num() > 0)
 	{
@@ -117,12 +119,14 @@ int32 ATbfCharacterAI::ChooseCardOnField() const
 
 ATbfGridCell* ATbfCharacterAI::ChooseCell() const
 {
+	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("AI Choosing a Cell"));
 	return UTbfGameFunctionLibrary::GetRandomCellForPlayer(this);
 }
 
 
 int32 ATbfCharacterAI::ChooseCardToAttack()
 {
+	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("AI Choosing a Card On Field index"));
 	// Simple heuristic for choosing a card to attack: choose the first card on the field
 	if (CardOnField.Num() > 0)
 	{

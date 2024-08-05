@@ -53,4 +53,7 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Modifier")
 	bool bUnitIsSelected = false;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Unit Cell Tracker")
+	AActor* CellOccupied;
 };

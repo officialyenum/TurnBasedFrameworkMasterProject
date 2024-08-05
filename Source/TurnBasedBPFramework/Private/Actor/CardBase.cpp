@@ -133,6 +133,8 @@ void ACardBase::UnSelectActor()
 
 void ACardBase::ActivateCard()
 {
+	// Card Gets Destroyed After this Action so occupying actor should be cleard
+	Cast<ATbfGridCell>(CellOccupied)->OccupyingActor = this;
 	switch (CardInfo.Type)
 	{
 		case ECardType::Unit:
@@ -179,6 +181,11 @@ void ACardBase::SpawnCardUnit()
 	UnitOwner->UnitOnField.Add(Unit);
 	// Update Character UI Stat
 	UnitOwner->UpdateUIStat();
+	// Add Spawned Unit as Cell Occupying Actor
+	if (CellOccupied)
+	{
+		Cast<ATbfGridCell>(CellOccupied)->OccupyingActor = Unit;
+	}
 	// Play Animation to Destroy
 	Destroy();
 }
@@ -199,7 +206,7 @@ void ACardBase::MoveCardToBoard()
 	{
 		CurrentPlayer->SelectedCard = this;
 		CurrentPlayer->TargetedCell = UTbfGameFunctionLibrary::GetRandomCellForPlayer(CurrentPlayer);
-		
+		CurrentPlayer->TargetedCell->OccupyingActor = this;
 	}
 }
 

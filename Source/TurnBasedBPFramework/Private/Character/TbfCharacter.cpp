@@ -42,9 +42,10 @@ ATbfCharacter::ATbfCharacter()
 
 void ATbfCharacter::DrawCard()
 {
-	
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("%s Drawing Card"), *Name.ToString()));
 	if (Deck.Num() > 0 && DrawCountPerTurn > 0)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("%s Drawing Card Deck Check Passed"), *Name.ToString()));
 		// Get Card Datatable List
 		int32 CardIndex = FMath::RandRange(0, Deck.Num() - 1);
 		const FTbfCardInfo* CardInfoStruct = &Deck[CardIndex];
@@ -61,7 +62,7 @@ void ATbfCharacter::DrawCard()
 		// Set default class for the card
 		if (!CardClass)
 		{
-			static ConstructorHelpers::FClassFinder<ACardBase> CardBaseBPClass(TEXT("Blueprint'/Game/rameworkV2/Blueprints/Actors/Card/BP_TbfCard.BP_TbfCard'"));
+			static ConstructorHelpers::FClassFinder<ACardBase> CardBaseBPClass(TEXT("/Game/FrameworkV2/Blueprints/Actors/BP_TbfCard.BP_TbfCard"));
 			if (CardBaseBPClass.Succeeded())
 			{
 				CardClass = CardBaseBPClass.Class;
@@ -75,6 +76,8 @@ void ATbfCharacter::DrawCard()
 			ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn
 		))
 		{
+			
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("%s Spawning Card"), *Name.ToString()));
 			// Set the CardInfo property which is marked ExposeOnSpawn
 			DrawnCard->CardInfo = *CardInfoStruct;
 
@@ -89,7 +92,6 @@ void ATbfCharacter::DrawCard()
 		}
 		Deck.RemoveAt(CardIndex);
 		DrawCountPerTurn--;
-		
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("%d Cards Left in Deck"), Deck.Num()));
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("%d Draw Left for this turn"), DrawCountPerTurn));
 	}
@@ -99,59 +101,80 @@ void ATbfCharacter::DrawCard()
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("%d Cards Left in Deck, Switch to Main State to Proceed"), Deck.Num()));
 	}
 	UpdateUIStat();
-	UE_LOG(LogTemp, Error, TEXT("No Deck"));
+	if(DrawCountPerTurn <= 0)
+	{
+		GoToNextState();
+	}
+	
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("%s Drawing Card Ends"), *Name.ToString()));
 }
 
 void ATbfCharacter::PlaySelectedCard()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black,
+	                                 FString::Printf(TEXT("%s Choosing a Card To Move"), *Name.ToString()));
 	if (MoveCountPerTurn > 0)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("%s Move Count Check Passed"), *Name.ToString()));
 		if (!SelectedCard)
 		{
-			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("Select A Card"));
+			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Did Not Select Card To Move"), *Name.ToString()));
 			return;
 		}
 		if (!TargetedCell)
 		{
-			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("Select A Cell for Card to Move To"));
+			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Did Not Select A Cell for Card to Move To"), *Name.ToString()));
 			return;
 		}
 		if(Hand.Contains(SelectedCard))
 		{
+			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Green,FString::Printf(TEXT("%s Selected Card In Hand Check Passed"), *Name.ToString()));
 			FVector CellLocation = TargetedCell->SpawnDirectionArrow->GetComponentLocation();
 			FRotator CellRotator = TargetedCell->SpawnDirectionArrow->GetComponentRotation();
 			SelectedCard->SetActorRotation(CellRotator);
 			SelectedCard->MoveCardToLocation(CellLocation);
 			Hand.Remove(SelectedCard);
 			CardOnField.Add(SelectedCard);
+			// Track Card Above Cell
+			SelectedCard->CellOccupied = TargetedCell;
+			// Track Cell Below Card
+			TargetedCell->OccupyingActor = SelectedCard;
+			// Make Card Visible To Opponent
 			SelectedCard->bOpponentCanSee = true;
+			// Clear Selected Card
 			SelectedCard = nullptr;
 		};
 		MoveCountPerTurn -= 1;
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("You Are Out of Card Moves"));
+		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Is Out Of Moves"), *Name.ToString()));
 		GoToNextState();
 	}
 	UpdateUIStat();
+	if (MoveCountPerTurn <= 0 && ActivateCountPerTurn <= 0)
+	{
+		GoToNextState();
+	}
 }
 
 void ATbfCharacter::ActivateSelectedCard()
 {
+	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Green,FString::Printf(TEXT("%s Card Activation Starts"), *Name.ToString()));
 	if (ActivateCountPerTurn <= 0)
 	{
-		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("You Are Out of Activation Moves, Wait for Next Turn"));
+		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s is Out Of Activation Moves"), *Name.ToString()));
 		return;
 	}
-	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("Activation Triggered"));
-	if (Hand.Contains(SelectedCard), CardOnField.Contains(SelectedCard))
+	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("Activation Triggered")));
+	if (Hand.Contains(SelectedCard) || CardOnField.Contains(SelectedCard))
 	{
+		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Selected Card to Activate in Hand Or Board Chaeck Passed"), *Name.ToString()));
 		SelectedCard->ActivateCard();
 		ActivateCountPerTurn--;
 		if (ActivateCountPerTurn <= 0)
 		{
-			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("Moved To Next State Since you are out of Activation"));
+			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Switch to Next State Due Activation Cost Exceeded"), *Name.ToString()));
 			GoToNextState();
 		}
 	}
@@ -159,6 +182,11 @@ void ATbfCharacter::ActivateSelectedCard()
 
 void ATbfCharacter::BattleTargetUnit()
 {
+	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Battle Targed Unit Started"), *Name.ToString()));
+	if (BattleCountPerTurn <= 0)
+	{
+		GoToNextState();
+	}
 }
 
 void ATbfCharacter::ResetCounters()
@@ -189,18 +217,23 @@ void ATbfCharacter::GoToNextState()
 	switch (CurrentState)
 	{
 		case EPlayerState::Waiting:
+			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("%s Switched Waiting To Draw"), *Name.ToString()));
 			CurrentState = EPlayerState::Draw;
 			break;
 		case EPlayerState::Draw:
+			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Switched Draw To MainOne"), *Name.ToString()));
 			CurrentState = EPlayerState::MainOne;
 			break;
 		case EPlayerState::MainOne:
+			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Switched MainOne To Battle"), *Name.ToString()));
 			CurrentState = EPlayerState::Battle;
 			break;
 		case EPlayerState::Battle:
+			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Switched Battle To MainTwo"), *Name.ToString()));
 			CurrentState = EPlayerState::MainTwo;
 			break;
 		case EPlayerState::MainTwo:
+			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Switched MainTwo To Waiting"), *Name.ToString()));
 			CurrentState = EPlayerState::Waiting;
 			if (bIsPlayer)
 			{
