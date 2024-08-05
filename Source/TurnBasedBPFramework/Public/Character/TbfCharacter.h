@@ -104,8 +104,6 @@ public:
 
 	// Handler Logic
 	UFUNCTION()
-	void HandleUnitDestroyed(AActor* DestroyedActor);
-	UFUNCTION()
 	void HandleCardDestroyed(AActor* DestroyedActor);
 	UFUNCTION()
 	void HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser);

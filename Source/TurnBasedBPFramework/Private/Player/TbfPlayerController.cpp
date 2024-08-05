@@ -5,6 +5,7 @@
 
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "AbilitySystem/TbfAttributeSet.h"
 #include "Actor/CardBase.h"
 #include "Actor/TbfGridCell.h"
 #include "Character/TbfCharacterPlayer.h"
@@ -57,6 +58,7 @@ void ATbfPlayerController::SetupInputComponent()
 	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Started, this, &ATbfPlayerController::Move);
 	EnhancedInputComponent->BindAction(ActivateAction, ETriggerEvent::Started, this, &ATbfPlayerController::Activate);
 	EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &ATbfPlayerController::Attack);
+	EnhancedInputComponent->BindAction(LMBAction, ETriggerEvent::Started, this, &ATbfPlayerController::LeftMousePressedAction);
 }
 
 void ATbfPlayerController::CursorTrace()
@@ -77,9 +79,11 @@ void ATbfPlayerController::PauseGame(const FInputActionValue& InputActionValue)
 {
 	UE_LOG(LogTemp, Error, TEXT("PauseGame Pressed"));
 	// Call the UE5 Pause Game Function to Pause the Game
+
+	bIsPaused = !bIsPaused;
+	UGameplayStatics::SetGamePaused(GetWorld(), bIsPaused);
+	//TODO: if bIsPaused is true, open the pause widget, else close the pause widget
 	
-	// Call the UE5 Pause Game Function to Pause the Game
-	UGameplayStatics::SetGamePaused(GetWorld(), true);
 }
 
 void ATbfPlayerController::Draw(const FInputActionValue& InputActionValue)
@@ -140,7 +144,8 @@ void ATbfPlayerController::Activate(const FInputActionValue& InputActionValue)
 
 void ATbfPlayerController::Attack(const FInputActionValue& InputActionValue)
 {
-	UE_LOG(LogTemp, Error, TEXT("Attack Pressed"));
+	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("Attack Pressed"));
+				
 	//Get Player Character
 
 	//if player is in Battle State Call Attack Function on the SelectedUnit and pass the Selected TargetUnit as a Parameter to Attack
@@ -149,11 +154,25 @@ void ATbfPlayerController::Attack(const FInputActionValue& InputActionValue)
 		// if player is in Battle State Call Attack Function on the SelectedUnit and pass the Selected TargetUnit as a Parameter to Attack
 		if (PlayerCharacter->CurrentState == ETbfPlayerState::Battle)
 		{
-			if (PlayerCharacter->SelectedUnit && PlayerCharacter->TargetedUnit)
+			if (PlayerCharacter->SelectedUnit)
 			{
-				GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("Attack Not Implemented Yet: See TbfPlayerController.cpp line 154"));
 				//PlayerCharacter->SelectedUnit->Attack(PlayerCharacter->SelectedTargetUnit);
+				GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("Attacking Targeted Unit/Boss"));
+					
+				PlayerCharacter->SelectedUnit->SetTargetUnit(PlayerCharacter->TargetedUnit);
+				PlayerCharacter->SelectedUnit->FindUnitToBattle();
+				
 			}
 		}
+	}
+}
+
+void ATbfPlayerController::LeftMousePressedAction(const FInputActionValue& InputActionValue)
+{
+	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("LMB Pressed"));
+	// Select any actor that is Highlighted
+	if (ThisActor)
+	{
+		Cast<ISelectionInterface>(ThisActor)->SelectActor();
 	}
 }

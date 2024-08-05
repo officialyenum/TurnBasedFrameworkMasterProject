@@ -94,7 +94,7 @@ void ACardBase::SelectActor()
 	{
 		if (GI->PlayerOne->SelectedCard)
 		{
-			GI->PlayerOne->SelectedCard = this;
+			GI->PlayerOne->SelectedCard->UnSelectActor();
 		}
 		bCardIsSelected = true;
 		GI->PlayerOne->SelectedCard = this;
@@ -160,22 +160,29 @@ void ACardBase::SpawnCardUnit()
 		UnitOwner,
 		ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn
 	);
-		
+	FTbfUnitInfo UnitInformation;
+	UnitInformation.Name = CardInfo.Name;
+	UnitInformation.Attack = CardInfo.Attack;
+	UnitInformation.Defence = CardInfo.Defence;
+	UnitInformation.UnitState = ETbfUnitState::Attack;
+	Unit->UnitInfo = UnitInformation;
+	// Add Spawned Unit as Cell Occupying Actor And Vice Versa
+	if (CellOccupied)
+	{
+		Cast<ATbfGridCell>(CellOccupied)->OccupyingActor = Unit;
+		Unit->CellOccupied = CellOccupied;
+	}
 	// Finish spawning the unit actor
 	Unit->FinishSpawning(SpawnTransform);
 	// Bind the unit's destruction event to a function that will handle removal from the array
-	Unit->OnDestroyed.AddDynamic(UnitOwner, &ATbfCharacter::HandleUnitDestroyed);
+	Unit->OnDestroyed.AddDynamic(Unit, &ATbfCharacterUnit::HandleUnitDestroyed);
 	// Remove this card from fielded cards
 	UnitOwner->CardOnField.Remove(this);
 	// Add Unit to Help Player Track
 	UnitOwner->UnitOnField.Add(Unit);
 	// Update Character UI Stat
 	UnitOwner->UpdateUIStat();
-	// Add Spawned Unit as Cell Occupying Actor
-	if (CellOccupied)
-	{
-		Cast<ATbfGridCell>(CellOccupied)->OccupyingActor = Unit;
-	}
+	
 	// Play Animation to Destroy
 	Destroy();
 }

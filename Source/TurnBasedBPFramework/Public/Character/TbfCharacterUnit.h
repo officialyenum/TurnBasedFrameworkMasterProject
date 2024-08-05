@@ -53,9 +53,9 @@ public:
 	ATbfCharacterUnit();
 	
 	UBehaviorTree* GetBehaviorTree() const;
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable, Category="Unit Actions")
 	virtual void HighlightActor() override;
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable, Category="Unit Actions")
 	virtual void UnHighlightActor() override;
 	UFUNCTION(BlueprintCallable, Category="Unit Actions")
 	virtual void SelectActor() override;
@@ -76,6 +76,16 @@ public:
 
 	void SetTargetUnit(ATbfCharacterUnit* NewTargetUnit);
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Unit Param", meta=(ExposeOnSpawn = "true"))
+	FTbfUnitInfo UnitInfo;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Unit Cell Tracker", meta=(ExposeOnSpawn = "true"))
+	AActor* CellOccupied;
+	
+	// Handler Logic
+	UFUNCTION(BlueprintCallable, Category="Unit Actions")
+	void HandleUnitDestroyed(AActor* DestroyedActor);
+	
 protected:
 	virtual void BeginPlay() override;
 	
@@ -84,12 +94,6 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Modifier")
 	bool bUnitIsSelected = false;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Unit Cell Tracker")
-	AActor* CellOccupied;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Unit Param")
-	FTbfUnitInfo UnitInfo;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Unit Param")
 	ATbfCharacterUnit* TargetUnit;

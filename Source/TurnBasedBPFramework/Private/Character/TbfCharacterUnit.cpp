@@ -56,8 +56,9 @@ void ATbfCharacterUnit::UnHighlightActor()
 
 void ATbfCharacterUnit::SelectActor()
 {
-	
-	UTbfGameInstance* GI = Cast<UTbfGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT(" %s Clicked"), *UnitInfo.Name.ToString()));
+		
+	UTbfGameInstance* GI = Cast<UTbfGameInstance>(UGameplayStatics::GetGameInstance(this));
 	if (GI->bIsPlayerOneTurn && !bUnitIsSelected)
 	{
 		ECellType CellType = Cast<ATbfGridCell>(CellOccupied)->CellType;
@@ -177,11 +178,13 @@ void ATbfCharacterUnit::BattleOpponent()
 	{
 		CharacterToAttack = GI->PlayerTwo;
 	}
-		
+	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("Attacking Boss"));
+					
 	UTbfAttributeSet* MyAttributes = Cast<UTbfAttributeSet>(AttributeSet);
 	AController* InstigatorController = GetInstigatorController();
-	UGameplayStatics::ApplyDamage(
-		CharacterToAttack, MyAttributes->GetAttack(),InstigatorController,this,DamageTypeClass);
+	CharacterToAttack->HandleTakeAnyDamage(CharacterToAttack,MyAttributes->GetAttack(),DamageTypeClass,InstigatorController,this);
+	//UGameplayStatics::ApplyDamage(
+	//	CharacterToAttack, MyAttributes->GetAttack(),InstigatorController,this,DamageTypeClass);
 	
 }
 
@@ -193,11 +196,27 @@ void ATbfCharacterUnit::SetTargetUnit(ATbfCharacterUnit* NewTargetUnit)
 void ATbfCharacterUnit::BattleOpponentUnit()
 {
 	// call apply effect or damage on opposing player
-	
+	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("Attacking Targeted Unit"));
+					
 	UTbfAttributeSet* MyAttributes = Cast<UTbfAttributeSet>(AttributeSet);
 	AController* InstigatorController = GetInstigatorController();
-	UGameplayStatics::ApplyDamage(
-		TargetUnit, MyAttributes->GetAttack(),InstigatorController,this,DamageTypeClass);
+	TargetUnit->HandleTakeAnyDamage(TargetUnit,MyAttributes->GetAttack(),DamageTypeClass,InstigatorController,this);
+	
+	//UGameplayStatics::ApplyDamage(
+	//	TargetUnit, MyAttributes->GetAttack(),InstigatorController,this,DamageTypeClass);
+}
+
+void ATbfCharacterUnit::HandleUnitDestroyed(AActor* DestroyedActor)
+{
+	if (ATbfCharacterUnit* DestroyedUnit = Cast<ATbfCharacterUnit>(DestroyedActor))
+	{
+		// Get the Unit Owner Either AI or Player, as they both are children of ATbfCharacter
+		// Remove the destroyed unit from the UnitOnField array
+		Cast<ATbfCharacter>(GetInstigator())->UnitOnField.Remove(DestroyedUnit);
+		
+		// update the UI or perform other necessary actions
+		Cast<ATbfCharacter>(GetInstigator())->UpdateUIStat();
+	}
 }
 
 void ATbfCharacterUnit::BeginPlay()

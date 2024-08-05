@@ -20,7 +20,7 @@ public:
 	
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	virtual UAttributeSet* GetAttributeSet() const { return  AttributeSet; }
-	TSubclassOf<UDamageType> DamageTypeClass;
+	const UDamageType* DamageTypeClass;
 protected:
 	virtual void BeginPlay() override;
 

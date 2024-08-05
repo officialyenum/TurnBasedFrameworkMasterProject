@@ -24,7 +24,8 @@ protected:
 	virtual void PlayerTick(float DeltaTime) override;
 	virtual void SetupInputComponent() override;
 
-	
+	UPROPERTY(BlueprintReadWrite, Category="Game Manager")
+	bool bIsPaused = false;
 
 private:
 	UPROPERTY(EditAnywhere, Category="Input")
@@ -44,6 +45,9 @@ private:
 	
 	UPROPERTY(EditAnywhere, Category="Input")
 	TObjectPtr<UInputAction> AttackAction;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	TObjectPtr<UInputAction> LMBAction;
 
 	UFUNCTION(BlueprintCallable, Category="Player Function")
 	void PauseGame(const struct FInputActionValue& InputActionValue);
@@ -55,6 +59,8 @@ private:
 	void Activate(const struct FInputActionValue& InputActionValue);
 	UFUNCTION(BlueprintCallable, Category="Player Function")
 	void Attack(const struct FInputActionValue& InputActionValue);
+	UFUNCTION(BlueprintCallable, Category="Player Function")
+	void LeftMousePressedAction(const struct FInputActionValue& InputActionValue);
 
 	ISelectionInterface* LastActor;
 	ISelectionInterface* ThisActor;

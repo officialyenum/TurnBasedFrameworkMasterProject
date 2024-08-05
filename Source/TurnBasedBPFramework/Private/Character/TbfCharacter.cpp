@@ -7,9 +7,7 @@
 #include "Actor/CardBase.h"
 #include "Actor/TbfGridCell.h"
 #include "Components/ArrowComponent.h"
-#include "Field/FieldSystemNoiseAlgo.h"
 #include "Game/TbfGameInstance.h"
-#include "Kismet/GameplayStatics.h"
 #include "Library/TbfCardFunctionLibrary.h"
 #include "Library/TbfGameFunctionLibrary.h"
 
@@ -141,8 +139,8 @@ void ATbfCharacter::PlaySelectedCard()
 			TargetedCell->OccupyingActor = SelectedCard;
 			// Make Card Visible To Opponent
 			SelectedCard->bOpponentCanSee = true;
-			// Clear Selected Card
-			SelectedCard = nullptr;
+			// Unselect the Card
+			SelectedCard->UnSelectActor();
 		};
 		MoveCountPerTurn -= 1;
 	}
@@ -189,7 +187,7 @@ void ATbfCharacter::PlaySelectedUnitBattle()
 				SelectedUnit->BattleOpponentUnit();
 				GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Green,FString::Printf(TEXT("%s Attacked a Unit"), *Name.ToString()));
 			};
-			MoveCountPerTurn -= 1;
+			BattleCountPerTurn -= 1;
 		}
 		
 	}
@@ -294,19 +292,6 @@ void ATbfCharacter::GoToNextState()
 }
 
 
-void ATbfCharacter::HandleUnitDestroyed(AActor* DestroyedActor)
-{
-	if (ATbfCharacterUnit* DestroyedUnit = Cast<ATbfCharacterUnit>(DestroyedActor))
-	{
-		// Remove the destroyed unit from the UnitOnField array
-		UnitOnField.Remove(DestroyedUnit);
-
-		// update the UI or perform other necessary actions
-		UpdateUIStat();
-	}
-}
-
-
 void ATbfCharacter::HandleCardDestroyed(AActor* DestroyedActor)
 {
 	if (ACardBase* DestroyedCard = Cast<ACardBase>(DestroyedActor))
@@ -329,6 +314,8 @@ void ATbfCharacter::HandleCardDestroyed(AActor* DestroyedActor)
 void ATbfCharacter::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
 	AController* InstigatedBy, AActor* DamageCauser)
 {
+	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Orange,TEXT("Handling Take Any Damage"));
+		
 	ATbfCharacterUnit* UnitCauser = Cast<ATbfCharacterUnit>(DamageCauser);
 	ACardBase* CardCauser = Cast<ACardBase>(DamageCauser);
 
@@ -336,13 +323,20 @@ void ATbfCharacter::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, cons
 	// If the damage is caused by a unit
 	if (UnitCauser)
 	{
+		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Orange,TEXT("Handling Unit Causer Damage"));
+		
 		const float NewHealth = FMath::Clamp(MyAttributes->GetHealth() - Damage, 0, MyAttributes->GetHealth());
-		MyAttributes->SetAttack(NewHealth);
+		MyAttributes->SetHealth(NewHealth);
+		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Orange,TEXT("Finish Handling Unit Causer Damage"));
+		
 	}
 	// If the damage is caused by a card
 	if (CardCauser)
 	{
+		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Orange,TEXT("Handling Card Causer Damage"));
 		CardCauser->ApplyEffectToTarget(this, CardCauser->CardInfo.GameplayEffectClass);
+		
+		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Orange,TEXT("Finish Handling Card Causer Damage"));;
 	}
 }
 
