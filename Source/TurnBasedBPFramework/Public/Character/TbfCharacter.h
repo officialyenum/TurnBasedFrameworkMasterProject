@@ -11,7 +11,7 @@ struct FTbfCardInfo;
 class ATbfGridCell;
 
 UENUM(BlueprintType)
-enum class EPlayerState: uint8
+enum class ETbfPlayerState: uint8
 {
 	Waiting,
 	Draw,
@@ -38,11 +38,11 @@ public:
 	void PlaySelectedCard();
 	
 	UFUNCTION(BlueprintCallable, Category="Gameplay Actions")
-	void ActivateSelectedCard();
+	void PlaySelectedUnitBattle();
 	
 	UFUNCTION(BlueprintCallable, Category="Gameplay Actions")
-	void BattleTargetUnit();
-	
+	void ActivateSelectedCard();
+
 	UFUNCTION(BlueprintCallable, Category="Gameplay Modifiers")
 	void ResetCounters();
 	
@@ -86,7 +86,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Params" )
 	int32 BattleCountPerTurn = 2;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Params" )
-	EPlayerState CurrentState = EPlayerState::Waiting;
+	ETbfPlayerState CurrentState = ETbfPlayerState::Waiting;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Params")
 	UDataTable* DeckDT;
 
@@ -101,6 +101,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Params")
 	ATbfGridCell* TargetedCell;
 	// End Player Param
+
+	// Handler Logic
+	UFUNCTION()
+	void HandleUnitDestroyed(AActor* DestroyedActor);
+	UFUNCTION()
+	void HandleCardDestroyed(AActor* DestroyedActor);
+	UFUNCTION()
+	void HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser);
+
 	
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player Params")

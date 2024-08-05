@@ -3,6 +3,7 @@
 
 #include "Character/TbfCharacter.h"
 
+#include "AbilitySystem/TbfAttributeSet.h"
 #include "Actor/CardBase.h"
 #include "Actor/TbfGridCell.h"
 #include "Components/ArrowComponent.h"
@@ -11,7 +12,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "Library/TbfCardFunctionLibrary.h"
 #include "Library/TbfGameFunctionLibrary.h"
-
 
 // Sets default values
 ATbfCharacter::ATbfCharacter()
@@ -158,6 +158,49 @@ void ATbfCharacter::PlaySelectedCard()
 	}
 }
 
+void ATbfCharacter::PlaySelectedUnitBattle()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black,
+									 FString::Printf(TEXT("%s Choosing a Unit"), *Name.ToString()));
+	if (BattleCountPerTurn > 0)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("%s Battle Count Check Passed"), *Name.ToString()));
+		if (!SelectedUnit)
+		{
+			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Did Not Select Your Unit"), *Name.ToString()));
+			return;
+		}
+		TArray<ATbfCharacterUnit*> OpponentUnitCount = UTbfGameFunctionLibrary::GetOpponentUnits(this);
+		if (OpponentUnitCount.Num() <= 0)
+		{
+			SelectedUnit->BattleOpponent();
+				GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Green,FString::Printf(TEXT("%s Attacked Opponent"), *Name.ToString()));
+		}
+		else
+		{
+			if (!TargetedUnit)
+			{
+				GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Did Not Select A Target To Attack"), *Name.ToString()));
+				return;
+			}
+			if(UnitOnField.Contains(SelectedUnit))
+			{
+				SelectedUnit->SetTargetUnit(TargetedUnit);
+				SelectedUnit->BattleOpponentUnit();
+				GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Green,FString::Printf(TEXT("%s Attacked a Unit"), *Name.ToString()));
+			};
+			MoveCountPerTurn -= 1;
+		}
+		
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Is Out Of Moves"), *Name.ToString()));
+		GoToNextState();
+	}
+	UpdateUIStat();
+}
+
 void ATbfCharacter::ActivateSelectedCard()
 {
 	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Green,FString::Printf(TEXT("%s Card Activation Starts"), *Name.ToString()));
@@ -177,15 +220,6 @@ void ATbfCharacter::ActivateSelectedCard()
 			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Switch to Next State Due Activation Cost Exceeded"), *Name.ToString()));
 			GoToNextState();
 		}
-	}
-}
-
-void ATbfCharacter::BattleTargetUnit()
-{
-	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Battle Targed Unit Started"), *Name.ToString()));
-	if (BattleCountPerTurn <= 0)
-	{
-		GoToNextState();
 	}
 }
 
@@ -216,25 +250,25 @@ void ATbfCharacter::GoToNextState()
 {
 	switch (CurrentState)
 	{
-		case EPlayerState::Waiting:
+		case ETbfPlayerState::Waiting:
 			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("%s Switched Waiting To Draw"), *Name.ToString()));
-			CurrentState = EPlayerState::Draw;
+			CurrentState = ETbfPlayerState::Draw;
 			break;
-		case EPlayerState::Draw:
+		case ETbfPlayerState::Draw:
 			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Switched Draw To MainOne"), *Name.ToString()));
-			CurrentState = EPlayerState::MainOne;
+			CurrentState = ETbfPlayerState::MainOne;
 			break;
-		case EPlayerState::MainOne:
+		case ETbfPlayerState::MainOne:
 			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Switched MainOne To Battle"), *Name.ToString()));
-			CurrentState = EPlayerState::Battle;
+			CurrentState = ETbfPlayerState::Battle;
 			break;
-		case EPlayerState::Battle:
+		case ETbfPlayerState::Battle:
 			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Switched Battle To MainTwo"), *Name.ToString()));
-			CurrentState = EPlayerState::MainTwo;
+			CurrentState = ETbfPlayerState::MainTwo;
 			break;
-		case EPlayerState::MainTwo:
+		case ETbfPlayerState::MainTwo:
 			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Switched MainTwo To Waiting"), *Name.ToString()));
-			CurrentState = EPlayerState::Waiting;
+			CurrentState = ETbfPlayerState::Waiting;
 			if (bIsPlayer)
 			{
 				//Player One Ends Turn and Waits
@@ -260,11 +294,65 @@ void ATbfCharacter::GoToNextState()
 }
 
 
+void ATbfCharacter::HandleUnitDestroyed(AActor* DestroyedActor)
+{
+	if (ATbfCharacterUnit* DestroyedUnit = Cast<ATbfCharacterUnit>(DestroyedActor))
+	{
+		// Remove the destroyed unit from the UnitOnField array
+		UnitOnField.Remove(DestroyedUnit);
+
+		// update the UI or perform other necessary actions
+		UpdateUIStat();
+	}
+}
+
+
+void ATbfCharacter::HandleCardDestroyed(AActor* DestroyedActor)
+{
+	if (ACardBase* DestroyedCard = Cast<ACardBase>(DestroyedActor))
+	{
+		if (CardOnField.Contains(DestroyedCard))
+		{
+			// Remove the destroyed card from the CardOnField array
+			CardOnField.Remove(DestroyedCard);
+		}
+		if (Hand.Contains(DestroyedCard))
+		{
+			// Remove the destroyed card from the Hand array
+			Hand.Remove(DestroyedCard);
+		}
+		// update the UI or perform other necessary actions
+		UpdateUIStat();
+	}
+}
+
+void ATbfCharacter::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
+	AController* InstigatedBy, AActor* DamageCauser)
+{
+	ATbfCharacterUnit* UnitCauser = Cast<ATbfCharacterUnit>(DamageCauser);
+	ACardBase* CardCauser = Cast<ACardBase>(DamageCauser);
+
+	UTbfAttributeSet* MyAttributes = Cast<UTbfAttributeSet>(AttributeSet);
+	// If the damage is caused by a unit
+	if (UnitCauser)
+	{
+		const float NewHealth = FMath::Clamp(MyAttributes->GetHealth() - Damage, 0, MyAttributes->GetHealth());
+		MyAttributes->SetAttack(NewHealth);
+	}
+	// If the damage is caused by a card
+	if (CardCauser)
+	{
+		CardCauser->ApplyEffectToTarget(this, CardCauser->CardInfo.GameplayEffectClass);
+	}
+}
+
 
 // Called when the game starts or when spawned
 void ATbfCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	OnTakeAnyDamage.AddDynamic(this, &ATbfCharacter::HandleTakeAnyDamage);
 }
 
 

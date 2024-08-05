@@ -39,8 +39,8 @@ public:
 	static FTbfCardInfo GetRandomTrapCard(UDataTable* DataTable);
 	
 	UFUNCTION(BlueprintCallable, Category = "Card Library")
-	static ACardBase* GetRandomCardForPlayer(const ATbfCharacter* Player);
+	static ACardBase* GetRandomCardForPlayer(ATbfCharacter* Player);
 	
 	UFUNCTION(BlueprintCallable, Category = "Card Library")
-	static TArray<ACardBase*> GetAllCardForPlayer(const ATbfCharacter* Player);
+	static TArray<ACardBase*> GetAllCardForPlayer(ATbfCharacter* Player);
 };

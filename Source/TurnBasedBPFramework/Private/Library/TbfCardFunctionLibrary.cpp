@@ -138,13 +138,13 @@ FTbfCardInfo UTbfCardFunctionLibrary::GetRandomTrapCard(UDataTable* DataTable)
     return GetRandomCardByType(DataTable, ECardType::Trap);
 }
 
-ACardBase* UTbfCardFunctionLibrary::GetRandomCardForPlayer(const ATbfCharacter* Player)
+ACardBase* UTbfCardFunctionLibrary::GetRandomCardForPlayer(ATbfCharacter* Player)
 {
     int32 RandomIndex = FMath::RandRange(0, Player->CardOnField.Num() - 1);
     return Player->CardOnField[RandomIndex];
 }
 
-TArray<ACardBase*> UTbfCardFunctionLibrary::GetAllCardForPlayer(const ATbfCharacter* Player)
+TArray<ACardBase*> UTbfCardFunctionLibrary::GetAllCardForPlayer(ATbfCharacter* Player)
 {
     return Player->CardOnField;
 }

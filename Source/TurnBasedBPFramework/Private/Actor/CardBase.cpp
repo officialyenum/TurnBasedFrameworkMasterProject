@@ -88,30 +88,19 @@ void ACardBase::UnHighlightActor()
 
 void ACardBase::SelectActor()
 {
-	bCardIsSelected = true;
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("Actor Selected %s"), *CardInfo.Name.ToString()));
 		
 	UTbfGameInstance* GI = Cast<UTbfGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	if (GI->bIsPlayerOneTurn)
 	{
 		if (GI->PlayerOne->SelectedCard)
 		{
-			GI->PlayerOne->SelectedCard->UnSelectActor();
+			GI->PlayerOne->SelectedCard = this;
 		}
+		bCardIsSelected = true;
 		GI->PlayerOne->SelectedCard = this;
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("Player One Selected Card Name %s"), *CardInfo.Name.ToString()));
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("Calling Show Card In UI %s"), *CardInfo.Name.ToString()));
 		ShowCardInUI();
-	}
-	else
-	{
-		if (GI->PlayerTwo->SelectedCard)
-		{
-			GI->PlayerTwo->SelectedCard->UnSelectActor();
-		}
-		GI->PlayerTwo->SelectedCard = this;
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("Player Two Selected Card Name %s"), *CardInfo.Name.ToString()));
-	
 	}
 	
 }
@@ -123,11 +112,10 @@ void ACardBase::UnSelectActor()
 	UTbfGameInstance* GI = Cast<UTbfGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	if (GI->bIsPlayerOneTurn)
 	{
-		GI->PlayerOne->SelectedCard = nullptr;
-	}
-	else
-	{
-		GI->PlayerTwo->SelectedCard = nullptr;
+		if (this == GI->PlayerOne->SelectedCard)
+		{
+			GI->PlayerOne->SelectedCard = nullptr;
+		}
 	}
 }
 
@@ -175,6 +163,8 @@ void ACardBase::SpawnCardUnit()
 		
 	// Finish spawning the unit actor
 	Unit->FinishSpawning(SpawnTransform);
+	// Bind the unit's destruction event to a function that will handle removal from the array
+	Unit->OnDestroyed.AddDynamic(UnitOwner, &ATbfCharacter::HandleUnitDestroyed);
 	// Remove this card from fielded cards
 	UnitOwner->CardOnField.Remove(this);
 	// Add Unit to Help Player Track

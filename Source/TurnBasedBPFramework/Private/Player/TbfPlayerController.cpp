@@ -92,7 +92,7 @@ void ATbfPlayerController::Draw(const FInputActionValue& InputActionValue)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Player Found"));
 		// if player is in Draw State Call Draw Function on Player Character
-		if (PlayerCharacter->CurrentState == EPlayerState::Draw)
+		if (PlayerCharacter->CurrentState == ETbfPlayerState::Draw)
 		{
 			UE_LOG(LogTemp, Error, TEXT("Player State In Draw"));
 			PlayerCharacter->DrawCard();
@@ -108,7 +108,7 @@ void ATbfPlayerController::Move(const FInputActionValue& InputActionValue)
 	if (ATbfCharacterPlayer* PlayerCharacter = Cast<ATbfCharacterPlayer>(GetCharacter()))
 	{
 		// if player is in Main One Or Main Two State Call Move Card To Cell Location Function on Player Character
-		if (PlayerCharacter->CurrentState == EPlayerState::MainOne || PlayerCharacter->CurrentState == EPlayerState::MainTwo)
+		if (PlayerCharacter->CurrentState == ETbfPlayerState::MainOne || PlayerCharacter->CurrentState == ETbfPlayerState::MainTwo)
 		{
 			// Set the card to bOpponentCanSee to true
 			if (PlayerCharacter->SelectedCard && PlayerCharacter->TargetedCell)
@@ -128,7 +128,7 @@ void ATbfPlayerController::Activate(const FInputActionValue& InputActionValue)
 	if (ATbfCharacterPlayer* PlayerCharacter = Cast<ATbfCharacterPlayer>(GetCharacter()))
 	{
 		// if player is in Main One Or Main Two State Call Activate Function to Activate the Selected Card On Field
-		if (PlayerCharacter->CurrentState == EPlayerState::MainOne || PlayerCharacter->CurrentState == EPlayerState::MainTwo)
+		if (PlayerCharacter->CurrentState == ETbfPlayerState::MainOne || PlayerCharacter->CurrentState == ETbfPlayerState::MainTwo)
 		{
 			if (PlayerCharacter->SelectedCard)
 			{
@@ -147,7 +147,7 @@ void ATbfPlayerController::Attack(const FInputActionValue& InputActionValue)
 	if (ATbfCharacterPlayer* PlayerCharacter = Cast<ATbfCharacterPlayer>(GetCharacter()))
 	{
 		// if player is in Battle State Call Attack Function on the SelectedUnit and pass the Selected TargetUnit as a Parameter to Attack
-		if (PlayerCharacter->CurrentState == EPlayerState::Battle)
+		if (PlayerCharacter->CurrentState == ETbfPlayerState::Battle)
 		{
 			if (PlayerCharacter->SelectedUnit && PlayerCharacter->TargetedUnit)
 			{
