@@ -98,12 +98,12 @@ void ATbfCharacter::DrawCard()
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("%d Draw Left Switch to Main State to Proceed"), DrawCountPerTurn));
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("%d Cards Left in Deck, Switch to Main State to Proceed"), Deck.Num()));
 	}
+	UpdateAttributeSet();
 	UpdateUIStat();
 	if(DrawCountPerTurn <= 0)
 	{
 		GoToNextState();
 	}
-	
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("%s Drawing Card Ends"), *Name.ToString()));
 }
 
@@ -149,6 +149,7 @@ void ATbfCharacter::PlaySelectedCard()
 		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Is Out Of Moves"), *Name.ToString()));
 		GoToNextState();
 	}
+	UpdateAttributeSet();
 	UpdateUIStat();
 	if (MoveCountPerTurn <= 0 && ActivateCountPerTurn <= 0)
 	{
@@ -188,6 +189,7 @@ void ATbfCharacter::PlaySelectedUnitBattle()
 				GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Green,FString::Printf(TEXT("%s Attacked a Unit"), *Name.ToString()));
 			};
 			BattleCountPerTurn -= 1;
+			Cast<UTbfAttributeSet>(AttributeSet)->SetBattlePoints(BattleCountPerTurn);
 		}
 		
 	}
@@ -196,6 +198,7 @@ void ATbfCharacter::PlaySelectedUnitBattle()
 		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Is Out Of Moves"), *Name.ToString()));
 		GoToNextState();
 	}
+	UpdateAttributeSet();
 	UpdateUIStat();
 }
 
@@ -213,12 +216,14 @@ void ATbfCharacter::ActivateSelectedCard()
 		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Selected Card to Activate in Hand Or Board Chaeck Passed"), *Name.ToString()));
 		SelectedCard->ActivateCard();
 		ActivateCountPerTurn--;
+		Cast<UTbfAttributeSet>(AttributeSet)->SetActivatePoints(ActivateCountPerTurn);
 		if (ActivateCountPerTurn <= 0)
 		{
 			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Switch to Next State Due Activation Cost Exceeded"), *Name.ToString()));
 			GoToNextState();
 		}
 	}
+	UpdateAttributeSet();
 }
 
 void ATbfCharacter::ResetCounters()
@@ -227,6 +232,7 @@ void ATbfCharacter::ResetCounters()
 	ActivateCountPerTurn += 2;
 	BattleCountPerTurn += 2;
 	DrawCountPerTurn += 1;
+	UpdateAttributeSet();
 }
 
 void ATbfCharacter::RepositionCardInHand()
@@ -291,6 +297,19 @@ void ATbfCharacter::GoToNextState()
 	ShowMessageInUI(Message);
 }
 
+void ATbfCharacter::UpdateAttributeSet()
+{
+	Cast<UTbfAttributeSet>(AttributeSet)->SetBattlePoints(BattleCountPerTurn);
+	Cast<UTbfAttributeSet>(AttributeSet)->SetDrawPoints(DrawCountPerTurn);
+	Cast<UTbfAttributeSet>(AttributeSet)->SetMovePoints(MoveCountPerTurn);
+	Cast<UTbfAttributeSet>(AttributeSet)->SetActivatePoints(ActivateCountPerTurn);
+	Cast<UTbfAttributeSet>(AttributeSet)->SetCardInDeck(Deck.Num());
+	Cast<UTbfAttributeSet>(AttributeSet)->SetCardInField(CardOnField.Num());
+	Cast<UTbfAttributeSet>(AttributeSet)->SetCardInHand(Hand.Num());
+	Cast<UTbfAttributeSet>(AttributeSet)->SetUnitInField(UnitOnField.Num());
+	
+}
+
 
 void ATbfCharacter::HandleCardDestroyed(AActor* DestroyedActor)
 {
@@ -307,6 +326,7 @@ void ATbfCharacter::HandleCardDestroyed(AActor* DestroyedActor)
 			Hand.Remove(DestroyedCard);
 		}
 		// update the UI or perform other necessary actions
+		UpdateAttributeSet();
 		UpdateUIStat();
 	}
 }
@@ -328,7 +348,6 @@ void ATbfCharacter::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, cons
 		const float NewHealth = FMath::Clamp(MyAttributes->GetHealth() - Damage, 0, MyAttributes->GetHealth());
 		MyAttributes->SetHealth(NewHealth);
 		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Orange,TEXT("Finish Handling Unit Causer Damage"));
-		
 	}
 	// If the damage is caused by a card
 	if (CardCauser)

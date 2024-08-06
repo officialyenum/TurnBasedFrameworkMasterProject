@@ -51,7 +51,7 @@ void ATbfCharacterPlayer::InitAbilityActorInfo()
 	
 	if (ATbfPlayerController* TbfPlayerController = Cast<ATbfPlayerController>(GetController()))
 	{
-		if (ATbfHUD* YegunHUD = Cast<ATbfHUD>(TbfPlayerController->GetHUD()))
+		if (ATbfHUD* TbfHUD = Cast<ATbfHUD>(TbfPlayerController->GetHUD()))
 		{
 			// Iterate over all controllers to find the AI controller
 			for (FConstControllerIterator It = GetWorld()->GetControllerIterator(); It; ++It)
@@ -59,12 +59,13 @@ void ATbfCharacterPlayer::InitAbilityActorInfo()
 				if (ATbfAIController* TbfAIController = Cast<ATbfAIController>(*It))
 				{
 					// We found the AI controller, now we can initialize the HUD
-					YegunHUD->InitOverlay(TbfPlayerController, TbfAIController, TbfPlayerState, AbilitySystemComponent, AttributeSet);
+					TbfHUD->InitOverlay(TbfPlayerController, TbfAIController, TbfPlayerState, AbilitySystemComponent, AttributeSet);
 					break; // Exit the loop as we found our AI controller
 				}
 			}
 		}
 	}
+	InitializeDefaultAttributes();
 }
 
 // Called when the game starts or when spawned

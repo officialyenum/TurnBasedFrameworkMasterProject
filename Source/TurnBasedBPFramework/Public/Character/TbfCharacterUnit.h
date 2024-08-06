@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "TbfCharacterBase.h"
 #include "BehaviorTree/BehaviorTree.h"
+#include "Interactions/CombatInterface.h"
 #include "Interactions/SelectionInterface.h"
 #include "TbfCharacterUnit.generated.h"
 
@@ -45,7 +46,7 @@ struct FTbfUnitInfoSim : public FTableRowBase
 };
 
 UCLASS()
-class TURNBASEDBPFRAMEWORK_API ATbfCharacterUnit : public ATbfCharacterBase, public ISelectionInterface
+class TURNBASEDBPFRAMEWORK_API ATbfCharacterUnit : public ATbfCharacterBase, public ISelectionInterface, public ICombatInterface
 {
 	GENERATED_BODY()
 
@@ -61,6 +62,8 @@ public:
 	virtual void SelectActor() override;
 	UFUNCTION(BlueprintCallable, Category="Unit Actions")
 	virtual void UnSelectActor() override;
+	UFUNCTION(BlueprintCallable, Category="Unit Actions")
+	virtual void UpdateAttributeSet() override;
 
 	UFUNCTION()
 	void HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser);

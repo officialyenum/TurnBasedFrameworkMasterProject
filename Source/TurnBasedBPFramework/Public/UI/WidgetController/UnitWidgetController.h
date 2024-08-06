@@ -19,20 +19,10 @@ public:
 
 	// Unit Controller Attributes
 	UPROPERTY(BlueprintAssignable, Category="GAS|Unit|Attributes")
-	FOnAttributeChangedSignature OnUnitHealthChanged;
-	
-	UPROPERTY(BlueprintAssignable, Category="GAS|Unit|Attributes")
-	FOnAttributeChangedSignature OnUnitMaxHealthChanged;
-	
-	UPROPERTY(BlueprintAssignable, Category="GAS|Unit|Attributes")
 	FOnAttributeChangedSignature OnUnitAttackChanged;
-	
-	UPROPERTY(BlueprintAssignable, Category="GAS|Unit|Attributes")
-	FOnAttributeChangedSignature OnUnitMaxAttackChanged;
 	
 	UPROPERTY(BlueprintAssignable, Category="GAS|Unit|Attributes")
 	FOnAttributeChangedSignature OnUnitDefenceChanged;
 	
-	UPROPERTY(BlueprintAssignable, Category="GAS|Unit|Attributes")
-	FOnAttributeChangedSignature OnUnitMaxDefenceChanged;
+	
 };

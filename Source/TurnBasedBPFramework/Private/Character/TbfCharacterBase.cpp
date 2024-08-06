@@ -3,6 +3,8 @@
 
 #include "Character/TbfCharacterBase.h"
 
+#include "AbilitySystemComponent.h"
+#include "GameplayEffectTypes.h"
 
 
 ATbfCharacterBase::ATbfCharacterBase()
@@ -18,6 +20,26 @@ UAbilitySystemComponent* ATbfCharacterBase::GetAbilitySystemComponent() const
 void ATbfCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void ATbfCharacterBase::InitAbilityActorInfo()
+{
+}
+
+void ATbfCharacterBase::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level) const
+{
+	check(IsValid(GetAbilitySystemComponent()))
+	check(GameplayEffectClass)
+	FGameplayEffectContextHandle ContextHandle = GetAbilitySystemComponent()->MakeEffectContext();
+	ContextHandle.AddSourceObject(this);
+	const FGameplayEffectSpecHandle SpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(GameplayEffectClass,Level, ContextHandle);
+	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), GetAbilitySystemComponent());
+}
+
+void ATbfCharacterBase::InitializeDefaultAttributes() const
+{
+	ApplyEffectToSelf(DefaultPrimaryAttributes, 1.f);
+	ApplyEffectToSelf(DefaultVitalAttributes, 1.f);
 }
 
 

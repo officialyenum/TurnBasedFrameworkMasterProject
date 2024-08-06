@@ -306,4 +306,12 @@ void ATbfCharacterAI::AttackPlayer_Sim()
 {
 }
 
+void ATbfCharacterAI::InitAbilityActorInfo()
+{
+	Super::InitAbilityActorInfo();
+	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+
+	InitializeDefaultAttributes();
+}
+
 

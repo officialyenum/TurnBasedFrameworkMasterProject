@@ -118,6 +118,12 @@ void ATbfCharacterUnit::UnSelectActor()
 	}
 }
 
+void ATbfCharacterUnit::UpdateAttributeSet()
+{
+	Cast<UTbfAttributeSet>(AttributeSet)->SetAttack(UnitInfo.Attack);
+	Cast<UTbfAttributeSet>(AttributeSet)->SetDefence(UnitInfo.Defence);
+}
+
 void ATbfCharacterUnit::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {
 	if (!AttributeSet)
@@ -136,13 +142,17 @@ void ATbfCharacterUnit::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, 
 		if (UnitInfo.UnitState == ETbfUnitState::Attack)
 		{
 			float MyAttack = MyAttributes->GetAttack();
-			MyAttributes->SetAttack(Damage > MyAttack ? 0 : MyAttack - Damage);
+			MyAttributes->SetAttack(Damage > MyAttack ? 0 : MyAttack);
+			CauserAttributes->SetAttack(Damage < MyAttack ? 0 : Damage);
 		}
 		else
 		{
 			float MyDefence = MyAttributes->GetDefence();
-			MyAttributes->SetDefence(Damage > MyDefence ? 0 : MyDefence - Damage);
+			MyAttributes->SetDefence(Damage > MyDefence ? 0 : MyDefence);
+			CauserAttributes->SetAttack(Damage < MyDefence ? 0 : Damage);
 		}
+		// Check if UnitCauser health is less or zero, call a destroy function to kill
+		// Check if My Health is less or zero, call my destroy function to kill me
 	}
 	else if (CardCauser)
 	{

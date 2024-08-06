@@ -1,0 +1,57 @@
+[
+	{
+		"Name": "Attributes.Vital.Health",
+		"Tag": "Attributes.Vital.Health",
+		"DevComment": ""
+	},
+	{
+		"Name": "Attributes.Primary.Player.DrawPoints",
+		"Tag": "Attributes.Primary.Player.DrawPoints",
+		"DevComment": ""
+	},
+	{
+		"Name": "Attributes.Primary.Player.MovePoints",
+		"Tag": "Attributes.Primary.Player.MovePoints",
+		"DevComment": ""
+	},
+	{
+		"Name": "Attributes.Primary.Player.ActivatePoints",
+		"Tag": "Attributes.Primary.Player.ActivatePoints",
+		"DevComment": ""
+	},
+	{
+		"Name": "Attributes.Primary.Player.BattlePoints",
+		"Tag": "Attributes.Primary.Player.BattlePoints",
+		"DevComment": ""
+	},
+	{
+		"Name": "Attributes.Primary.Player.CardInDeck",
+		"Tag": "Attributes.Primary.Player.CardInDeck",
+		"DevComment": ""
+	},
+	{
+		"Name": "Attributes.Primary.Player.CardInHand",
+		"Tag": "Attributes.Primary.Player.CardInHand",
+		"DevComment": ""
+	},
+	{
+		"Name": "Attributes.Primary.Player.CardInField",
+		"Tag": "Attributes.Primary.Player.CardInField",
+		"DevComment": ""
+	},
+	{
+		"Name": "Attributes.Primary.Player.UnitInField",
+		"Tag": "Attributes.Primary.Player.UnitInField",
+		"DevComment": ""
+	},
+	{
+		"Name": "Attributes.Primary.Unit.Attack",
+		"Tag": "Attributes.Primary.Unit.Attack",
+		"DevComment": ""
+	},
+	{
+		"Name": "Attributes.Primary.Unit.Defence",
+		"Tag": "Attributes.Primary.Unit.Defence",
+		"DevComment": ""
+	}
+]

@@ -5,6 +5,7 @@
 
 #include "CoreMinimal.h"
 #include "TbfCharacterBase.h"
+#include "Interactions/CombatInterface.h"
 #include "TbfCharacter.generated.h"
 
 struct FTbfCardInfo;
@@ -24,7 +25,7 @@ class ATbfCharacterUnit;
 class ACardBase;
 
 UCLASS()
-class TURNBASEDBPFRAMEWORK_API ATbfCharacter : public ATbfCharacterBase
+class TURNBASEDBPFRAMEWORK_API ATbfCharacter : public ATbfCharacterBase, public ICombatInterface
 {
 	GENERATED_BODY()
 
@@ -59,7 +60,8 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category="Gameplay Actions")
 	void ShowMessageInUI(const FText& Text);
 	// END UI RELATED LOGIC
-	
+
+	virtual void UpdateAttributeSet() override;
 	// START Player Param
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Params" )
 	int32 id = 1;

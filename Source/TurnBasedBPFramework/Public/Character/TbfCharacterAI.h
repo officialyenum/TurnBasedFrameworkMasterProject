@@ -106,6 +106,7 @@ protected:
 	// Simulated Actions End
 	
 private:
+	virtual void InitAbilityActorInfo() override;
 	UFUNCTION()
 	void SaveGameState(const UObject* WorldContextObject);
 	UFUNCTION()
