@@ -21,9 +21,8 @@ EBTNodeResult::Type UBTTask_SelectTargetCell::ExecuteTask(UBehaviorTreeComponent
 		if (ATbfCharacterAI* const OwnerCharacter = Cast<ATbfCharacterAI>( OwnerController->GetPawn()))
 		{
 			// Perform CardSelection Here
-			ATbfGridCell* Cell = OwnerCharacter->ChooseCell();
-			OwnerCharacter->TargetedCell = Cell;
-			OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), Cell);
+			OwnerCharacter->TargetedCell = OwnerCharacter->ChooseCell();
+			OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), OwnerCharacter->TargetedCell);
 			// finish with success
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 			return EBTNodeResult::Succeeded;

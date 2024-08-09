@@ -9,7 +9,6 @@
 #include "Actor/TbfGridCell.h"
 #include "AI/TbfUnitAIController.h"
 #include "Character/TbfCharacter.h"
-#include "Character/TbfCharacterPlayer.h"
 #include "Game/TbfGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "TurnBasedBPFramework/TurnBasedBPFramework.h"
@@ -130,7 +129,9 @@ void ATbfCharacterUnit::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, 
 	{
 		return;
 	}
-
+	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red,
+										 FString::Printf(TEXT("%s Recieved Damage %f"), *UnitInfo.Name.ToString(), Damage));
+	
 	UTbfAttributeSet* MyAttributes = Cast<UTbfAttributeSet>(AttributeSet);
 	ATbfCharacterUnit* UnitCauser = Cast<ATbfCharacterUnit>(DamageCauser);
 	ACardBase* CardCauser = Cast<ACardBase>(DamageCauser);
@@ -142,17 +143,22 @@ void ATbfCharacterUnit::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, 
 		if (UnitInfo.UnitState == ETbfUnitState::Attack)
 		{
 			float MyAttack = MyAttributes->GetAttack();
-			MyAttributes->SetAttack(Damage > MyAttack ? 0 : MyAttack);
-			CauserAttributes->SetAttack(Damage < MyAttack ? 0 : Damage);
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("Applying Damage Value %f"), Damage));
+	
+			MyAttributes->SetAttack(Damage > MyAttack ? 0.f : MyAttack);
+			CauserAttributes->SetAttack(Damage < MyAttack ? 0.f : Damage);
+			
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("New Causer Attack Value %f"), Damage));
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("New Attacked Unit Value %f"), MyAttributes->GetAttack()));
 		}
 		else
 		{
 			float MyDefence = MyAttributes->GetDefence();
-			MyAttributes->SetDefence(Damage > MyDefence ? 0 : MyDefence);
-			CauserAttributes->SetAttack(Damage < MyDefence ? 0 : Damage);
+			MyAttributes->SetDefence(Damage > MyDefence ? 0.f : MyDefence);
+			CauserAttributes->SetAttack(Damage < MyDefence ? 0.f : Damage);
 		}
 		// Check if UnitCauser health is less or zero, call a destroy function to kill
-		// Check if My Health is less or zero, call my destroy function to kill me
+		// Check if My Attack or Defence is less or zero, call my destroy function to kill me
 	}
 	else if (CardCauser)
 	{
@@ -182,16 +188,19 @@ void ATbfCharacterUnit::BattleOpponent()
 	ATbfCharacter* CharacterToAttack;
 	if (GI->bIsPlayerOneTurn)
 	{
-		CharacterToAttack = GI->PlayerOne;
+		CharacterToAttack = GI->PlayerTwo;
 	}
 	else
 	{
-		CharacterToAttack = GI->PlayerTwo;
+		CharacterToAttack = GI->PlayerOne;
 	}
 	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("Attacking Boss"));
+	
 					
 	UTbfAttributeSet* MyAttributes = Cast<UTbfAttributeSet>(AttributeSet);
 	AController* InstigatorController = GetInstigatorController();
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("Attacking Boss with Unit Info Damage Value %f"), UnitInfo.Attack));
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("Attacking Boss with Attribute Damage Value %f"), MyAttributes->GetAttack()));
 	CharacterToAttack->HandleTakeAnyDamage(CharacterToAttack,MyAttributes->GetAttack(),DamageTypeClass,InstigatorController,this);
 	//UGameplayStatics::ApplyDamage(
 	//	CharacterToAttack, MyAttributes->GetAttack(),InstigatorController,this,DamageTypeClass);
@@ -210,6 +219,8 @@ void ATbfCharacterUnit::BattleOpponentUnit()
 					
 	UTbfAttributeSet* MyAttributes = Cast<UTbfAttributeSet>(AttributeSet);
 	AController* InstigatorController = GetInstigatorController();
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("Attacking Targeted Unit with Damage Value %f"), MyAttributes->GetAttack()));
+	
 	TargetUnit->HandleTakeAnyDamage(TargetUnit,MyAttributes->GetAttack(),DamageTypeClass,InstigatorController,this);
 	
 	//UGameplayStatics::ApplyDamage(
@@ -233,9 +244,6 @@ void ATbfCharacterUnit::BeginPlay()
 {
 	Super::BeginPlay();
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
-
-	UnitInfo.Attack = Cast<UTbfAttributeSet>(AttributeSet)->GetAttack();
-	UnitInfo.Defence = Cast<UTbfAttributeSet>(AttributeSet)->GetDefence();
-	
+	UpdateAttributeSet();
 	OnTakeAnyDamage.AddDynamic(this, &ATbfCharacterUnit::HandleTakeAnyDamage);
 }

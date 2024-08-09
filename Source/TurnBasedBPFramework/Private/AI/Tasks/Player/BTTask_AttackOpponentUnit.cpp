@@ -22,6 +22,7 @@ EBTNodeResult::Type UBTTask_AttackOpponentUnit::ExecuteTask(UBehaviorTreeCompone
 		if (ATbfCharacterAI* const OwnerCharacter = Cast<ATbfCharacterAI>( OwnerController->GetPawn()))
 		{
 			//TODO: Perform Attack Opponent Unit Logic Here
+			OwnerCharacter->PlaySelectedUnitBattle();
 			// finish with success
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 			return EBTNodeResult::Succeeded;

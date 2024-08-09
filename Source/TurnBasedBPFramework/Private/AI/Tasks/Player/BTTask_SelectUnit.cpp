@@ -22,12 +22,18 @@ EBTNodeResult::Type UBTTask_SelectUnit::ExecuteTask(UBehaviorTreeComponent& Owne
 		if (ATbfCharacterAI* const OwnerCharacter = Cast<ATbfCharacterAI>( OwnerController->GetPawn()))
 		{
 			// Perform Unit Selection Here
-			ATbfCharacterUnit* Unit = UTbfGameFunctionLibrary::GetRandomUnitForPlayer(OwnerCharacter);
-			OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), Unit);
-			// finish with success
-			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-			return EBTNodeResult::Succeeded;
+			OwnerCharacter->SelectedUnit = UTbfGameFunctionLibrary::GetRandomUnitForPlayer(OwnerCharacter);
+			if (OwnerCharacter->SelectedUnit)
+			{
+				OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), OwnerCharacter->SelectedUnit);
+				// finish with success
+				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+				return EBTNodeResult::Succeeded;
+			}
+			OwnerCharacter->GoToNextState();
+			return EBTNodeResult::Failed;
 		}
+		return EBTNodeResult::Failed;
 	}
 	return EBTNodeResult::Failed;
 

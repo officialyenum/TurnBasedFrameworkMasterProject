@@ -90,6 +90,7 @@ void ATbfCharacter::DrawCard()
 		}
 		Deck.RemoveAt(CardIndex);
 		DrawCountPerTurn--;
+		Cast<UTbfAttributeSet>(AttributeSet)->SetDrawPoints(DrawCountPerTurn);
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("%d Cards Left in Deck"), Deck.Num()));
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("%d Draw Left for this turn"), DrawCountPerTurn));
 	}
@@ -99,7 +100,7 @@ void ATbfCharacter::DrawCard()
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("%d Cards Left in Deck, Switch to Main State to Proceed"), Deck.Num()));
 	}
 	UpdateAttributeSet();
-	UpdateUIStat();
+	//UpdateUIStat();
 	if(DrawCountPerTurn <= 0)
 	{
 		GoToNextState();
@@ -147,11 +148,10 @@ void ATbfCharacter::PlaySelectedCard()
 	else
 	{
 		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Is Out Of Moves"), *Name.ToString()));
-		GoToNextState();
 	}
 	UpdateAttributeSet();
-	UpdateUIStat();
-	if (MoveCountPerTurn <= 0 && ActivateCountPerTurn <= 0)
+	//UpdateUIStat();
+	if (MoveCountPerTurn <= 0 && ActivateCountPerTurn <= 0 && (CurrentState == ETbfPlayerState::MainOne || CurrentState == ETbfPlayerState::MainTwo))
 	{
 		GoToNextState();
 	}
@@ -159,47 +159,47 @@ void ATbfCharacter::PlaySelectedCard()
 
 void ATbfCharacter::PlaySelectedUnitBattle()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black,
-									 FString::Printf(TEXT("%s Choosing a Unit"), *Name.ToString()));
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Orange,
+									 FString::Printf(TEXT("%s Played Selected Unit Battle"), *Name.ToString()));
 	if (BattleCountPerTurn > 0)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("%s Battle Count Check Passed"), *Name.ToString()));
 		if (!SelectedUnit)
 		{
-			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Did Not Select Your Unit"), *Name.ToString()));
 			return;
 		}
 		TArray<ATbfCharacterUnit*> OpponentUnitCount = UTbfGameFunctionLibrary::GetOpponentUnits(this);
 		if (OpponentUnitCount.Num() <= 0)
 		{
 			SelectedUnit->BattleOpponent();
-				GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Green,FString::Printf(TEXT("%s Attacked Opponent"), *Name.ToString()));
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green,
+									 FString::Printf(TEXT("%s Played Battle Opponent Direct"), *Name.ToString()));
 		}
 		else
 		{
 			if (!TargetedUnit)
 			{
-				GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Did Not Select A Target To Attack"), *Name.ToString()));
 				return;
 			}
 			if(UnitOnField.Contains(SelectedUnit))
 			{
 				SelectedUnit->SetTargetUnit(TargetedUnit);
 				SelectedUnit->BattleOpponentUnit();
-				GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Green,FString::Printf(TEXT("%s Attacked a Unit"), *Name.ToString()));
+				GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Green,FString::Printf(TEXT("%s Played Attack a Unit on Board"), *Name.ToString()));
 			};
-			BattleCountPerTurn -= 1;
 			Cast<UTbfAttributeSet>(AttributeSet)->SetBattlePoints(BattleCountPerTurn);
 		}
-		
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Is Out Of Moves"), *Name.ToString()));
+		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Is Out Of Battle Moves"), *Name.ToString()));
+	}
+	BattleCountPerTurn -= 1;
+	UpdateAttributeSet();
+	//UpdateUIStat();
+	if (BattleCountPerTurn <= 0 && CurrentState == ETbfPlayerState::Battle)
+	{
 		GoToNextState();
 	}
-	UpdateAttributeSet();
-	UpdateUIStat();
 }
 
 void ATbfCharacter::ActivateSelectedCard()
@@ -220,18 +220,22 @@ void ATbfCharacter::ActivateSelectedCard()
 		if (ActivateCountPerTurn <= 0)
 		{
 			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Switch to Next State Due Activation Cost Exceeded"), *Name.ToString()));
-			GoToNextState();
 		}
 	}
 	UpdateAttributeSet();
+	//UpdateUIStat();
+	if (ActivateCountPerTurn <= 0 && (CurrentState == ETbfPlayerState::MainOne || CurrentState == ETbfPlayerState::Battle || CurrentState == ETbfPlayerState::MainTwo))
+	{
+		GoToNextState();
+	}
 }
 
 void ATbfCharacter::ResetCounters()
 {
-	MoveCountPerTurn += 2;
-	ActivateCountPerTurn += 2;
-	BattleCountPerTurn += 2;
-	DrawCountPerTurn += 1;
+	MoveCountPerTurn = 2;
+	ActivateCountPerTurn = 2;
+	BattleCountPerTurn = 2;
+	DrawCountPerTurn = 1;
 	UpdateAttributeSet();
 }
 
@@ -327,7 +331,6 @@ void ATbfCharacter::HandleCardDestroyed(AActor* DestroyedActor)
 		}
 		// update the UI or perform other necessary actions
 		UpdateAttributeSet();
-		UpdateUIStat();
 	}
 }
 
@@ -343,8 +346,8 @@ void ATbfCharacter::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, cons
 	// If the damage is caused by a unit
 	if (UnitCauser)
 	{
-		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Orange,TEXT("Handling Unit Causer Damage"));
-		
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("Handling Unit Causer Damage with Damage Value %f"), Damage));
+	
 		const float NewHealth = FMath::Clamp(MyAttributes->GetHealth() - Damage, 0, MyAttributes->GetHealth());
 		MyAttributes->SetHealth(NewHealth);
 		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Orange,TEXT("Finish Handling Unit Causer Damage"));
@@ -352,7 +355,8 @@ void ATbfCharacter::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, cons
 	// If the damage is caused by a card
 	if (CardCauser)
 	{
-		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Orange,TEXT("Handling Card Causer Damage"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("Handling Card Causer Damage with Damage Value %f"), Damage));
+	
 		CardCauser->ApplyEffectToTarget(this, CardCauser->CardInfo.GameplayEffectClass);
 		
 		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Orange,TEXT("Finish Handling Card Causer Damage"));;

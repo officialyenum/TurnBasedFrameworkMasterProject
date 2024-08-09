@@ -49,10 +49,13 @@ UBehaviorTree* ATbfCharacterAI::GetBehaviorTree() const
 void ATbfCharacterAI::BeginPlay()
 {
 	Super::BeginPlay();
-	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	// AbilitySystemComponent->InitAbilityActorInfo(this, this);
 	// Set AI Player in Game Instance Player Two
-	UTbfGameInstance* GI = Cast<UTbfGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-	GI->PlayerTwo = this;
+	if (UTbfGameInstance* GI = Cast<UTbfGameInstance>(UGameplayStatics::GetGameInstance(GetWorld())))
+	{
+		GI->PlayerTwo = this;
+	}
+	InitAbilityActorInfo();
 }
 
 void ATbfCharacterAI::MakeMove()

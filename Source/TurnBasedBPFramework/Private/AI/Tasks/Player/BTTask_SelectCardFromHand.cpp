@@ -31,8 +31,7 @@ EBTNodeResult::Type UBTTask_SelectCardFromHand::ExecuteTask(UBehaviorTreeCompone
 				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 				return EBTNodeResult::Succeeded;
 			}
-			OwnerCharacter->GoToNextState();
-			return EBTNodeResult::Failed;
+			return EBTNodeResult::Succeeded;
 		}
 		return EBTNodeResult::Failed;
 	}

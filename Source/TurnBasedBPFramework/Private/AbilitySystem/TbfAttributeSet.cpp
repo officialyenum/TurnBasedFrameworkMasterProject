@@ -7,17 +7,17 @@
 
 UTbfAttributeSet::UTbfAttributeSet()
 {
-	InitHealth(8000.0f);
+	InitHealth(10000.0f);
 	
-	InitDrawPoints(2.0f);
+	InitDrawPoints(5.0f);
 	InitMovePoints(2.0f);
 	InitActivatePoints(2.0f);
-	InitBattlePoints(2.0f);
+	InitBattlePoints(0.0f);
 
 	InitAttack(0.0f);
 	InitDefence(0.0f);
 
-	InitCardInDeck(0.0f);
+	InitCardInDeck(40.0f);
 	InitCardInHand(0.0f);
 	InitCardInField(0.0f);
 	InitUnitInField(0.0f);

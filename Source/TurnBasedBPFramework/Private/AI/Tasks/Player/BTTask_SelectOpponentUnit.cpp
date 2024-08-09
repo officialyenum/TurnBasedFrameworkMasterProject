@@ -4,7 +4,9 @@
 #include "AI/Tasks/Player/BTTask_SelectOpponentUnit.h"
 
 #include "AI/TbfAIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Character/TbfCharacterAI.h"
+#include "Library/TbfGameFunctionLibrary.h"
 
 UBTTask_SelectOpponentUnit::UBTTask_SelectOpponentUnit(FObjectInitializer const& ObjectInitializer)
 {
@@ -21,6 +23,9 @@ EBTNodeResult::Type UBTTask_SelectOpponentUnit::ExecuteTask(UBehaviorTreeCompone
 			//TODO: Perform Opponent To Attack Selection
 
 			// finish with success
+			ATbfCharacterUnit* OpponentUnit = UTbfGameFunctionLibrary::GetRandomOpponentUnit(OwnerCharacter);
+			OwnerCharacter->TargetedUnit = OpponentUnit;
+			OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), OpponentUnit);
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 			return EBTNodeResult::Succeeded;
 		}
