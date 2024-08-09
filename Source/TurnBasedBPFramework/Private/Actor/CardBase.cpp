@@ -3,9 +3,7 @@
 
 #include "Actor/CardBase.h"
 
-#include "Components/WidgetComponent.h"
 #include "UObject/ConstructorHelpers.h"
-#include "Blueprint/UserWidget.h"
 #include "Character/TbfCharacter.h"
 #include "Character/TbfCharacterUnit.h"
 #include "Components/ArrowComponent.h"
@@ -14,7 +12,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "Library/TbfGameFunctionLibrary.h"
 #include "TurnBasedBPFramework/TurnBasedBPFramework.h"
-
 
 // Sets default values
 ACardBase::ACardBase(): CardInfo()
@@ -31,24 +28,25 @@ ACardBase::ACardBase(): CardInfo()
 	{
 		CardMesh->SetStaticMesh(MeshClass.Object);
 	}
-	
-	FrontWidget = CreateDefaultSubobject<UWidgetComponent>("FrontWidget");
-	FrontWidget->SetRelativeLocation(FVector(0.0f,0.0f,100.0f));
-	FrontWidget->SetRelativeRotation(FRotator3d(90.0f,0.0f,0.0));
-	FrontWidget->SetRelativeScale3D(FVector(0.35,0.35,7.0f));
-	FrontWidget->SetupAttachment(CardMesh);
+
+	// FrontWidget = CreateDefaultSubobject<UWidgetComponent>("FrontWidget");
+	// FrontWidget = CreateDefaultSubobject<UWidgetComponent>("FrontWidget");
+	// FrontWidget->SetRelativeLocation(FVector(0.0f,0.0f,100.0f));
+	// FrontWidget->SetRelativeRotation(FRotator3d(90.0f,0.0f,0.0));
+	// FrontWidget->SetRelativeScale3D(FVector(0.35,0.35,7.0f));
+	// FrontWidget->SetupAttachment(CardMesh);
 	
 	
 	
 	// Optionally, set the widget class here if you have a specific widget class
-	static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Game/FrameworkV2/Blueprints/UI/Widgets/WBP_TbfCard"));
-	if (WidgetClass.Succeeded())
-	{
-		FrontWidget->SetWidgetClass(WidgetClass.Class);
-	}
-	// Set the size of the widget
-	FrontWidget->SetDrawSize(FVector2D(250, 400)); // Set the desired size
-	
+	// static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Game/FrameworkV2/Blueprints/UI/Widgets/WBP_TbfCard"));
+	// if (WidgetClass.Succeeded())
+	// {
+	// 	FrontWidget->SetWidgetClass(WidgetClass.Class);
+	// }
+	// // Set the size of the widget
+	// FrontWidget->SetDrawSize(FVector2D(250, 400)); // Set the desired size
+	//
 	SpawnDirectionArrow = CreateDefaultSubobject<UArrowComponent>("SpawnDirectionArrow");
 	SpawnDirectionArrow->SetRelativeLocation(FVector(0.0f,0.0f,40.0f));
 	SpawnDirectionArrow->SetArrowSize(1.0f);

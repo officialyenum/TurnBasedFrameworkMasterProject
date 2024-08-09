@@ -10,8 +10,8 @@
 #include "CardBase.generated.h"
 
 
-struct FTbfUnitInfoSim;
 class UWidgetComponent;
+struct FTbfUnitInfoSim;
 // Forward declaration
 class ATbfCharacterUnit;
 
@@ -150,8 +150,8 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Components")
 	TObjectPtr<UStaticMeshComponent> CardMesh;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Components")
-	TObjectPtr<UWidgetComponent> FrontWidget;
+	// UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Components")
+	// TObjectPtr<UWidgetComponent> FrontWidget;
 
 	UPROPERTY(EditAnywhere, Category="Components")
 	TObjectPtr<UArrowComponent> SpawnDirectionArrow;
