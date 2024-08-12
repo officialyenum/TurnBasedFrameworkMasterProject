@@ -110,15 +110,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Card Actions")
 	void SpawnCardUnit();
 	
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintCallable)
 	void ActivateSpellWithGameplayEffect();
 	
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintCallable)
 	void ActivateTrapWithGameplayEffect();
 	
 	UFUNCTION(BlueprintCallable, Category="Card Actions")
 	virtual void MoveCardToBoard() override;
 	
+	UFUNCTION(BlueprintImplementableEvent, Category="Card Actions")
+	void ImplementDestroyActor();
 	
 	UFUNCTION(BlueprintImplementableEvent)
 	void MoveCardToLocation(const FVector& Location);

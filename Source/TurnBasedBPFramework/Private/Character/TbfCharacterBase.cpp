@@ -2,9 +2,10 @@
 
 
 #include "Character/TbfCharacterBase.h"
-
+#include "NiagaraFunctionLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "GameplayEffectTypes.h"
+#include "Kismet/GameplayStatics.h"
 
 
 ATbfCharacterBase::ATbfCharacterBase()
@@ -40,6 +41,18 @@ void ATbfCharacterBase::InitializeDefaultAttributes() const
 {
 	ApplyEffectToSelf(DefaultPrimaryAttributes, 1.f);
 	ApplyEffectToSelf(DefaultVitalAttributes, 1.f);
+}
+
+void ATbfCharacterBase::PlayHitAction() const
+{
+	UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator);
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
+}
+
+void ATbfCharacterBase::PlayDeathAction() const
+{
+	UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator);
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, DeathEffect, GetActorLocation());
 }
 
 

@@ -10,6 +10,7 @@
 #include "TbfCharacterBase.generated.h"
 
 class UAttributeSet;
+class UNiagaraSystem;
 
 UCLASS(Abstract)
 class TURNBASEDBPFRAMEWORK_API ATbfCharacterBase : public ACharacter, public IAbilitySystemInterface
@@ -21,7 +22,6 @@ public:
 	
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	virtual UAttributeSet* GetAttributeSet() const { return  AttributeSet; }
-	const UDamageType* DamageTypeClass;
 
 protected:
 	virtual void BeginPlay() override;
@@ -42,5 +42,23 @@ protected:
 	
 	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level) const;
 	virtual void InitializeDefaultAttributes() const;
+
+	UFUNCTION(BlueprintCallable, Category="Action Functions")
+	void PlayHitAction() const;
+	
+	UFUNCTION(BlueprintCallable, Category="Action Functions")
+	void PlayDeathAction() const;
+	
+	UPROPERTY(EditAnywhere, Category="Character Damage")
+	TObjectPtr<UDamageType> DamageTypeClass;
+	
+	UPROPERTY(EditAnywhere, Category="Character Effects")
+	TObjectPtr<UNiagaraSystem> ImpactEffect;
+	
+	UPROPERTY(EditAnywhere, Category="Character Effects")
+	TObjectPtr<UNiagaraSystem> DeathEffect;
+
+	UPROPERTY(EditAnywhere, Category="Character Sounds")
+	TObjectPtr<USoundBase> ImpactSound;
 
 };

@@ -129,7 +129,7 @@ void ACardBase::ActivateCard()
 		case ECardType::Spell:
 			ActivateSpellWithGameplayEffect();
 			break;
-		case ECardType::Trap:
+	case ECardType::Trap:
 			ActivateTrapWithGameplayEffect();
 			break;
 	}
@@ -183,6 +183,37 @@ void ACardBase::SpawnCardUnit()
 	
 	// Play Animation to Destroy
 	Destroy();
+}
+
+void ACardBase::ActivateSpellWithGameplayEffect()
+{
+	
+	ATbfCharacter* CardOwner = Cast<ATbfCharacter>(GetOwner());
+	if (CardOwner->SelectedUnit == nullptr)
+	{
+		return;
+	}
+	AController* InstigatorController = GetInstigatorController();
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("Spell Implemented On Unit %s"), *CardOwner->SelectedUnit->UnitInfo.Name.ToString()));
+
+	UDamageType* DamageTypeClass = nullptr;
+	CardOwner->SelectedUnit->HandleTakeAnyDamage(CardOwner->SelectedUnit,0.f, DamageTypeClass,InstigatorController,this);
+	
+}
+
+void ACardBase::ActivateTrapWithGameplayEffect()
+{
+	ATbfCharacter* CardOwner = Cast<ATbfCharacter>(GetOwner());
+	if (CardOwner->TargetedUnit == nullptr)
+	{
+		return;
+	}
+	AController* InstigatorController = GetInstigatorController();
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("Trap Implemented On Unit %s"), *CardOwner->TargetedUnit->UnitInfo.Name.ToString()));
+
+	UDamageType* DamageTypeClass = nullptr;
+	CardOwner->TargetedUnit->HandleTakeAnyDamage(CardOwner->SelectedUnit,0.f, DamageTypeClass,InstigatorController,this);
+	
 }
 
 void ACardBase::MoveCardToBoard()

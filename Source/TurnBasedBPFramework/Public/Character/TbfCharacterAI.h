@@ -5,6 +5,8 @@
 #include "Actor/CardBase.h"
 #include "BehaviorTree/BehaviorTree.h"
 
+class UMonteCarloComponent;
+class UAlphaBetaPruningComponent;
 struct FTbfUnitInfoSim;
 struct FTbfUnitInfo;
 
@@ -52,17 +54,6 @@ public:
 	ATbfCharacterAI();
 
 	UBehaviorTree* GetBehaviorTree() const;
-	
-	void MakeMove();
-	// Helper methods for AI Game decision making
-	UFUNCTION()
-	void PerformDrawPhase();
-	UFUNCTION()
-	void PerformMainPhase();
-	UFUNCTION()
-	void PerformBattlePhase();
-	UFUNCTION()
-	void PerformEndPhase();
 
 	// Helper methods for AI card decision-making
 	UFUNCTION()
@@ -71,18 +62,13 @@ public:
 	int32 ChooseCardOnField() const;
 	UFUNCTION()
 	ATbfGridCell* ChooseCell() const;
-	UFUNCTION()
-	int32 ChooseCardToAttack();
+	
+	// AI components
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="AI", meta=(AllowPrivateAccess="true"))
+	UAlphaBetaPruningComponent* AlphaBetaPruningComponent;
 
-	// AlphaBeta Pruning method for AI card selection
-	UFUNCTION()
-	int32 AlphaBetaPruning(int32 Depth, int32 Alpha, int32 Beta, bool bIsMaximizingPlayer);
-	UFUNCTION()
-	int32 EvaluateBoardState();
-
-	// MonteCarlo Simulation method for AI card selection
-	UFUNCTION()
-	int32 MonteCarloSimulation(int32 Simulations);
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="AI", meta=(AllowPrivateAccess="true"))
+	UMonteCarloComponent* MonteCarloComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
 	UBehaviorTree* Tree;
@@ -109,6 +95,4 @@ private:
 	virtual void InitAbilityActorInfo() override;
 	UFUNCTION()
 	void SaveGameState(const UObject* WorldContextObject);
-	UFUNCTION()
-	void RestoreGameState(const UObject* WorldContextObject);
 };

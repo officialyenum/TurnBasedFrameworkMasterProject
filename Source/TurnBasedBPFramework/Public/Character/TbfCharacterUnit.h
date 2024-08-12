@@ -21,13 +21,13 @@ USTRUCT(BlueprintType)
 struct FTbfUnitInfo : public FTableRowBase
 {
 	GENERATED_BODY()
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FName Name = FName();
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	ETbfUnitState UnitState = ETbfUnitState::Idle;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float Attack = 0.f;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float Defence = 0.f;
 };
 
@@ -65,6 +65,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Unit Actions")
 	virtual void UpdateAttributeSet() override;
 
+	UFUNCTION(BlueprintImplementableEvent, Category="Unit Actions")
+	void ImplementDestroyActor();
+	
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category="Unit Actions")
+	void SetupUI();
+	
 	UFUNCTION()
 	void HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser);
 

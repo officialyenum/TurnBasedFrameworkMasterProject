@@ -52,6 +52,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category="Gameplay Actions")
 	void GoToNextState();
+	
+	UFUNCTION(BlueprintCallable, Category="Gameplay Actions")
+	void GenerateAndSpawnStartingCard();
 
 	// START UI RELATED LOGIC
 	UFUNCTION(BlueprintImplementableEvent, Category="Gameplay Actions")

@@ -70,7 +70,7 @@ void ATbfCharacter::DrawCard()
 			CardClass,
 			SpawnTransform,
 			this,
-			nullptr,
+			this,
 			ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn
 		))
 		{
@@ -301,6 +301,64 @@ void ATbfCharacter::GoToNextState()
 	ShowMessageInUI(Message);
 }
 
+void ATbfCharacter::GenerateAndSpawnStartingCard()
+{
+	FTbfCardInfo UnitCard = UTbfCardFunctionLibrary::GetRandomUnitCard(DeckDT);
+	FTbfCardInfo SpellCard = UTbfCardFunctionLibrary::GetRandomSpellCard(DeckDT);
+
+	// Define spawn transform and adjust Y position based on Hand size
+	FTransform SpawnTransform = CardSpawnDirectionArea->GetComponentTransform();
+	FVector NewLocation = SpawnTransform.GetLocation();
+	NewLocation.Y += Hand.Num() * CardSpace;
+	SpawnTransform.SetLocation(NewLocation);
+
+	// Ensuring CardClass is valid
+	if (!CardClass)
+	{
+		static ConstructorHelpers::FClassFinder<ACardBase> CardBaseBPClass(TEXT("/Game/FrameworkV2/Blueprints/Actors/BP_TbfCard.BP_TbfCard"));
+		if (CardBaseBPClass.Succeeded())
+		{
+			CardClass = CardBaseBPClass.Class;
+		}
+	}
+
+	// Lambda function to spawn and setup cards, with explicit return type
+	auto SpawnCard = [&](const FTbfCardInfo& CardInfo) -> ACardBase* {
+		if (ACardBase* DrawnCard = GetWorld()->SpawnActorDeferred<ACardBase>(
+			CardClass,
+			SpawnTransform,
+			this,
+			this,
+			ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn))
+		{
+			DrawnCard->CardInfo = CardInfo;
+			DrawnCard->FinishSpawning(SpawnTransform);
+			Hand.Add(DrawnCard);
+			return DrawnCard;
+		}
+		return nullptr;
+	};
+
+	// Spawn Unit Card
+	ACardBase* DrawnUnitCard = SpawnCard(UnitCard);
+
+	// Adjust spawn transform for the next card
+	NewLocation.Y += CardSpace;
+	SpawnTransform.SetLocation(NewLocation);
+
+	// Spawn Spell Card
+	ACardBase* DrawnSpellCard = SpawnCard(SpellCard);
+
+	// Remove the spawned cards from the deck
+	Deck.RemoveAll([&](const FTbfCardInfo& Element) {
+		return Element.Name == UnitCard.Name || Element.Name == SpellCard.Name;
+	});
+
+	// Reposition Cards in Hand
+	RepositionCardInHand();
+}
+
+
 void ATbfCharacter::UpdateAttributeSet()
 {
 	Cast<UTbfAttributeSet>(AttributeSet)->SetBattlePoints(BattleCountPerTurn);
@@ -350,6 +408,7 @@ void ATbfCharacter::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, cons
 	
 		const float NewHealth = FMath::Clamp(MyAttributes->GetHealth() - Damage, 0, MyAttributes->GetHealth());
 		MyAttributes->SetHealth(NewHealth);
+		PlayHitAction();
 		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Orange,TEXT("Finish Handling Unit Causer Damage"));
 	}
 	// If the damage is caused by a card
@@ -369,6 +428,7 @@ void ATbfCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	GenerateAndSpawnStartingCard();
 	OnTakeAnyDamage.AddDynamic(this, &ATbfCharacter::HandleTakeAnyDamage);
 }
 
