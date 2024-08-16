@@ -3,7 +3,6 @@
 
 #include "Actor/CardBase.h"
 
-#include "Components/WidgetComponent.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/ArrowComponent.h"

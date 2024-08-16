@@ -4,12 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "TbfEffectActor.h"
+#include "Components/WidgetComponent.h"
 #include "Interactions/CardInterface.h"
 #include "Interactions/SelectionInterface.h"
 #include "CardBase.generated.h"
 
-
-class UWidgetComponent;
 // Forward declaration
 class ATbfCharacterUnit;
 
