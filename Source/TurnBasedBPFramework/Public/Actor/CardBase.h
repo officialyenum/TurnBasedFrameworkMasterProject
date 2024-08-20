@@ -9,7 +9,6 @@
 #include "Interactions/SelectionInterface.h"
 #include "CardBase.generated.h"
 
-
 class UWidgetComponent;
 struct FTbfUnitInfoSim;
 // Forward declaration
