@@ -32,41 +32,89 @@ public:
 	UFUNCTION()
 	void OnRep_Health(const FGameplayAttributeData& OldHealth) const;
 	
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing= OnRep_MaxHealth, Category = "Vital Attributes")
-	FGameplayAttributeData MaxHealth;
-	ATTRIBUTE_ACCESSORS(UTbfAttributeSet, MaxHealth);
+	/** Game Attributes */
+	
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing= OnRep_DrawPoints, Category = "Game Attributes")
+	FGameplayAttributeData DrawPoints;
+	ATTRIBUTE_ACCESSORS(UTbfAttributeSet, DrawPoints);
+
+	UFUNCTION()
+	void OnRep_DrawPoints(const FGameplayAttributeData& OldDrawPoints) const;
+	/** -------------- */
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing= OnRep_MovePoints, Category = "Game Attributes")
+	FGameplayAttributeData MovePoints;
+	ATTRIBUTE_ACCESSORS(UTbfAttributeSet, MovePoints);
 	
 	UFUNCTION()
-	void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth) const;
-
-	/** Primary Attributes */
+	void OnRep_MovePoints(const FGameplayAttributeData& OldMovePoints) const;
 	
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing= OnRep_Attack, Category = "Primary Attributes")
+	/** -------------- */
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing= OnRep_ActivatePoints, Category = "Game Attributes")
+	FGameplayAttributeData ActivatePoints;
+	ATTRIBUTE_ACCESSORS(UTbfAttributeSet, ActivatePoints);
+
+	UFUNCTION()
+	void OnRep_ActivatePoints(const FGameplayAttributeData& OldActivatePoints) const;
+	
+	/** -------------- */
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing= OnRep_BattlePoints, Category = "Game Attributes")
+	FGameplayAttributeData BattlePoints;
+	ATTRIBUTE_ACCESSORS(UTbfAttributeSet, BattlePoints);
+	
+	UFUNCTION()
+	void OnRep_BattlePoints(const FGameplayAttributeData& OldBattlePoints) const;
+	
+	/** Unit Attributes */
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing= OnRep_Attack, Category = "Unit Attributes")
 	FGameplayAttributeData Attack;
 	ATTRIBUTE_ACCESSORS(UTbfAttributeSet, Attack);
-
+	
 	UFUNCTION()
 	void OnRep_Attack(const FGameplayAttributeData& OldAttack) const;
 	
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing= OnRep_MaxAttack, Category = "Primary Attributes")
-	FGameplayAttributeData MaxAttack;
-	ATTRIBUTE_ACCESSORS(UTbfAttributeSet, MaxAttack);
-	
-	UFUNCTION()
-	void OnRep_MaxAttack(const FGameplayAttributeData& OldMaxAttack) const;
-
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing= OnRep_Defence, Category = "Primary Attributes")
+	/** -------------- */
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing= OnRep_Defence, Category = "Unit Attributes")
 	FGameplayAttributeData Defence;
 	ATTRIBUTE_ACCESSORS(UTbfAttributeSet, Defence);
-
+	
 	UFUNCTION()
 	void OnRep_Defence(const FGameplayAttributeData& OldDefence) const;
 	
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing= OnRep_MaxDefence, Category = "Primary Attributes")
-	FGameplayAttributeData MaxDefence;
-	ATTRIBUTE_ACCESSORS(UTbfAttributeSet, MaxDefence);
+	/** Game Player Attributes */
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing= OnRep_UnitInField, Category = "Game Player Attributes")
+	FGameplayAttributeData UnitInField;
+	ATTRIBUTE_ACCESSORS(UTbfAttributeSet, UnitInField);
 	
 	UFUNCTION()
-	void OnRep_MaxDefence(const FGameplayAttributeData& OldMaxDefence) const;
+	void OnRep_UnitInField(const FGameplayAttributeData& OldUnitInField) const;
+
+	/** -------------- */
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing= OnRep_CardInHand, Category = "Game Player Attributes")
+	FGameplayAttributeData CardInHand;
+	ATTRIBUTE_ACCESSORS(UTbfAttributeSet, CardInHand);
+	
+	UFUNCTION()
+	void OnRep_CardInHand(const FGameplayAttributeData& OldCardInHand) const;
+	
+	/** -------------- */
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing= OnRep_CardInDeck, Category = "Game Player Attributes")
+	FGameplayAttributeData CardInDeck;
+	ATTRIBUTE_ACCESSORS(UTbfAttributeSet, CardInDeck);
+	
+	UFUNCTION()
+	void OnRep_CardInDeck(const FGameplayAttributeData& OldCardInDeck) const;
+	
+	/** -------------- */
+	
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing= OnRep_CardInField, Category = "Game Player Attributes")
+	FGameplayAttributeData CardInField;
+	ATTRIBUTE_ACCESSORS(UTbfAttributeSet, CardInField);
+	
+	UFUNCTION()
+	void OnRep_CardInField(const FGameplayAttributeData& OldCardInField) const;
+	
+	/** -------------- */
+	
 	
 };

@@ -1,13 +1,20 @@
 // Copyright Chukwuyenum Opone @officialyenum
 
 #pragma once
+#include "TbfCharacter.h"
 #include "Actor/CardBase.h"
+#include "BehaviorTree/BehaviorTree.h"
+
+class UMonteCarloComponent;
+class UAlphaBetaPruningComponent;
+struct FTbfUnitInfoSim;
+struct FTbfUnitInfo;
 
 struct FGameState
 {
 	int32 LifePoints;
 	int32 OpponentLifePoints;
-	TArray<ACardBase*> Deck;
+	TArray<FTbfCardInfo*> Deck;
 	TArray<ACardBase*> Hand;
 	TArray<ACardBase*> CardField;
 	TArray<ACardBase*> OpponentCardField;
@@ -16,41 +23,76 @@ struct FGameState
 	// Add other game state variables as needed
 };
 
+struct FGameStateSim
+{
+	// AI
+	int32 LifePoints;
+	TArray<FTbfCardInfoSim> Deck;
+	TArray<FTbfCardInfoSim> Hand;
+	TArray<FTbfCardInfoSim> CardField;
+	TArray<FTbfUnitInfoSim> UnitField;
+	// Opponent
+	int32 OpponentLifePoints;
+	TArray<FTbfCardInfoSim> OpponentCardDeck;
+	TArray<FTbfCardInfoSim> OpponentCardHand;
+	TArray<FTbfCardInfoSim> OpponentCardField;
+	TArray<FTbfUnitInfoSim> OpponentUnitField;
+	// Add other game state variables as needed
+};
+
 #include "CoreMinimal.h"
 #include "TbfCharacterBase.h"
 #include "TbfCharacterAI.generated.h"
 
 UCLASS()
-class TURNBASEDBPFRAMEWORK_API ATbfCharacterAI : public ATbfCharacterBase
+class TURNBASEDBPFRAMEWORK_API ATbfCharacterAI : public ATbfCharacter
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
 	ATbfCharacterAI();
+
+	UBehaviorTree* GetBehaviorTree() const;
+
+	// Helper methods for AI card decision-making
+	UFUNCTION()
+	int32 ChooseCardInHand() const;
+	UFUNCTION()
+	int32 ChooseCardOnField() const;
+	UFUNCTION()
+	ATbfGridCell* ChooseCell() const;
 	
-	void MakeMove();
+	// AI components
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="AI", meta=(AllowPrivateAccess="true"))
+	UAlphaBetaPruningComponent* AlphaBetaPruningComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="AI", meta=(AllowPrivateAccess="true"))
+	UMonteCarloComponent* MonteCarloComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
+	UBehaviorTree* Tree;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI Params")
+	UDataTable* DeckDTSim;
+	
 protected:
 	virtual void BeginPlay() override;
 	FGameState InitialGameState;
-	// Helper methods for AI Game decision making
-	void PerformDrawPhase();
-	void PerformMainPhase();
-	void PerformBattlePhase();
-	void PerformEndPhase();
+	FGameStateSim GameStateSim;
 
-	// Helper methods for AI card decision-making
-	int32 ChooseCardToPlay() const;
-	int32 ChooseCardToAttack();
-
-	// AlphaBeta Pruning method for AI card selection
-	int32 AlphaBetaPruning(int32 Depth, int32 Alpha, int32 Beta, bool bIsMaximizingPlayer);
-	int32 EvaluateBoardState();
-
-	// MonteCarlo Simulation method for AI card selection
-	int32 MonteCarloSimulation(int32 Simulations);
-
+	// Simulated Actions
+	void PopulateDeck_Sim();
+	void SelectCardAndCell_Sim();
+	void MoveCardToCell_Sim();
+	void ActivateCard_Sim();
+	void SelectUnitAndTarget_Sim();
+	void AttackUnitTarget_Sim();
+	void AttackPlayer_Sim();
+	// Simulated Actions End
+	
 private:
+	virtual void InitAbilityActorInfo() override;
+	UFUNCTION()
 	void SaveGameState(const UObject* WorldContextObject);
-	void RestoreGameState(const UObject* WorldContextObject);
 };

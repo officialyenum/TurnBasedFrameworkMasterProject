@@ -5,11 +5,20 @@
 
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "AbilitySystem/TbfAttributeSet.h"
+#include "Actor/CardBase.h"
+#include "Actor/TbfGridCell.h"
+#include "Character/TbfCharacterPlayer.h"
+#include "Character/TbfCharacterUnit.h"
+#include "Game/TbfGameInstance.h"
 #include "Interactions/SelectionInterface.h"
+#include "Kismet/GameplayStatics.h"
 
 ATbfPlayerController::ATbfPlayerController()
 {
 	bReplicates = true;
+	LastActor = nullptr;
+	ThisActor = nullptr;
 }
 
 void ATbfPlayerController::BeginPlay()
@@ -49,6 +58,7 @@ void ATbfPlayerController::SetupInputComponent()
 	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Started, this, &ATbfPlayerController::Move);
 	EnhancedInputComponent->BindAction(ActivateAction, ETriggerEvent::Started, this, &ATbfPlayerController::Activate);
 	EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &ATbfPlayerController::Attack);
+	EnhancedInputComponent->BindAction(LMBAction, ETriggerEvent::Started, this, &ATbfPlayerController::LeftMousePressedAction);
 }
 
 void ATbfPlayerController::CursorTrace()
@@ -68,24 +78,101 @@ void ATbfPlayerController::CursorTrace()
 void ATbfPlayerController::PauseGame(const FInputActionValue& InputActionValue)
 {
 	UE_LOG(LogTemp, Error, TEXT("PauseGame Pressed"));
+	// Call the UE5 Pause Game Function to Pause the Game
+
+	bIsPaused = !bIsPaused;
+	UGameplayStatics::SetGamePaused(GetWorld(), bIsPaused);
+	//TODO: if bIsPaused is true, open the pause widget, else close the pause widget
+	
 }
 
 void ATbfPlayerController::Draw(const FInputActionValue& InputActionValue)
 {
-	UE_LOG(LogTemp, Error, TEXT("Draw Pressed"));
+	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Green,TEXT("Draw Pressed"));
+	
+	//if player is in Draw State Call Draw Function on Player Character
+	// Get Player Character
+	if (ATbfCharacterPlayer* PlayerCharacter = Cast<ATbfCharacterPlayer>(GetCharacter()))
+	{
+		UE_LOG(LogTemp, Error, TEXT("Player Found"));
+		// if player is in Draw State Call Draw Function on Player Character
+		if (PlayerCharacter->CurrentState == ETbfPlayerState::Draw)
+		{
+			UE_LOG(LogTemp, Error, TEXT("Player State In Draw"));
+			PlayerCharacter->DrawCard();
+		}
+	}
 }
 
 void ATbfPlayerController::Move(const FInputActionValue& InputActionValue)
 {
-	UE_LOG(LogTemp, Error, TEXT("Move Pressed"));
+	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Green,TEXT("Move Pressed"));
+	
+	//Get Player Character
+	if (ATbfCharacterPlayer* PlayerCharacter = Cast<ATbfCharacterPlayer>(GetCharacter()))
+	{
+		// if player is in Main One Or Main Two State Call Move Card To Cell Location Function on Player Character
+		if (PlayerCharacter->CurrentState == ETbfPlayerState::Main)
+		{
+			// Set the card to bOpponentCanSee to true
+			if (PlayerCharacter->SelectedCard && PlayerCharacter->TargetedCell)
+			{
+				PlayerCharacter->PlaySelectedCard();
+			}
+		}
+	}
 }
 
 void ATbfPlayerController::Activate(const FInputActionValue& InputActionValue)
 {
-	UE_LOG(LogTemp, Error, TEXT("Activate Pressed"));
+	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Green,TEXT("Activate Pressed"));
+			
+	//Get Player Character
+	////if player is in Main One Or Main Two State Call Activate Function to Activate the Selected Card On Field
+	if (ATbfCharacterPlayer* PlayerCharacter = Cast<ATbfCharacterPlayer>(GetCharacter()))
+	{
+		// if player is in Main One Or Main Two State Call Activate Function to Activate the Selected Card On Field
+		if (PlayerCharacter->CurrentState == ETbfPlayerState::Main)
+		{
+			if (PlayerCharacter->SelectedCard)
+			{
+				PlayerCharacter->SelectedCard->ActivateCard();
+			}
+		}
+	}
 }
 
 void ATbfPlayerController::Attack(const FInputActionValue& InputActionValue)
 {
-	UE_LOG(LogTemp, Error, TEXT("Attack Pressed"));
+	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("Attack Pressed"));
+				
+	//Get Player Character
+
+	//if player is in Battle State Call Attack Function on the SelectedUnit and pass the Selected TargetUnit as a Parameter to Attack
+	if (ATbfCharacterPlayer* PlayerCharacter = Cast<ATbfCharacterPlayer>(GetCharacter()))
+	{
+		// if player is in Battle State Call Attack Function on the SelectedUnit and pass the Selected TargetUnit as a Parameter to Attack
+		if (PlayerCharacter->CurrentState == ETbfPlayerState::Battle)
+		{
+			if (PlayerCharacter->SelectedUnit)
+			{
+				//PlayerCharacter->SelectedUnit->Attack(PlayerCharacter->SelectedTargetUnit);
+				GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("Attacking Targeted Unit/Boss"));
+					
+				PlayerCharacter->SelectedUnit->SetTargetUnit(PlayerCharacter->TargetedUnit);
+				PlayerCharacter->SelectedUnit->FindUnitToBattle();
+				
+			}
+		}
+	}
+}
+
+void ATbfPlayerController::LeftMousePressedAction(const FInputActionValue& InputActionValue)
+{
+	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("LMB Pressed"));
+	// Select any actor that is Highlighted
+	if (ThisActor)
+	{
+		Cast<ISelectionInterface>(ThisActor)->SelectActor();
+	}
 }

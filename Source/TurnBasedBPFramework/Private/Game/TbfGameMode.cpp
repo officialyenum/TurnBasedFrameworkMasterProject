@@ -3,20 +3,51 @@
 
 #include "Game/TbfGameMode.h"
 
-void ATbfGameMode::SetUpPlayers_Implementation(ATbfCharacterBase* POne, ATbfCharacterBase* PTwo)
+#include "Game/TbfGameInstance.h"
+#include "Kismet/GameplayStatics.h"
+
+ATbfGameMode::ATbfGameMode()
 {
-	PlayerOne = POne;
-	PlayerTwo = PTwo;
+	// Set default game instance class
+	GI = Cast<UTbfGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 }
 
-void ATbfGameMode::StartGame_Implementation()
+ATbfCharacter* ATbfGameMode::GetPlayerOne() const
 {
+	if (GI)
+	{
+		ATbfCharacter* Player = GI->PlayerOne;
+		return Player;
+	}
+	return nullptr;
 }
 
-void ATbfGameMode::PauseGame_Implementation()
+ATbfCharacter* ATbfGameMode::GetPlayerTwo() const
 {
+	if (GI)
+	{
+		ATbfCharacter* Player = GI->PlayerTwo;
+		return Player;
+	}
+	GEngine->AddOnScreenDebugMessage(-1,2.0f,FColor::Red,TEXT("GameInstance not Initialized in C++ GameMode"));
+	return nullptr;
 }
 
-void ATbfGameMode::QuitGame_Implementation()
+bool ATbfGameMode::GetIsPlayerOneTurn() const
 {
+	if (GI)
+	{
+		return GI->bIsPlayerOneTurn;
+	}
+	GEngine->AddOnScreenDebugMessage(-1,2.0f,FColor::Red,TEXT("GameInstance not Initialized in C++ GameMode"));
+	return false;
+}
+
+void ATbfGameMode::SwitchTurn()
+{
+	if (GI)
+	{
+		GI->bIsPlayerOneTurn = !GI->bIsPlayerOneTurn;
+	}
+	GEngine->AddOnScreenDebugMessage(-1,2.0f,FColor::Red,TEXT("GameInstance not Initialized in C++ GameMode"));
 }

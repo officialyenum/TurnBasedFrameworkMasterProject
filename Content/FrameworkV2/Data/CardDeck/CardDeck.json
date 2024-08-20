@@ -1,0 +1,721 @@
+[
+	{
+		"Name": "Ragnar",
+		"Image": "/Script/Engine.Texture2D'/Engine/EngineResources/AICON-Red.AICON-Red'",
+		"BackgroundImage":
+		{
+			"R": 0.783333,
+			"G": 0.057228,
+			"B": 0,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[E7E6249B851542671902FEC042537632]\", \"C42A6D6243BDDD95C1BD8D9222268F14\", \"This Summons a Hollow Red Unit\")",
+		"Type": "Unit",
+		"UnitClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Character/BP_TbfCharacterUnit.BP_TbfCharacterUnit_C'",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_Deal100Damage.GE_Deal100Damage_C'",
+		"Health": 0,
+		"Attack": 1000,
+		"Defence": 500
+	},
+	{
+		"Name": "Courage",
+		"Image": "/Script/Engine.Texture2D'/Engine/EngineResources/AICON-Green.AICON-Green'",
+		"BackgroundImage":
+		{
+			"R": 0.077358,
+			"G": 1,
+			"B": 0.10651,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"BAA3E5F64CD30800D1D8918E167D2FF8\", \"Bost Attack By 50%\")","Type": "Spell",
+		"UnitClass": "None",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Actor/GameplayEffects/GE_BoostAttackBy50.GE_BoostAttackBy50_C'",
+		"Health": 0,
+		"Attack": 0,
+		"Defence": 0
+	},
+	{
+		"Name": "Rage",
+		"Image": "/Script/Engine.Texture2D'/Engine/EngineResources/AICON-Green.AICON-Green'",
+		"BackgroundImage":
+		{
+			"R": 0.077358,
+			"G": 1,
+			"B": 0.10651,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"449769F94FA1229157C9338EE2429966\", \"Bost Attack By 20%\")",
+		"Type": "Spell",
+		"UnitClass": "None",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Actor/GameplayEffects/GE_BoostAttackBy50.GE_BoostAttackBy50_C'",
+		"Health": 0,
+		"Attack": 0,
+		"Defence": 0
+	},
+	{
+		"Name": "Shock",
+		"Image": "/Script/Engine.Texture2D'/Engine/MobileResources/HUD/AnalogHat.AnalogHat'",
+		"BackgroundImage":
+		{
+			"R": 1,
+			"G": 0.422094,
+			"B": 0.954526,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"B5FE424A45E63978C75BD8A1A329AC8D\", \"This Reduces Opponent Attack By 50%\")",
+		"Type": "Trap",
+		"UnitClass": "None",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_BoostDefenceBy25.GE_BoostDefenceBy25_C'",
+		"Health": 0,
+		"Attack": 0,
+		"Defence": 0
+	},
+	{
+		"Name": "WindStorm",
+		"Image": "/Script/Engine.Texture2D'/Engine/MobileResources/HUD/AnalogHat.AnalogHat'",
+		"BackgroundImage":
+		{
+			"R": 1,
+			"G": 0.422094,
+			"B": 0.954526,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"20177A0C442EC4B03C4FE8B27F9509D8\", \"This Reduces Opponent Defence By 10%\")",
+		"Type": "Trap",
+		"UnitClass": "None",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_BoostDefenceBy25.GE_BoostDefenceBy25_C'",
+		"Health": 0,
+		"Attack": 0,
+		"Defence": 0
+	},
+	{
+		"Name": "Thor",
+		"Image": "/Script/Engine.Texture2D'/Engine/EngineResources/AICON-Red.AICON-Red'",
+		"BackgroundImage":
+		{
+			"R": 0.783333,
+			"G": 0.057228,
+			"B": 0,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"C20C8A0C4DC13D90373E838F9202F3D8\", \"Thor Is A Powerful Unit\")",
+		"Type": "Unit",
+		"UnitClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Character/BP_TbfCharacterUnit.BP_TbfCharacterUnit_C'",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_Deal100Damage.GE_Deal100Damage_C'",
+		"Health": 0,
+		"Attack": 1200,
+		"Defence": 800
+	},
+	{
+		"Name": "Fireball",
+		"Image": "/Script/Engine.Texture2D'/Engine/EngineResources/AICON-Green.AICON-Green'",
+		"BackgroundImage":
+		{
+			"R": 0.077358,
+			"G": 1,
+			"B": 0.10651,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"1234567A0C4DC13D90373E838F9202F3D\", \"Deals 500 damage to opponent Defence\")",
+		"Type": "Spell",
+		"UnitClass": "None",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Actor/GameplayEffects/GE_BoostAttackBy50.GE_BoostAttackBy50_C'",
+		"Health": 0,
+		"Attack": 0,
+		"Defence": 0
+	},
+	{
+		"Name": "Earthquake",
+		"Image": "/Script/Engine.Texture2D'/Engine/MobileResources/HUD/AnalogHat.AnalogHat'",
+		"BackgroundImage":
+		{
+			"R": 1,
+			"G": 0.422094,
+			"B": 0.954526,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"2234567A0C4DC13D90373E838F9202F3D\", \"Reduces opponent's defense by 30%\")",
+		"Type": "Trap",
+		"UnitClass": "None",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_BoostDefenceBy25.GE_BoostDefenceBy25_C'",
+		"Health": 0,
+		"Attack": 0,
+		"Defence": 0
+	},
+	{
+		"Name": "Zeus",
+		"Image": "/Script/Engine.Texture2D'/Engine/EngineResources/AICON-Red.AICON-Red'",
+		"BackgroundImage":
+		{
+			"R": 0.783333,
+			"G": 0.057228,
+			"B": 0,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"3234567A0C4DC13D90373E838F9202F3D\", \"Zeus Commands Thunder\")",
+		"Type": "Unit",
+		"UnitClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Character/BP_TbfCharacterUnit.BP_TbfCharacterUnit_C'",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_Deal100Damage.GE_Deal100Damage_C'",
+		"Health": 0,
+		"Attack": 1500,
+		"Defence": 700
+	},
+	{
+		"Name": "Heal",
+		"Image": "/Script/Engine.Texture2D'/Engine/EngineResources/AICON-Green.AICON-Green'",
+		"BackgroundImage":
+		{
+			"R": 0.077358,
+			"G": 1,
+			"B": 0.10651,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"4234567A0C4DC13D90373E838F9202F3D\", \"Restores 300 Attack to unit\")",
+		"Type": "Spell",
+		"UnitClass": "None",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Actor/GameplayEffects/GE_BoostAttackBy50.GE_BoostAttackBy50_C'",
+		"Health": 0,
+		"Attack": 0,
+		"Defence": 0
+	},
+	{
+		"Name": "Poseidon",
+		"Image": "/Script/Engine.Texture2D'/Engine/EngineResources/AICON-Red.AICON-Red'",
+		"BackgroundImage":
+		{
+			"R": 0.783333,
+			"G": 0.057228,
+			"B": 0,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"5234567A0C4DC13D90373E838F9202F3D\", \"Poseidon Master of the Seas\")",
+		"Type": "Unit",
+		"UnitClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Character/BP_TbfCharacterUnit.BP_TbfCharacterUnit_C'",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_Deal100Damage.GE_Deal100Damage_C'",
+		"Health": 0,
+		"Attack": 1100,
+		"Defence": 900
+	},
+	{
+		"Name": "Invisibility",
+		"Image": "/Script/Engine.Texture2D'/Engine/EngineResources/AICON-Green.AICON-Green'",
+		"BackgroundImage":
+		{
+			"R": 0.077358,
+			"G": 1,
+			"B": 0.10651,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"6234567A0C4DC13D90373E838F9202F3D\", \"Double Unit Defence and Make unit invisible\")",
+		"Type": "Spell",
+		"UnitClass": "None",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Actor/GameplayEffects/GE_BoostAttackBy50.GE_BoostAttackBy50_C'",
+		"Health": 0,
+		"Attack": 0,
+		"Defence": 0
+	},
+	{
+		"Name": "Hades",
+		"Image": "/Script/Engine.Texture2D'/Engine/EngineResources/AICON-Red.AICON-Red'",
+		"BackgroundImage":
+		{
+			"R": 0.783333,
+			"G": 0.057228,
+			"B": 0,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"7234567A0C4DC13D90373E838F9202F3D\", \"Hades Ruler of the Underworld\")",
+		"Type": "Unit",
+		"UnitClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Character/BP_TbfCharacterUnit.BP_TbfCharacterUnit_C'",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_Deal100Damage.GE_Deal100Damage_C'",
+		"Health": 0,
+		"Attack": 1300,
+		"Defence": 600
+	},
+	{
+		"Name": "Blessing",
+		"Image": "/Script/Engine.Texture2D'/Engine/EngineResources/AICON-Green.AICON-Green'",
+		"BackgroundImage":
+		{
+			"R": 0.077358,
+			"G": 1,
+			"B": 0.10651,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"8234567A0C4DC13D90373E838F9202F3D\", \"Boosts attack and defense by 20%\")",
+		"Type": "Spell",
+		"UnitClass": "None",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Actor/GameplayEffects/GE_BoostAttackBy50.GE_BoostAttackBy50_C'",
+		"Health": 0,
+		"Attack": 0,
+		"Defence": 0
+	},
+	{
+		"Name": "Medusa",
+		"Image": "/Script/Engine.Texture2D'/Engine/EngineResources/AICON-Red.AICON-Red'",
+		"BackgroundImage":
+		{
+			"R": 0.783333,
+			"G": 0.057228,
+			"B": 0,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"9234567A0C4DC13D90373E838F9202F3D\", \"Medusa Turns Opponents to Stone\")",
+		"Type": "Unit",
+		"UnitClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Character/BP_TbfCharacterUnit.BP_TbfCharacterUnit_C'",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_Deal100Damage.GE_Deal100Damage_C'",
+		"Health": 0,
+		"Attack": 900,
+		"Defence": 700
+	},
+	{
+		"Name": "Freeze",
+		"Image": "/Script/Engine.Texture2D'/Engine/MobileResources/HUD/AnalogHat.AnalogHat'",
+		"BackgroundImage":
+		{
+			"R": 1,
+			"G": 0.422094,
+			"B": 0.954526,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"A234567A0C4DC13D90373E838F9202F3D\", \"Freezes opponent Defence and deal 50% Damage to it\")",
+		"Type": "Trap",
+		"UnitClass": "None",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_BoostDefenceBy25.GE_BoostDefenceBy25_C'",
+		"Health": 0,
+		"Attack": 0,
+		"Defence": 0
+	},
+	{
+		"Name": "Hermes",
+		"Image": "/Script/Engine.Texture2D'/Engine/EngineResources/AICON-Red.AICON-Red'",
+		"BackgroundImage":
+		{
+			"R": 0.783333,
+			"G": 0.057228,
+			"B": 0,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"B234567A0C4DC13D90373E838F9202F3D\", \"Hermes Messenger of the Gods\")",
+		"Type": "Unit",
+		"UnitClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Character/BP_TbfCharacterUnit.BP_TbfCharacterUnit_C'",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_Deal100Damage.GE_Deal100Damage_C'",
+		"Health": 0,
+		"Attack": 800,
+		"Defence": 400
+	},
+	{
+		"Name": "Storm",
+		"Image": "/Script/Engine.Texture2D'/Engine/MobileResources/HUD/AnalogHat.AnalogHat'",
+		"BackgroundImage":
+		{
+			"R": 1,
+			"G": 0.422094,
+			"B": 0.954526,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"C234567A0C4DC13D90373E838F9202F3D\", \"Reduces opponent's attack by 40%\")",
+		"Type": "Trap",
+		"UnitClass": "None",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_BoostDefenceBy25.GE_BoostDefenceBy25_C'",
+		"Health": 0,
+		"Attack": 0,
+		"Defence": 0
+	},
+	{
+		"Name": "Ares",
+		"Image": "/Script/Engine.Texture2D'/Engine/EngineResources/AICON-Red.AICON-Red'",
+		"BackgroundImage":
+		{
+			"R": 0.783333,
+			"G": 0.057228,
+			"B": 0,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"D234567A0C4DC13D90373E838F9202F3D\", \"Ares God of War\")",
+		"Type": "Unit",
+		"UnitClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Character/BP_TbfCharacterUnit.BP_TbfCharacterUnit_C'",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_Deal100Damage.GE_Deal100Damage_C'",
+		"Health": 0,
+		"Attack": 800,
+		"Defence": 400
+	},
+	{
+		"Name": "Poison",
+		"Image": "/Script/Engine.Texture2D'/Engine/MobileResources/HUD/AnalogHat.AnalogHat'",
+		"BackgroundImage":
+		{
+			"R": 1,
+			"G": 0.422094,
+			"B": 0.954526,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"E234567A0C4DC13D90373E838F9202F3D\", \"Reduces opponent's attack and Defence by 300\")",
+		"Type": "Trap",
+		"UnitClass": "None",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_BoostDefenceBy25.GE_BoostDefenceBy25_C'",
+		"Health": 0,
+		"Attack": 0,
+		"Defence": 0
+	},
+	{
+		"Name": "Aphrodite",
+		"Image": "/Script/Engine.Texture2D'/Engine/EngineResources/AICON-Red.AICON-Red'",
+		"BackgroundImage":
+		{
+			"R": 0.783333,
+			"G": 0.057228,
+			"B": 0,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"F234567A0C4DC13D90373E838F9202F3D\", \"Aphrodite Goddess of Love\")",
+		"Type": "Unit",
+		"UnitClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Character/BP_TbfCharacterUnit.BP_TbfCharacterUnit_C'",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_Deal100Damage.GE_Deal100Damage_C'",
+		"Health": 0,
+		"Attack": 700,
+		"Defence": 600
+	},
+	{
+		"Name": "Blindness",
+		"Image": "/Script/Engine.Texture2D'/Engine/MobileResources/HUD/AnalogHat.AnalogHat'",
+		"BackgroundImage":
+		{
+			"R": 1,
+			"G": 0.422094,
+			"B": 0.954526,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"F234567A0C4DC13D90373E838F9202F3D\", \"Aphrodite Goddess of Love\")",
+		"Type": "Trap",
+		"UnitClass": "None",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_BoostDefenceBy25.GE_BoostDefenceBy25_C'",
+		"Health": 0,
+		"Attack": 0,
+		"Defence": 0
+	},
+	{
+		"Name": "Hera",
+		"Image": "/Script/Engine.Texture2D'/Engine/EngineResources/AICON-Red.AICON-Red'",
+		"BackgroundImage":
+		{
+			"R": 0.783333,
+			"G": 0.057228,
+			"B": 0,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"H234567A0C4DC13D90373E838F9202F3D\", \"Hera Queen of the Gods\")",
+		"Type": "Unit",
+		"UnitClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Character/BP_TbfCharacterUnit.BP_TbfCharacterUnit_C'",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_Deal100Damage.GE_Deal100Damage_C'",
+		"Health": 0,
+		"Attack": 1000,
+		"Defence": 700
+	},
+	{
+		"Name": "Weakness",
+		"Image": "/Script/Engine.Texture2D'/Engine/EngineResources/AICON-Green.AICON-Green'",
+		"BackgroundImage":
+		{
+			"R": 0.077358,
+			"G": 1,
+			"B": 0.10651,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"I234567A0C4DC13D90373E838F9202F3D\", \"Reduces opponent's attack and defense by 10%\")",
+		"Type": "Spell",
+		"UnitClass": "None",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Actor/GameplayEffects/GE_BoostAttackBy50.GE_BoostAttackBy50_C'",
+		"Health": 0,
+		"Attack": 0,
+		"Defence": 0
+	},
+	{
+		"Name": "Hestia",
+		"Image": "/Script/Engine.Texture2D'/Engine/EngineResources/AICON-Red.AICON-Red'",
+		"BackgroundImage":
+		{
+			"R": 0.783333,
+			"G": 0.057228,
+			"B": 0,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"J234567A0C4DC13D90373E838F9202F3D\", \"Hestia Goddess of Hearth\")",
+		"Type": "Unit",
+		"UnitClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Character/BP_TbfCharacterUnit.BP_TbfCharacterUnit_C'",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_Deal100Damage.GE_Deal100Damage_C'",
+		"Health": 0,
+		"Attack": 800,
+		"Defence": 900
+	},
+	{
+		"Name": "Confusion",
+		"Image": "/Script/Engine.Texture2D'/Engine/MobileResources/HUD/AnalogHat.AnalogHat'",
+		"BackgroundImage":
+		{
+			"R": 1,
+			"G": 0.422094,
+			"B": 0.954526,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"K234567A0C4DC13D90373E838F9202F3D\", \"Reduces opponent's Defence by 90%\")",
+		"Type": "Trap",
+		"UnitClass": "None",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_BoostDefenceBy25.GE_BoostDefenceBy25_C'",
+		"Health": 0,
+		"Attack": 0,
+		"Defence": 0
+	},
+	{
+		"Name": "Athena",
+		"Image": "/Script/Engine.Texture2D'/Engine/EngineResources/AICON-Red.AICON-Red'",
+		"BackgroundImage":
+		{
+			"R": 0.783333,
+			"G": 0.057228,
+			"B": 0,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"L234567A0C4DC13D90373E838F9202F3D\", \"Athena Goddess of Wisdom\")",
+		"Type": "Unit",
+		"UnitClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Character/BP_TbfCharacterUnit.BP_TbfCharacterUnit_C'",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_Deal100Damage.GE_Deal100Damage_C'",
+		"Health": 0,
+		"Attack": 1200,
+		"Defence": 500
+	},
+	{
+		"Name": "Silence",
+		"Image": "/Script/Engine.Texture2D'/Engine/MobileResources/HUD/AnalogHat.AnalogHat'",
+		"BackgroundImage":
+		{
+			"R": 1,
+			"G": 0.422094,
+			"B": 0.954526,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"M234567A0C4DC13D90373E838F9202F3D\", \"Reduces both opponent By 10%\")",
+		"Type": "Trap",
+		"UnitClass": "None",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_BoostDefenceBy25.GE_BoostDefenceBy25_C'",
+		"Health": 0,
+		"Attack": 0,
+		"Defence": 0
+	},
+	{
+		"Name": "Apollo",
+		"Image": "/Script/Engine.Texture2D'/Engine/EngineResources/AICON-Red.AICON-Red'",
+		"BackgroundImage":
+		{
+			"R": 0.783333,
+			"G": 0.057228,
+			"B": 0,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"N234567A0C4DC13D90373E838F9202F3D\", \"Apollo God of the Sun\")",
+		"Type": "Unit",
+		"UnitClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Character/BP_TbfCharacterUnit.BP_TbfCharacterUnit_C'",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_Deal100Damage.GE_Deal100Damage_C'",
+		"Health": 0,
+		"Attack": 1400,
+		"Defence": 600
+	},
+	{
+		"Name": "Darkness",
+		"Image": "/Script/Engine.Texture2D'/Engine/MobileResources/HUD/AnalogHat.AnalogHat'",
+		"BackgroundImage":
+		{
+			"R": 1,
+			"G": 0.422094,
+			"B": 0.954526,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"O234567A0C4DC13D90373E838F9202F3D\", \"Reduce Opponent Attack and Defence By 20%\")",
+		"Type": "Trap",
+		"UnitClass": "None",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_BoostDefenceBy25.GE_BoostDefenceBy25_C'",
+		"Health": 0,
+		"Attack": 0,
+		"Defence": 0
+	},
+	{
+		"Name": "Artemis",
+		"Image": "/Script/Engine.Texture2D'/Engine/EngineResources/AICON-Red.AICON-Red'",
+		"BackgroundImage":
+		{
+			"R": 0.783333,
+			"G": 0.057228,
+			"B": 0,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"P234567A0C4DC13D90373E838F9202F3D\", \"Artemis Goddess of the Hunt\")",
+		"Type": "Unit",
+		"UnitClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Character/BP_TbfCharacterUnit.BP_TbfCharacterUnit_C'",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_Deal100Damage.GE_Deal100Damage_C'",
+		"Health": 0,
+		"Attack": 1100,
+		"Defence": 800
+	},
+	{
+		"Name": "Enrage",
+		"Image": "/Script/Engine.Texture2D'/Engine/EngineResources/AICON-Green.AICON-Green'",
+		"BackgroundImage":
+		{
+			"R": 0.077358,
+			"G": 1,
+			"B": 0.10651,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"Q234567A0C4DC13D90373E838F9202F3D\", \"Boosts unit's attack by 40%\")",
+		"Type": "Spell",
+		"UnitClass": "None",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Actor/GameplayEffects/GE_BoostAttackBy50.GE_BoostAttackBy50_C'",
+		"Health": 0,
+		"Attack": 0,
+		"Defence": 0
+	},
+	{
+		"Name": "Demeter",
+		"Image": "/Script/Engine.Texture2D'/Engine/EngineResources/AICON-Red.AICON-Red'",
+		"BackgroundImage":
+		{
+			"R": 0.783333,
+			"G": 0.057228,
+			"B": 0,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"R234567A0C4DC13D90373E838F9202F3D\", \"Demeter Goddess of Harvest\")",
+		"Type": "Unit",
+		"UnitClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Character/BP_TbfCharacterUnit.BP_TbfCharacterUnit_C'",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_Deal100Damage.GE_Deal100Damage_C'",
+		"Health": 0,
+		"Attack": 900,
+		"Defence": 700
+	},
+	{
+		"Name": "Barrier",
+		"Image": "/Script/Engine.Texture2D'/Engine/EngineResources/AICON-Green.AICON-Green'",
+		"BackgroundImage":
+		{
+			"R": 0.077358,
+			"G": 1,
+			"B": 0.10651,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"S234567A0C4DC13D90373E838F9202F3D\", \"Increases unit's defense by 30%\")",
+		"Type": "Spell",
+		"UnitClass": "None",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Actor/GameplayEffects/GE_BoostAttackBy50.GE_BoostAttackBy50_C'",
+		"Health": 0,
+		"Attack": 0,
+		"Defence": 0
+	},
+	{
+		"Name": "Nemesis",
+		"Image": "/Script/Engine.Texture2D'/Engine/EngineResources/AICON-Red.AICON-Red'",
+		"BackgroundImage":
+		{
+			"R": 0.783333,
+			"G": 0.057228,
+			"B": 0,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"T234567A0C4DC13D90373E838F9202F3D\", \"Nemesis Goddess of Revenge\")",
+		"Type": "Unit",
+		"UnitClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Character/BP_TbfCharacterUnit.BP_TbfCharacterUnit_C'",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_Deal100Damage.GE_Deal100Damage_C'",
+		"Health": 0,
+		"Attack": 1200,
+		"Defence": 800
+	},
+	{
+		"Name": "Lightning",
+		"Image": "/Script/Engine.Texture2D'/Engine/EngineResources/AICON-Green.AICON-Green'",
+		"BackgroundImage":
+		{
+			"R": 0.077358,
+			"G": 1,
+			"B": 0.10651,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"U234567A0C4DC13D90373E838F9202F3D\", \"Deals 600 damage to opponents Attack and Defence\")",
+		"Type": "Spell",
+		"UnitClass": "None",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Actor/GameplayEffects/GE_BoostAttackBy50.GE_BoostAttackBy50_C'",
+		"Health": 0,
+		"Attack": 0,
+		"Defence": 0
+	},
+	{
+		"Name": "Hephaestus",
+		"Image": "/Script/Engine.Texture2D'/Engine/EngineResources/AICON-Red.AICON-Red'",
+		"BackgroundImage":
+		{
+			"R": 0.783333,
+			"G": 0.057228,
+			"B": 0,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"V234567A0C4DC13D90373E838F9202F3D\", \"Hephaestus God of Fire\")",
+		"Type": "Unit",
+		"UnitClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Character/BP_TbfCharacterUnit.BP_TbfCharacterUnit_C'",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_Deal100Damage.GE_Deal100Damage_C'",
+		"Health": 0,
+		"Attack": 1300,
+		"Defence": 900
+	},
+	{
+		"Name": "Sleep",
+		"Image": "/Script/Engine.Texture2D'/Engine/MobileResources/HUD/AnalogHat.AnalogHat'",
+		"BackgroundImage":
+		{
+			"R": 1,
+			"G": 0.422094,
+			"B": 0.954526,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"W234567A0C4DC13D90373E838F9202F3D\", \"Puts Opponent Attack and Defence to 1 for 1 turn\")",
+		"Type": "Trap",
+		"UnitClass": "None",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_BoostDefenceBy25.GE_BoostDefenceBy25_C'",
+		"Health": 0,
+		"Attack": 0,
+		"Defence": 0
+	},
+	{
+		"Name": "Chiron",
+		"Image": "/Script/Engine.Texture2D'/Engine/EngineResources/AICON-Red.AICON-Red'",
+		"BackgroundImage":
+		{
+			"R": 0.783333,
+			"G": 0.057228,
+			"B": 0,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"X234567A0C4DC13D90373E838F9202F3D\", \"Chiron the Centaur\")",
+		"Type": "Unit",
+		"UnitClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Character/BP_TbfCharacterUnit.BP_TbfCharacterUnit_C'",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_Deal100Damage.GE_Deal100Damage_C'",
+		"Health": 0,
+		"Attack": 1100,
+		"Defence": 600
+	},
+	{
+		"Name": "Yenum",
+		"Image": "/Script/Engine.Texture2D'/Engine/EngineResources/AICON-Red.AICON-Red'",
+		"BackgroundImage":
+		{
+			"R": 0.783333,
+			"G": 0.057228,
+			"B": 0,
+			"A": 1
+		},
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"X234567A0C4DC13D90373E838F9202F3D\", \"Yenum D. Law\")",
+		"Type": "Unit",
+		"UnitClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Character/BP_TbfCharacterUnit.BP_TbfCharacterUnit_C'",
+		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_Deal100Damage.GE_Deal100Damage_C'",
+		"Health": 0,
+		"Attack": 3000,
+		"Defence": 2500
+	}
+]

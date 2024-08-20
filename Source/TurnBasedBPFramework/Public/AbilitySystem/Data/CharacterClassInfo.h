@@ -10,9 +10,8 @@
 UENUM(BlueprintType)
 enum class ECharacterClass: uint8
 {
-	Elemental,
-	Warrior,
-	Ranger
+	Player,
+	Unit,
 };
 
 USTRUCT(BlueprintType)
@@ -22,6 +21,9 @@ struct FCharacterClassDefaultInfo
 
 	UPROPERTY(EditDefaultsOnly, Category= "Class Defaults")
 	TSubclassOf<UGameplayEffect> PrimaryAttributes;
+	
+	UPROPERTY(EditDefaultsOnly, Category= "Class Defaults")
+	TSubclassOf<UGameplayEffect> VitalAttributes;
 };
 
 /**
@@ -34,9 +36,6 @@ class TURNBASEDBPFRAMEWORK_API UCharacterClassInfo : public UDataAsset
 public:
 	UPROPERTY(EditDefaultsOnly, Category= "Character Class Defaults")
 	TMap<ECharacterClass, FCharacterClassDefaultInfo> CharacterClassInformation;
-	
-	UPROPERTY(EditDefaultsOnly, Category= "Common Class Defaults")
-	TSubclassOf<UGameplayEffect> VitalAttributes;
 
 	FCharacterClassDefaultInfo GetCharacterClassDefaultInfo(ECharacterClass CharacterClass);
 };

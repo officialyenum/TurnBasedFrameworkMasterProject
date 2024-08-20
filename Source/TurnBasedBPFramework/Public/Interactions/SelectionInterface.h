@@ -11,6 +11,7 @@ UINTERFACE()
 class USelectionInterface : public UInterface
 {
 	GENERATED_BODY()
+
 };
 
 /**
@@ -24,4 +25,6 @@ class TURNBASEDBPFRAMEWORK_API ISelectionInterface
 public:
 	virtual void HighlightActor() = 0;
 	virtual void UnHighlightActor() = 0;
+	virtual void SelectActor() = 0;
+	virtual void UnSelectActor() = 0;
 };

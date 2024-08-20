@@ -2,8 +2,10 @@
 
 
 #include "Character/TbfCharacterBase.h"
-
-#include "Actor/CardBase.h"
+#include "NiagaraFunctionLibrary.h"
+#include "AbilitySystemComponent.h"
+#include "GameplayEffectTypes.h"
+#include "Kismet/GameplayStatics.h"
 
 
 ATbfCharacterBase::ATbfCharacterBase()
@@ -11,31 +13,46 @@ ATbfCharacterBase::ATbfCharacterBase()
 	PrimaryActorTick.bCanEverTick = false;
 }
 
+UAbilitySystemComponent* ATbfCharacterBase::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
+}
+
 void ATbfCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
-void ATbfCharacterBase::DrawCard()
+void ATbfCharacterBase::InitAbilityActorInfo()
 {
-	if (Deck.Num() > 0)
-	{
-		ACardBase* DrawnCard = Deck.Pop();
-		DrawnCard->AddCardToHand(this);
-		// Play Animation to move card to hand
-		Hand.Add(DrawnCard);
-	}
 }
 
-void ATbfCharacterBase::PlayCard(int32 CardIndex)
+void ATbfCharacterBase::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level) const
 {
-	if (Hand.IsValidIndex(CardIndex))
-	{
-		ACardBase* CardToPlay = Hand[CardIndex];
-		Hand.RemoveAt(CardIndex);
-		//Move Card to Cell Area
-		CardOnField.Add(CardToPlay);
-	}
+	check(IsValid(GetAbilitySystemComponent()))
+	check(GameplayEffectClass)
+	FGameplayEffectContextHandle ContextHandle = GetAbilitySystemComponent()->MakeEffectContext();
+	ContextHandle.AddSourceObject(this);
+	const FGameplayEffectSpecHandle SpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(GameplayEffectClass,Level, ContextHandle);
+	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), GetAbilitySystemComponent());
 }
+
+void ATbfCharacterBase::InitializeDefaultAttributes() const
+{
+	ApplyEffectToSelf(DefaultPrimaryAttributes, 1.f);
+	ApplyEffectToSelf(DefaultVitalAttributes, 1.f);
+}
+
+void ATbfCharacterBase::PlayHitAction() const
+{
+	UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator);
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
+}
+
+void ATbfCharacterBase::PlayDeathAction() const
+{
+	UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation(), FRotator::ZeroRotator);
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, DeathEffect, GetActorLocation());
+}
+
 

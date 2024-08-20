@@ -26,9 +26,7 @@ class TURNBASEDBPFRAMEWORK_API ICardInterface
 public:
 	bool bIsSelected;
 	bool bIsOnBoard;
-	virtual void SetUpCard() = 0;
 	virtual void ActivateCard() = 0;
-	virtual void MoveCardToHandLocation(FVector& Location) = 0;
 	virtual void MoveCardToBoard() = 0;
 	virtual void AddCardToHand(ATbfCharacterBase* PlayerToGive) = 0;
 };
