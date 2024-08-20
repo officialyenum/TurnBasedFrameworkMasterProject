@@ -65,6 +65,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Unit Actions")
 	virtual void UpdateAttributeSet() override;
 
+	void CheckDeath();
 	UFUNCTION(BlueprintImplementableEvent, Category="Unit Actions")
 	void ImplementDestroyActor();
 	

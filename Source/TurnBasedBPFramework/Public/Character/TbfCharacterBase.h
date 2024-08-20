@@ -60,5 +60,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category="Character Sounds")
 	TObjectPtr<USoundBase> ImpactSound;
+	
+	UPROPERTY(EditAnywhere, Category="Character Sounds")
+	TObjectPtr<USoundBase> DeathSound;
 
 };

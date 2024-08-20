@@ -107,12 +107,20 @@ void ATbfCharacterUnit::UnSelectActor()
 		{
 			GI->PlayerOne->SelectedUnit = nullptr;
 		}
+		if (GI->PlayerOne->TargetedUnit == this)
+		{
+			GI->PlayerOne->TargetedUnit = nullptr;
+		}
 	}
 	else
 	{
-		if (GI->PlayerOne->TargetedUnit)
+		if (GI->PlayerTwo->SelectedUnit == this)
 		{
-			GI->PlayerOne->TargetedUnit = this;
+			GI->PlayerTwo->SelectedUnit = nullptr;
+		}
+		if (GI->PlayerTwo->TargetedUnit == this)
+		{
+			GI->PlayerTwo->TargetedUnit = nullptr;
 		}
 	}
 }
@@ -121,6 +129,16 @@ void ATbfCharacterUnit::UpdateAttributeSet()
 {
 	Cast<UTbfAttributeSet>(AttributeSet)->SetAttack(UnitInfo.Attack);
 	Cast<UTbfAttributeSet>(AttributeSet)->SetDefence(UnitInfo.Defence);
+}
+
+void ATbfCharacterUnit::CheckDeath()
+{
+	if (UnitInfo.Attack <= 0 || UnitInfo.Defence <= 0)
+	{
+		UnSelectActor();
+		HandleUnitDestroyed(this);
+		ImplementDestroyActor();
+	}
 }
 
 void ATbfCharacterUnit::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
@@ -161,11 +179,26 @@ void ATbfCharacterUnit::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, 
 		// 	PlayHitAction();
 		// }
 
-		// My STyle
-		UnitInfo.Defence = FMath::Clamp(MyAttributes->GetDefence() - Damage, 0, MyAttributes->GetDefence());
-		MyAttributes->SetDefence(UnitInfo.Defence);
-		PlayHitAction();
+		// My Style
+		// Calculate the new defense after the attack
+		float NewDefence = FMath::Clamp(MyAttributes->GetDefence() - Damage, 0.0f, MyAttributes->GetDefence());
+
+		// Calculate the actual damage dealt (the difference between the original defense and the new defense)
+		float DamageDealt = MyAttributes->GetDefence() - NewDefence;
+
+		// Update the attacker's attack value by reducing it by the amount of damage dealt
+		UnitCauser->UnitInfo.Attack = FMath::Clamp(UnitCauser->UnitInfo.Attack - DamageDealt, 0.0f, UnitCauser->UnitInfo.Attack);
+
+		// Update the defender's defense with the new defense value
+		MyAttributes->SetDefence(NewDefence);
+		UnitInfo.Defence = FMath::Clamp(NewDefence, 0, MyAttributes->GetDefence());
+
+		// Update the attributes for both units
+		UnitCauser->UpdateAttributeSet();
+		UnitCauser->SetupUI();
 		
+		PlayHitAction();
+		UnitCauser->CheckDeath();
 		// Check if UnitCauser health is less or zero, call a destroy function to kill
 		// Check if My Attack or Defence is less or zero, call my destroy function to kill me
 	}
@@ -177,15 +210,12 @@ void ATbfCharacterUnit::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, 
 		ATbfCharacter* CardOwner = Cast<ATbfCharacter>(CardCauser->GetInstigator());
 		CardOwner->HandleCardDestroyed(CardCauser);
 		CardCauser->ImplementDestroyActor();
-		
 	}
 	UnitInfo.Attack = MyAttributes->GetAttack();
 	UnitInfo.Defence = MyAttributes->GetDefence();
+	UpdateAttributeSet();  // Assuming this updates the defender's attribute set
 	SetupUI();
-	if (UnitInfo.Attack <= 0 || UnitInfo.Defence <= 0)
-	{
-		ImplementDestroyActor();
-	}
+	CheckDeath();
 }
 
 

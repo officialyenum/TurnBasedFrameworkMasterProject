@@ -90,7 +90,6 @@ void ATbfCharacter::DrawCard()
 		}
 		Deck.RemoveAt(CardIndex);
 		DrawCountPerTurn--;
-		Cast<UTbfAttributeSet>(AttributeSet)->SetDrawPoints(DrawCountPerTurn);
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("%d Cards Left in Deck"), Deck.Num()));
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("%d Draw Left for this turn"), DrawCountPerTurn));
 	}
@@ -117,11 +116,23 @@ void ATbfCharacter::PlaySelectedCard()
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("%s Move Count Check Passed"), *Name.ToString()));
 		if (!SelectedCard)
 		{
+			if (Hand.Num() <= 0)
+			{
+				MoveCountPerTurn = 0;
+				UpdateAttributeSet();
+			}
+			if (CardOnField.Num() <= 0)
+			{
+				ActivateCountPerTurn = 0;
+				UpdateAttributeSet();
+			}
 			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Did Not Select Card To Move"), *Name.ToString()));
 			return;
 		}
 		if (!TargetedCell)
 		{
+			MoveCountPerTurn--;
+			UpdateAttributeSet();
 			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Did Not Select A Cell for Card to Move To"), *Name.ToString()));
 			return;
 		}
@@ -143,15 +154,14 @@ void ATbfCharacter::PlaySelectedCard()
 			// Unselect the Card
 			SelectedCard->UnSelectActor();
 		};
-		MoveCountPerTurn -= 1;
+		MoveCountPerTurn--;
 	}
 	else
 	{
 		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Is Out Of Moves"), *Name.ToString()));
 	}
 	UpdateAttributeSet();
-	//UpdateUIStat();
-	if (MoveCountPerTurn <= 0 && ActivateCountPerTurn <= 0 && (CurrentState == ETbfPlayerState::MainOne || CurrentState == ETbfPlayerState::MainTwo))
+	if (MoveCountPerTurn <= 0 && ActivateCountPerTurn <= 0 && (CurrentState == ETbfPlayerState::Main))
 	{
 		GoToNextState();
 	}
@@ -224,7 +234,7 @@ void ATbfCharacter::ActivateSelectedCard()
 	}
 	UpdateAttributeSet();
 	//UpdateUIStat();
-	if (ActivateCountPerTurn <= 0 && (CurrentState == ETbfPlayerState::MainOne || CurrentState == ETbfPlayerState::Battle || CurrentState == ETbfPlayerState::MainTwo))
+	if (ActivateCountPerTurn <= 0 && (CurrentState == ETbfPlayerState::Main || CurrentState == ETbfPlayerState::Battle))
 	{
 		GoToNextState();
 	}
@@ -263,19 +273,15 @@ void ATbfCharacter::GoToNextState()
 			CurrentState = ETbfPlayerState::Draw;
 			break;
 		case ETbfPlayerState::Draw:
-			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Switched Draw To MainOne"), *Name.ToString()));
-			CurrentState = ETbfPlayerState::MainOne;
+			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Switched Draw To Main"), *Name.ToString()));
+			CurrentState = ETbfPlayerState::Main;
 			break;
-		case ETbfPlayerState::MainOne:
-			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Switched MainOne To Battle"), *Name.ToString()));
+		case ETbfPlayerState::Main:
+			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Switched Main To Battle"), *Name.ToString()));
 			CurrentState = ETbfPlayerState::Battle;
 			break;
 		case ETbfPlayerState::Battle:
-			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Switched Battle To MainTwo"), *Name.ToString()));
-			CurrentState = ETbfPlayerState::MainTwo;
-			break;
-		case ETbfPlayerState::MainTwo:
-			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Switched MainTwo To Waiting"), *Name.ToString()));
+			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Switched Battle To Waiting"), *Name.ToString()));
 			CurrentState = ETbfPlayerState::Waiting;
 			if (bIsPlayer)
 			{
@@ -353,7 +359,8 @@ void ATbfCharacter::GenerateAndSpawnStartingCard()
 	Deck.RemoveAll([&](const FTbfCardInfo& Element) {
 		return Element.Name == UnitCard.Name || Element.Name == SpellCard.Name;
 	});
-
+	DrawCountPerTurn -= 2;
+	UpdateAttributeSet();
 	// Reposition Cards in Hand
 	RepositionCardInHand();
 }
@@ -379,6 +386,8 @@ void ATbfCharacter::HandleCardDestroyed(AActor* DestroyedActor)
 	{
 		if (CardOnField.Contains(DestroyedCard))
 		{
+			// Remove Cell Tracker
+			DestroyedCard->CellOccupied = nullptr;
 			// Remove the destroyed card from the CardOnField array
 			CardOnField.Remove(DestroyedCard);
 		}
@@ -427,8 +436,7 @@ void ATbfCharacter::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, cons
 void ATbfCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	GenerateAndSpawnStartingCard();
+	InitAbilityActorInfo();
 	OnTakeAnyDamage.AddDynamic(this, &ATbfCharacter::HandleTakeAnyDamage);
 }
 

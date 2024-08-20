@@ -61,7 +61,7 @@ void ATbfCharacterAI::BeginPlay()
 	{
 		GI->PlayerTwo = this;
 	}
-	InitAbilityActorInfo();
+	GenerateAndSpawnStartingCard();
 }
 
 

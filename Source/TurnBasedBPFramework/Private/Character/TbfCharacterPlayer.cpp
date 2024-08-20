@@ -6,7 +6,6 @@
 #include "AbilitySystemComponent.h"
 #include "AI/TbfAIController.h"
 #include "Game/TbfGameInstance.h"
-#include "Game/TbfGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "Library/TbfGameFunctionLibrary.h"
 #include "Player/TbfPlayerController.h"
@@ -75,6 +74,7 @@ void ATbfCharacterPlayer::BeginPlay()
 	// Set User Player in Game Instance Player One
 	UTbfGameInstance* GI = Cast<UTbfGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	GI->PlayerOne = this;
+	GenerateAndSpawnStartingCard();
 	UpdateUIStat();
 	FText Message = FText::Format(
 		FText::FromString("{0} {1} State"),

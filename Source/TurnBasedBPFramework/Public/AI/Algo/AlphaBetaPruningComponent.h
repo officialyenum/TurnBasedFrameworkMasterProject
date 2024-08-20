@@ -18,14 +18,15 @@ public:
 	// Sets default values for this component's properties
 	UAlphaBetaPruningComponent();
 	
-	int32 AlphaBetaPruning(FGameStateSim GameState, int32 Depth, int32 Alpha, int32 Beta, bool bIsMaximizingPlayer);
+	int32 ChooseBestCard(const FGameStateSim& GameState, int32 Depth);
 
 protected:
 	virtual void BeginPlay() override;
 
-	
 private:
-	int32 EvaluateBoardState(const FGameStateSim& GameState);
-	void PlaySelectedCard(FGameStateSim& GameState, int32 CardIndex);
-	void UndoSelectedCard(FGameStateSim& GameState, int32 CardIndex);
+	int32 AlphaBetaPruning(FGameStateSim& GameState, int32 Depth, int32 Alpha, int32 Beta, bool bIsMaximizingPlayer);
+
+	void SimulatePlayCard(FGameStateSim& GameState, int32 CardIndex);
+	void SimulateOpponentPlayCard(FGameStateSim& GameState, int32 CardIndex);
+	int32 EvaluateBoardState(const FGameStateSim& GameState) const;
 };

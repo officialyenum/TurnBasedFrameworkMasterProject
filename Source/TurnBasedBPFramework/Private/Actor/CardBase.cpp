@@ -120,7 +120,11 @@ void ACardBase::UnSelectActor()
 void ACardBase::ActivateCard()
 {
 	// Card Gets Destroyed After this Action so occupying actor should be cleard
-	Cast<ATbfGridCell>(CellOccupied)->OccupyingActor = this;
+	
+	if(ATbfGridCell* Cell = Cast<ATbfGridCell>(CellOccupied))
+	{
+		Cell->OccupyingActor = this;
+	}
 	switch (CardInfo.Type)
 	{
 		case ECardType::Unit:
@@ -129,7 +133,7 @@ void ACardBase::ActivateCard()
 		case ECardType::Spell:
 			ActivateSpellWithGameplayEffect();
 			break;
-	case ECardType::Trap:
+		case ECardType::Trap:
 			ActivateTrapWithGameplayEffect();
 			break;
 	}
@@ -154,8 +158,8 @@ void ACardBase::SpawnCardUnit()
 	ATbfCharacterUnit* Unit = GetWorld()->SpawnActorDeferred<ATbfCharacterUnit>(
 		CardInfo.UnitClass, // Ensure this is set to a valid class
 		SpawnTransform,
-		UnitOwner,
-		UnitOwner,
+		GetOwner(),
+		GetInstigator(),
 		ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn
 	);
 	FTbfUnitInfo UnitInformation;

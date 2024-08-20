@@ -51,7 +51,7 @@ void ATbfCharacterBase::PlayHitAction() const
 
 void ATbfCharacterBase::PlayDeathAction() const
 {
-	UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator);
+	UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation(), FRotator::ZeroRotator);
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, DeathEffect, GetActorLocation());
 }
 

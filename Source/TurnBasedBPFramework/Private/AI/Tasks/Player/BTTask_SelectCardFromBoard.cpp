@@ -29,8 +29,15 @@ EBTNodeResult::Type UBTTask_SelectCardFromBoard::ExecuteTask(UBehaviorTreeCompon
 				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 				return EBTNodeResult::Succeeded;
 			}
-			OwnerCharacter->GoToNextState();
-			return EBTNodeResult::Failed;
+			OwnerCharacter->ActivateCountPerTurn--;
+			if (OwnerCharacter->MoveCountPerTurn <= 0 || OwnerCharacter->ActivateCountPerTurn <= 0)
+			{
+				OwnerCharacter->GoToNextState();
+				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+				return EBTNodeResult::Succeeded;
+			}
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+			return EBTNodeResult::Succeeded;
 		}
 		return EBTNodeResult::Failed;
 	}

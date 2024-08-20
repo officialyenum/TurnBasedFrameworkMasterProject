@@ -31,7 +31,8 @@ EBTNodeResult::Type UBTTask_SelectUnit::ExecuteTask(UBehaviorTreeComponent& Owne
 				return EBTNodeResult::Succeeded;
 			}
 			OwnerCharacter->GoToNextState();
-			return EBTNodeResult::Failed;
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+			return EBTNodeResult::Succeeded;
 		}
 		return EBTNodeResult::Failed;
 	}

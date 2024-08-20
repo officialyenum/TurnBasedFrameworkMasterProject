@@ -16,9 +16,8 @@ enum class ETbfPlayerState: uint8
 {
 	Waiting,
 	Draw,
-	MainOne,
-	Battle,
-	MainTwo
+	Main,
+	Battle
 };
 
 class ATbfCharacterUnit;

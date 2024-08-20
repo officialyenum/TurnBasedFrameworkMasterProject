@@ -105,12 +105,10 @@ FString UTbfGameFunctionLibrary::PlayerStateToString(ETbfPlayerState State)
 		return TEXT("Waiting");
 	case ETbfPlayerState::Draw:
 		return TEXT("Draw");
-	case ETbfPlayerState::MainOne:
-		return TEXT("Main One");
+	case ETbfPlayerState::Main:
+		return TEXT("Main");
 	case ETbfPlayerState::Battle:
 		return TEXT("Battle");
-	case ETbfPlayerState::MainTwo:
-		return TEXT("Main Two");
 	default:
 		return TEXT("Unknown");
 	}

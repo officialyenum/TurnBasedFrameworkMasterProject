@@ -112,7 +112,7 @@ void ATbfPlayerController::Move(const FInputActionValue& InputActionValue)
 	if (ATbfCharacterPlayer* PlayerCharacter = Cast<ATbfCharacterPlayer>(GetCharacter()))
 	{
 		// if player is in Main One Or Main Two State Call Move Card To Cell Location Function on Player Character
-		if (PlayerCharacter->CurrentState == ETbfPlayerState::MainOne || PlayerCharacter->CurrentState == ETbfPlayerState::MainTwo)
+		if (PlayerCharacter->CurrentState == ETbfPlayerState::Main)
 		{
 			// Set the card to bOpponentCanSee to true
 			if (PlayerCharacter->SelectedCard && PlayerCharacter->TargetedCell)
@@ -132,7 +132,7 @@ void ATbfPlayerController::Activate(const FInputActionValue& InputActionValue)
 	if (ATbfCharacterPlayer* PlayerCharacter = Cast<ATbfCharacterPlayer>(GetCharacter()))
 	{
 		// if player is in Main One Or Main Two State Call Activate Function to Activate the Selected Card On Field
-		if (PlayerCharacter->CurrentState == ETbfPlayerState::MainOne || PlayerCharacter->CurrentState == ETbfPlayerState::MainTwo)
+		if (PlayerCharacter->CurrentState == ETbfPlayerState::Main)
 		{
 			if (PlayerCharacter->SelectedCard)
 			{

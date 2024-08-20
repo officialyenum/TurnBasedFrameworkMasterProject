@@ -31,6 +31,14 @@ EBTNodeResult::Type UBTTask_SelectCardFromHand::ExecuteTask(UBehaviorTreeCompone
 				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 				return EBTNodeResult::Succeeded;
 			}
+			OwnerCharacter->MoveCountPerTurn--;
+			if (OwnerCharacter->MoveCountPerTurn <= 0 || OwnerCharacter->ActivateCountPerTurn <= 0)
+			{
+				OwnerCharacter->GoToNextState();
+				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+				return EBTNodeResult::Succeeded;
+			}
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 			return EBTNodeResult::Succeeded;
 		}
 		return EBTNodeResult::Failed;
