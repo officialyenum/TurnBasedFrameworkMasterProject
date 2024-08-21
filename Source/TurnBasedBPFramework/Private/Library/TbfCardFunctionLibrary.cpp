@@ -138,6 +138,19 @@ FTbfCardInfo UTbfCardFunctionLibrary::GetRandomTrapCard(UDataTable* DataTable)
     return GetRandomCardByType(DataTable, ECardType::Trap);
 }
 
+FTbfCardInfoSim UTbfCardFunctionLibrary::ConvertCardToSim(FGameStateSim State, FName Card)
+{
+    for (FTbfCardInfoSim CardInfoSim : State.GeneralDeck)
+    {
+        if (CardInfoSim.Name.Compare(Card) == 0)
+        {
+            return CardInfoSim;
+        }
+    }
+    FTbfCardInfoSim Sim;
+    return Sim;
+}
+
 ACardBase* UTbfCardFunctionLibrary::GetRandomCardForPlayer(ATbfCharacter* Player)
 {
     int32 RandomIndex = FMath::RandRange(0, Player->CardOnField.Num() - 1);

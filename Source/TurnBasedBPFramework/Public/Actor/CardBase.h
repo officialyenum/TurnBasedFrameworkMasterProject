@@ -10,9 +10,8 @@
 #include "CardBase.generated.h"
 
 class UWidgetComponent;
-struct FTbfUnitInfoSim;
 // Forward declaration
-class ATbfCharacterUnit;
+// class ATbfCharacterUnit;
 
 UENUM(BlueprintType)
 enum class ECardType: uint8
@@ -88,6 +87,51 @@ struct FTbfCardInfoSim : public FTableRowBase
 	EModifierType ModifierType = EModifierType::Add;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float ModifierValue = 0.f;
+};
+
+USTRUCT(BlueprintType)
+struct FGameStateSim
+{
+	GENERATED_BODY()
+
+	// AI
+	UPROPERTY(BlueprintReadWrite, Category = "GameState")
+	int32 LifePoints = 0;
+
+	UPROPERTY(BlueprintReadWrite, Category = "GameState")
+	TArray<FTbfCardInfoSim> Deck;
+
+	UPROPERTY(BlueprintReadWrite, Category = "GameState")
+	TArray<FTbfCardInfoSim> Hand;
+
+	UPROPERTY(BlueprintReadWrite, Category = "GameState")
+	TArray<FTbfCardInfoSim> CardField;
+
+	UPROPERTY(BlueprintReadWrite, Category = "GameState")
+	TArray<FTbfUnitInfoSim> UnitField;
+
+	// Opponent
+	UPROPERTY(BlueprintReadWrite, Category = "GameState")
+	int32 OpponentLifePoints = 0;
+
+	UPROPERTY(BlueprintReadWrite, Category = "GameState")
+	TArray<FTbfCardInfoSim> OpponentCardDeck;
+
+	UPROPERTY(BlueprintReadWrite, Category = "GameState")
+	TArray<FTbfCardInfoSim> OpponentCardHand;
+
+	UPROPERTY(BlueprintReadWrite, Category = "GameState")
+	TArray<FTbfCardInfoSim> OpponentCardField;
+
+	UPROPERTY(BlueprintReadWrite, Category = "GameState")
+	TArray<FTbfUnitInfoSim> OpponentUnitField;
+
+	// Additional Game State Variables
+	UPROPERTY(BlueprintReadWrite, Category = "GameState")
+	TArray<FTbfCardInfoSim> OpponentDiscardedCards;
+
+	UPROPERTY(BlueprintReadWrite, Category = "GameState")
+	TArray<FTbfCardInfoSim> GeneralDeck;
 };
 
 UCLASS()
