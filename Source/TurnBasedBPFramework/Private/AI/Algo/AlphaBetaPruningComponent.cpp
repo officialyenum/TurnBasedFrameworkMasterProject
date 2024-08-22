@@ -4,7 +4,6 @@
 #include "AI/Algo/AlphaBetaPruningComponent.h"
 
 #include "Character/TbfCharacterAI.h"
-#include "Field/FieldSystemNoiseAlgo.h"
 
 
 // Sets default values for this component's properties
@@ -24,6 +23,9 @@ FName UAlphaBetaPruningComponent::ChooseBestCardInHand(const FGameStateSim& Game
 
 	for (int32 i = 0; i < GameState.Hand.Num() - 1; ++i)
 	{
+		// Reset State before starting Simulation
+		// ATbfCharacterAI* AIChar = Cast<ATbfCharacterAI>(GetOwner());
+		// AIChar->UpdateGameState();
 		FGameStateSim SimulatedState = GameState;
 
 		// Simulate playing the card
@@ -52,6 +54,9 @@ FName UAlphaBetaPruningComponent::ChooseBestCardInField(const FGameStateSim& Gam
 
 	for (int32 i = 0; i < GameState.CardField.Num() - 1; ++i)
 	{
+		// Reset State before starting Simulation
+		// ATbfCharacterAI* AIChar = Cast<ATbfCharacterAI>(GetOwner());
+		// AIChar->UpdateGameState();
 		FGameStateSim SimulatedState = GameState;
 
 		// Simulate playing the card
@@ -87,12 +92,11 @@ int32 UAlphaBetaPruningComponent::AlphaBetaPruning(FGameStateSim& GameState, int
 	{
 		return EvaluateBoardState(GameState);
 	}
-
 	if (bIsMaximizingPlayer)
 	{
 		int32 MaxEval = INT32_MIN;
-
-		for (int32 i = 0; i < GameState.Hand.Num() - 1; ++i)
+		int32 NoOfCards = bIsField ? GameState.CardField.Num() : GameState.Hand.Num();
+		for (int32 i = 0; i < NoOfCards - 1; ++i)
 		{
 			FGameStateSim SimulatedState = GameState;
 
@@ -114,7 +118,9 @@ int32 UAlphaBetaPruningComponent::AlphaBetaPruning(FGameStateSim& GameState, int
 	int32 MinEval = INT32_MAX;
 	GeneratePossibleHands(GameState);
 	// Assuming opponent plays optimally; simulate opponent's best response
-	for (int32 i = 0; i < GameState.OpponentCardHand.Num() - 1; ++i)
+	
+	int32 NoOfCards = bIsField ? GameState.OpponentCardField.Num() : GameState.OpponentCardHand.Num();
+	for (int32 i = 0; i < NoOfCards - 1; ++i)
 	{
 		FGameStateSim SimulatedState = GameState;
 
@@ -150,9 +156,7 @@ void UAlphaBetaPruningComponent::GeneratePossibleHands(FGameStateSim& GameState)
 	// Remove all known cards from AllCards to get the unknown cards
 	for (FTbfCardInfoSim& KnownCard : KnownCards)
 	{
-		GameState.OpponentCardDeck.RemoveAll([&](const FTbfCardInfoSim& CardInDeck) {
-			return CardInDeck.Name == KnownCard.Name;
-		});
+		RemoveFromCardArray(GameState.OpponentCardDeck, KnownCard);
 	}
 		
 	GameState.OpponentCardHand = GameState.OpponentCardDeck;
@@ -161,319 +165,305 @@ void UAlphaBetaPruningComponent::GeneratePossibleHands(FGameStateSim& GameState)
 void UAlphaBetaPruningComponent::SimulatePlayCard(FGameStateSim& GameState, int32 CardIndex, bool bIsField)
 {
 	// Retrieve the card from the hand
-	FTbfCardInfoSim& CardToPlay = GameState.Hand[CardIndex];
+	FTbfCardInfoSim& CardToPlay = bIsField ? GameState.CardField[CardIndex] : GameState.Hand[CardIndex];
 	switch (CardToPlay.Type)
 	{
-	case ECardType::Unit:
-		{
-			// Add the unit to the field
-			if (!bIsField)
+		case ECardType::Unit:
 			{
-				GameState.UnitField.Add(CardToPlay.Unit);
-			}
-			else
-			{
-				CardToPlay.Unit.Attack += 400;
-				CardToPlay.Unit.Defence += 400;
-			}
-			// Simulate Attack if Opponent UnitField has unit
-			if (GameState.OpponentUnitField.Num() > 0)
-			{
-				for (FTbfUnitInfoSim& Unit : GameState.OpponentUnitField)
+				// Add the unit to the field
+				CardToPlay.Rank += CardToPlay.Unit.Attack + CardToPlay.Unit.Defence + 5000;
+				if (!bIsField)
 				{
-					float NewDefence = Unit.Defence - CardToPlay.Unit.Attack;
-					Unit.Defence += NewDefence;
-					// Calculate the actual damage dealt (the difference between the original defense and the new defense)
-					float DamageDealt = Unit.Defence - NewDefence;
+					GameState.CardField.Add(CardToPlay);
+					// Remove the card from the AI's hand after it's been played
+					GameState.Hand.RemoveAt(CardIndex);
+				}
+				// Simulate Attack if Opponent UnitField has unit
+				if (GameState.OpponentCardField.Num() > 0)
+				{
+					for (FTbfCardInfoSim& CardInfo : GameState.OpponentCardField)
+					{
+						float NewDefence = CardInfo.Unit.Defence - CardToPlay.Unit.Attack;
+						CardInfo.Unit.Defence = NewDefence;
+						// Calculate the actual damage dealt (the difference between the original defense and the new defense)
+						float DamageDealt = CardInfo.Unit.Defence - NewDefence;
+						
+						// Update the attacker's attack value by reducing it by the amount of damage dealt
+						CardToPlay.Unit.Attack -= FMath::Clamp(DamageDealt, 0, DamageDealt);
+						CardInfo.Rank -= DamageDealt;
+					}
+				}
+				else
+				{
+					GameState.OpponentLifePoints -= CardToPlay.Unit.Attack;
+					CardToPlay.Rank += CardToPlay.Unit.Attack;
+				}
+				RemoveDeadUnitsFromArray(GameState.OpponentUnitField);
+				break;
+			}
+		case ECardType::Spell:
+			{
+				// Apply spell effects (modify attack, defense, etc.)
+				if (!bIsField)
+				{
+					GameState.CardField.Add(CardToPlay);
+					CardToPlay.Rank += 1000.f;
+				}
+				// increase the chances of selecting this card since it has one or more unit to boost
+				if (CardToPlay.ModifierParam == EModifierParam::Attack)
+				{
+					for (FTbfCardInfoSim Element : GameState.CardField	)
+					{
+						if (Element.Type == ECardType::Unit)
+						{
+							if (CardToPlay.ModifierType == EModifierType::Add)
+							{
+								Element.Unit.Attack += CardToPlay.ModifierValue;
+								Element.Rank += CardToPlay.ModifierValue  > 1 ? 500 : -500;
+								CardToPlay.Rank += 10.f;
+							}
+							else if (CardToPlay.ModifierType == EModifierType::Multiply)
+							{
+								Element.Unit.Attack *= CardToPlay.ModifierValue;
+								Element.Rank += CardToPlay.ModifierValue  > 1 ? 500 : -500;
+								CardToPlay.Rank += 10.f;
+							}
+						}
+					}
+				}
+				else if (CardToPlay.ModifierParam == EModifierParam::Defence)
+				{
+					for (FTbfCardInfoSim Element : GameState.CardField	)
+					{
+						if (Element.Type == ECardType::Unit)
+						{
+							if (CardToPlay.ModifierType == EModifierType::Add)
+							{
+								Element.Unit.Defence += CardToPlay.ModifierValue;
+								Element.Rank += CardToPlay.ModifierValue;
+								CardToPlay.Rank += 10.f;
+							}
+							else if (CardToPlay.ModifierType == EModifierType::Multiply)
+							{
+								Element.Unit.Defence *= CardToPlay.ModifierValue;
+								Element.Rank += CardToPlay.ModifierValue  > 1 ? 500 : -500;
+								CardToPlay.Rank += 10.f;
+							}
+						}
+					}
+				}
+				break;
+			}
+		case ECardType::Trap:
+			{
+				// Set the trap on the field
+				if (!bIsField)
+				{
+					CardToPlay.Rank += 500.f;
+					GameState.CardField.Add(CardToPlay);
+				}
+				// increase the chances of selecting this card since it has one or more unit to boost
+				if (CardToPlay.ModifierParam == EModifierParam::Attack)
+				{
+					for (FTbfCardInfoSim Element : GameState.OpponentCardField	)
+					{
+						if (Element.Type == ECardType::Unit)
+						{
+							if (CardToPlay.ModifierType == EModifierType::Add)
+							{
+								Element.Unit.Attack += CardToPlay.ModifierValue;
+								Element.Rank += CardToPlay.ModifierValue;
+								CardToPlay.Rank += 30.f;
+							}
+							else if (CardToPlay.ModifierType == EModifierType::Multiply)
+							{
+								Element.Unit.Attack *= CardToPlay.ModifierValue;
+								Element.Rank += CardToPlay.ModifierValue  > 1 ? 500 : -500;
+								CardToPlay.Rank += 30.f;
+							}
+						}
+					}
 					
-					// Update the attacker's attack value by reducing it by the amount of damage dealt
-					CardToPlay.Unit.Attack -= DamageDealt;
-				}
-			}
-			else
-			{
-				GameState.OpponentLifePoints -= CardToPlay.Unit.Attack;
-			}
-			break;
-		}
-	case ECardType::Spell:
-		{
-			// Apply spell effects (modify attack, defense, etc.)
-			if (!bIsField)
-			{
-				GameState.CardField.Add(CardToPlay);
-			}
-			if (GameState.UnitField.Num() > 0)
-			{
-				// reduce the chances of selecting this card since it has no unit to boost
-				CardToPlay.Unit.Attack -= 500;
-				CardToPlay.Unit.Defence -= 500;
-			}else
-			{
-				// increase the chances of selecting this card since it has one or more unit to boost
-				CardToPlay.Unit.Attack += 1000;
-				CardToPlay.Unit.Defence += 1000;
-				if (CardToPlay.ModifierParam == EModifierParam::Attack)
-				{
-					for (FTbfUnitInfoSim& Unit : GameState.UnitField)
-					{
-						if (CardToPlay.ModifierType == EModifierType::Add)
-						{
-							Unit.Attack += CardToPlay.ModifierValue;
-						}
-						else if (CardToPlay.ModifierType == EModifierType::Multiply)
-						{
-							Unit.Attack *= CardToPlay.ModifierValue;
-						}
-					}
 				}
 				else if (CardToPlay.ModifierParam == EModifierParam::Defence)
 				{
-					for (FTbfUnitInfoSim& Unit : GameState.UnitField)
+					for (FTbfCardInfoSim Element : GameState.OpponentCardField	)
 					{
-						if (CardToPlay.ModifierType == EModifierType::Add)
+						if (Element.Type == ECardType::Unit)
 						{
-							Unit.Defence += CardToPlay.ModifierValue;
-						}
-						else if (CardToPlay.ModifierType == EModifierType::Multiply)
-						{
-							Unit.Defence *= CardToPlay.ModifierValue;
+							if (CardToPlay.ModifierType == EModifierType::Add)
+							{
+								Element.Unit.Defence += CardToPlay.ModifierValue;
+								Element.Rank += CardToPlay.ModifierValue;
+								CardToPlay.Rank += 30.f;
+							}
+							else if (CardToPlay.ModifierType == EModifierType::Multiply)
+							{
+								Element.Unit.Defence *= CardToPlay.ModifierValue;
+								Element.Rank += CardToPlay.ModifierValue  > 1 ? 500 : -500;
+								CardToPlay.Rank += 30.f;
+							}
 						}
 					}
 				}
-			}
 			
+				break;
+			}
+		default:
 			break;
-		}
-	case ECardType::Trap:
-		{
-			// Set the trap on the field
-			if (!bIsField)
-			{
-				CardToPlay.Unit.Attack += 500;
-				CardToPlay.Unit.Defence += 500;
-				GameState.CardField.Add(CardToPlay);
-			}
-			if (GameState.UnitField.Num() > 0)
-			{
-				// reduce the chances of selecting this card since it has no unit to boost
-				CardToPlay.Unit.Attack -= 500;
-				CardToPlay.Unit.Defence -= 500;
-			}else
-			{
-				// increase the chances of selecting this card since it has one or more unit to boost
-				CardToPlay.Unit.Attack += 1000;
-				CardToPlay.Unit.Defence += 1000;
-				if (CardToPlay.ModifierParam == EModifierParam::Attack)
-				{
-					for (FTbfUnitInfoSim& Unit : GameState.OpponentUnitField)
-					{
-						if (CardToPlay.ModifierType == EModifierType::Add)
-						{
-							Unit.Attack += CardToPlay.ModifierValue;
-						}
-						else if (CardToPlay.ModifierType == EModifierType::Multiply)
-						{
-							Unit.Attack *= CardToPlay.ModifierValue;
-						}
-					}
-				}
-				else if (CardToPlay.ModifierParam == EModifierParam::Defence)
-				{
-					for (FTbfUnitInfoSim& Unit : GameState.OpponentUnitField)
-					{
-						if (CardToPlay.ModifierType == EModifierType::Add)
-						{
-							Unit.Defence += CardToPlay.ModifierValue;
-						}
-						else if (CardToPlay.ModifierType == EModifierType::Multiply)
-						{
-							Unit.Defence *= CardToPlay.ModifierValue;
-						}
-					}
-				}
-				
-			}
-			break;
-		}
-	default:
-		break;
 	}
-
-	// Remove the card from the AI's hand after it's been played
-	GameState.Hand.RemoveAt(CardIndex);
-}
-
-void UAlphaBetaPruningComponent::ApplySpellOrTrapEffect(FGameStateSim& GameState, const FTbfCardInfoSim& CardToPlay, bool bIsOpponent)
-{
-	GameState.CardField.Add(CardToPlay);
-	TArray<FTbfUnitInfoSim> Field = bIsOpponent ? GameState.OpponentUnitField : GameState.UnitField;
-	if (CardToPlay.ModifierParam == EModifierParam::Attack)
-	{
-		for (FTbfUnitInfoSim& Unit : Field)
-		{
-			if (CardToPlay.ModifierType == EModifierType::Add)
-			{
-				Unit.Attack += CardToPlay.ModifierValue;
-			}
-			else if (CardToPlay.ModifierType == EModifierType::Multiply)
-			{
-				Unit.Attack *= CardToPlay.ModifierValue;
-			}
-		}
-	}
-	else if (CardToPlay.ModifierParam == EModifierParam::Defence)
-	{
-		for (FTbfUnitInfoSim& Unit : Field)
-		{
-			if (CardToPlay.ModifierType == EModifierType::Add)
-			{
-				Unit.Defence += CardToPlay.ModifierValue;
-			}
-			else if (CardToPlay.ModifierType == EModifierType::Multiply)
-			{
-				Unit.Defence *= CardToPlay.ModifierValue;
-			}
-		}
-	}
-
-	if (bIsOpponent)
-	{
-		GameState.OpponentUnitField = Field;
-		return;
-	}
-	GameState.UnitField = Field;
 }
 
 void UAlphaBetaPruningComponent::SimulateOpponentPlayCard(FGameStateSim& GameState, int32 CardIndex, bool bIsField)
 {
 	// Retrieve the card from the hand
-	FTbfCardInfoSim& CardToPlay = GameState.OpponentCardHand[CardIndex];
-	GameState.OpponentDiscardedCards.Add(CardToPlay);
-
+	FTbfCardInfoSim& CardToPlay = bIsField ? GameState.OpponentCardField[CardIndex] : GameState.OpponentCardHand[CardIndex];
 	switch (CardToPlay.Type)
 	{
-	case ECardType::Unit:
-		{
-			// Add the unit to the field
-			if (!bIsField)
+		case ECardType::Unit:
 			{
-				CardToPlay.Unit.Attack += 500;
-				CardToPlay.Unit.Defence += 500;
-				GameState.CardField.Add(CardToPlay);
-			}
-			if (!bIsField)
-			{
-				GameState.OpponentUnitField.Add(CardToPlay.Unit);
-			}
-			else
-			{
-				CardToPlay.Unit.Attack += 400;
-				CardToPlay.Unit.Defence += 400;
-			}
-			// Simulate Attack if UnitField has unit
-			if (GameState.UnitField.Num() > 0)
-			{
-				for (FTbfUnitInfoSim& Unit : GameState.UnitField)
+				// Add the unit to the field
+				CardToPlay.Rank += CardToPlay.Unit.Attack + CardToPlay.Unit.Defence + 5000;
+				if (!bIsField)
 				{
-					float NewDefence = Unit.Defence - CardToPlay.Unit.Attack;
-					Unit.Defence += NewDefence;
-					// Calculate the actual damage dealt (the difference between the original defense and the new defense)
-					float DamageDealt = Unit.Defence - NewDefence;
-					// Update the attacker's attack value by reducing it by the amount of damage dealt
-					CardToPlay.Unit.Attack = CardToPlay.Unit.Attack - DamageDealt;
+					GameState.OpponentCardField.Add(CardToPlay);
+					// Remove the card from the AI's hand after it's been played
+					GameState.OpponentCardHand.RemoveAt(CardIndex);
 				}
+				// Simulate Attack if Opponent UnitField has unit
+				if (GameState.CardField.Num() > 0)
+				{
+					for (FTbfCardInfoSim& CardInfo : GameState.CardField)
+					{
+						float NewDefence = CardInfo.Unit.Defence - CardToPlay.Unit.Attack;
+						CardInfo.Unit.Defence = NewDefence;
+						// Calculate the actual damage dealt (the difference between the original defense and the new defense)
+						float DamageDealt = CardInfo.Unit.Defence - NewDefence;
+						
+						// Update the attacker's attack value by reducing it by the amount of damage dealt
+						CardToPlay.Unit.Attack -= FMath::Clamp(DamageDealt, 0, DamageDealt);
+						CardInfo.Rank -= DamageDealt;
+					}
+				}
+				else
+				{
+					GameState.LifePoints -= CardToPlay.Unit.Attack;
+					CardToPlay.Rank += CardToPlay.Unit.Attack;
+				}
+				RemoveDeadUnitsFromArray(GameState.UnitField);
+				break;
 			}
-			else
+		case ECardType::Spell:
 			{
-				GameState.LifePoints -= CardToPlay.Unit.Attack;
+				// Apply spell effects (modify attack, defense, etc.)
+				if (!bIsField)
+				{
+					GameState.OpponentCardField.Add(CardToPlay);
+					CardToPlay.Rank += 1000.f;
+				}
+				// increase the chances of selecting this card since it has one or more unit to boost
+				if (CardToPlay.ModifierParam == EModifierParam::Attack)
+				{
+					for (FTbfCardInfoSim Element : GameState.OpponentCardField	)
+					{
+						if (Element.Type == ECardType::Unit)
+						{
+							if (CardToPlay.ModifierType == EModifierType::Add)
+							{
+								Element.Unit.Attack += CardToPlay.ModifierValue;
+								Element.Rank += CardToPlay.ModifierValue  > 1 ? 500 : -500;
+								CardToPlay.Rank += 10.f;
+							}
+							else if (CardToPlay.ModifierType == EModifierType::Multiply)
+							{
+								Element.Unit.Attack *= CardToPlay.ModifierValue;
+								Element.Rank += CardToPlay.ModifierValue  > 1 ? 500 : -500;
+								CardToPlay.Rank += 10.f;
+							}
+						}
+					}
+				}
+				else if (CardToPlay.ModifierParam == EModifierParam::Defence)
+				{
+					for (FTbfCardInfoSim Element : GameState.OpponentCardField	)
+					{
+						if (Element.Type == ECardType::Unit)
+						{
+							if (CardToPlay.ModifierType == EModifierType::Add)
+							{
+								Element.Unit.Defence += CardToPlay.ModifierValue;
+								Element.Rank += CardToPlay.ModifierValue;
+								CardToPlay.Rank += 10.f;
+							}
+							else if (CardToPlay.ModifierType == EModifierType::Multiply)
+							{
+								Element.Unit.Defence *= CardToPlay.ModifierValue;
+								Element.Rank += CardToPlay.ModifierValue  > 1 ? 500 : -500;
+								CardToPlay.Rank += 10.f;
+							}
+						}
+					}
+				}
+				break;
 			}
+		case ECardType::Trap:
+			{
+				// Set the trap on the field
+				if (!bIsField)
+				{
+					CardToPlay.Rank += 500.f;
+					GameState.OpponentCardField.Add(CardToPlay);
+				}
+				// increase the chances of selecting this card since it has one or more unit to boost
+				if (CardToPlay.ModifierParam == EModifierParam::Attack)
+				{
+					for (FTbfCardInfoSim Element : GameState.CardField	)
+					{
+						if (Element.Type == ECardType::Unit)
+						{
+							if (CardToPlay.ModifierType == EModifierType::Add)
+							{
+								Element.Unit.Attack += CardToPlay.ModifierValue;
+								Element.Rank += CardToPlay.ModifierValue;
+								CardToPlay.Rank += 30.f;
+							}
+							else if (CardToPlay.ModifierType == EModifierType::Multiply)
+							{
+								Element.Unit.Attack *= CardToPlay.ModifierValue;
+								Element.Rank += CardToPlay.ModifierValue  > 1 ? 500 : -500;
+								CardToPlay.Rank += 30.f;
+							}
+						}
+					}
+					
+				}
+				else if (CardToPlay.ModifierParam == EModifierParam::Defence)
+				{
+					for (FTbfCardInfoSim Element : GameState.CardField)
+					{
+						if (Element.Type == ECardType::Unit)
+						{
+							if (CardToPlay.ModifierType == EModifierType::Add)
+							{
+								Element.Unit.Defence += CardToPlay.ModifierValue;
+								Element.Rank += CardToPlay.ModifierValue;
+								CardToPlay.Rank += 30.f;
+							}
+							else if (CardToPlay.ModifierType == EModifierType::Multiply)
+							{
+								Element.Unit.Defence *= CardToPlay.ModifierValue;
+								Element.Rank += CardToPlay.ModifierValue  > 1 ? 500 : -500;
+								CardToPlay.Rank += 30.f;
+							}
+						}
+					}
+				}
+			
+				break;
+			}
+		default:
 			break;
-		}
-	case ECardType::Spell:
-		{
-			// Apply spell effects (modify attack, defense, etc.)
-			if (bIsField)
-			{
-				CardToPlay.Unit.Attack += 500;
-				CardToPlay.Unit.Defence += 500;
-			}
-			GameState.OpponentCardField.Add(CardToPlay);
-			if (CardToPlay.ModifierParam == EModifierParam::Attack)
-			{
-				for (FTbfUnitInfoSim& Unit : GameState.UnitField)
-				{
-					if (CardToPlay.ModifierType == EModifierType::Add)
-					{
-						Unit.Attack += CardToPlay.ModifierValue;
-					}
-					else if (CardToPlay.ModifierType == EModifierType::Multiply)
-					{
-						Unit.Attack *= CardToPlay.ModifierValue;
-					}
-				}
-			}
-			else if (CardToPlay.ModifierParam == EModifierParam::Defence)
-			{
-				for (FTbfUnitInfoSim& Unit : GameState.UnitField)
-				{
-					if (CardToPlay.ModifierType == EModifierType::Add)
-					{
-						Unit.Defence += CardToPlay.ModifierValue;
-					}
-					else if (CardToPlay.ModifierType == EModifierType::Multiply)
-					{
-						Unit.Defence *= CardToPlay.ModifierValue;
-					}
-				}
-			}
-			break;
-		}
-	case ECardType::Trap:
-		{
-			// Set the trap on the field and Apply
-			if (!bIsField)
-			{
-				CardToPlay.Unit.Attack += 500;
-				CardToPlay.Unit.Defence += 500;
-			}
-			GameState.OpponentCardField.Add(CardToPlay);
-			if (CardToPlay.ModifierParam == EModifierParam::Attack)
-			{
-				for (FTbfUnitInfoSim& Unit : GameState.OpponentUnitField)
-				{
-					if (CardToPlay.ModifierType == EModifierType::Add)
-					{
-						Unit.Attack += CardToPlay.ModifierValue;
-					}
-					else if (CardToPlay.ModifierType == EModifierType::Multiply)
-					{
-						Unit.Attack *= CardToPlay.ModifierValue;
-					}
-				}
-			}
-			else if (CardToPlay.ModifierParam == EModifierParam::Defence)
-			{
-				for (FTbfUnitInfoSim& Unit : GameState.OpponentUnitField)
-				{
-					if (CardToPlay.ModifierType == EModifierType::Add)
-					{
-						Unit.Defence += CardToPlay.ModifierValue;
-					}
-					else if (CardToPlay.ModifierType == EModifierType::Multiply)
-					{
-						Unit.Defence *= CardToPlay.ModifierValue;
-					}
-				}
-			}
-			break;
-		}
-	default:
-		break;
 	}
-
-	// Remove the card from the AI's hand after it's been played
-	GameState.OpponentCardHand.RemoveAt(CardIndex);
 }
 
 int32 UAlphaBetaPruningComponent::EvaluateBoardState(const FGameStateSim& GameState) const
@@ -487,40 +477,34 @@ int32 UAlphaBetaPruningComponent::EvaluateBoardState(const FGameStateSim& GameSt
 	// Add value based on the number and strength of cards on the field
 	for (const FTbfCardInfoSim& CardInfo : GameState.CardField)
 	{
-		Value += CardInfo.Unit.Attack + CardInfo.Unit.Defence;
-		if (CardInfo.ModifierType == EModifierType::Add)
-		{
-			Value += CardInfo.ModifierValue;
-		}
-		else if (CardInfo.ModifierType == EModifierType::Multiply)
-		{
-			Value *= CardInfo.ModifierValue;
-		}
-	}
-	// Add value based on the number and strength of units on the field
-	for (const FTbfUnitInfoSim& Unit : GameState.UnitField)
-	{
-		Value += Unit.Attack + Unit.Defence;
+		Value += CardInfo.Rank;
 	}
 
-	// Subtract value based on opponent's units on the field
-	for (const FTbfUnitInfoSim& OpponentUnit : GameState.OpponentUnitField)
-	{
-		Value -= OpponentUnit.Attack + OpponentUnit.Defence;
-	}
+	// Add Value Based on Opponents Cards you destroyed and are discarded
+	Value += GameState.OpponentDiscardedCards.Num() * 100.f;
+
 	// Subtract value based on opponent's cards on the field
 	for (const FTbfCardInfoSim& CardInfo : GameState.OpponentCardField)
 	{
-		Value -= CardInfo.Unit.Attack + CardInfo.Unit.Defence;
-		if (CardInfo.ModifierType == EModifierType::Add)
-		{
-			Value -= CardInfo.ModifierValue;
-		}
-		else if (CardInfo.ModifierType == EModifierType::Multiply)
-		{
-			Value *= CardInfo.ModifierValue;
-		}
+		Value -= CardInfo.Rank;
 	}
-
 	return Value;
+}
+
+void UAlphaBetaPruningComponent::RemoveFromCardArray(TArray<FTbfCardInfoSim>& Cards, const FTbfCardInfoSim& CardToRemove)
+{
+	Cards.RemoveAll([&](const FTbfCardInfoSim& Card) {
+			return Card.Name == CardToRemove.Name;
+	});
+}
+
+void UAlphaBetaPruningComponent::RemoveDeadUnitsFromArray(TArray<FTbfUnitInfoSim>& UnitInfoSim)
+{
+	UnitInfoSim.RemoveAll([&](const FTbfUnitInfoSim& Unit) {
+		if (Unit.Attack <= 0 || Unit.Defence <= 0)
+		{
+			return true;
+		}
+		return false;
+	});
 }

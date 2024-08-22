@@ -47,6 +47,9 @@ private:
 	TObjectPtr<UInputAction> AttackAction;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
+	TObjectPtr<UInputAction> NextStateAction;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
 	TObjectPtr<UInputAction> LMBAction;
 
 	UFUNCTION(BlueprintCallable, Category="Player Function")
@@ -59,6 +62,8 @@ private:
 	void Activate(const struct FInputActionValue& InputActionValue);
 	UFUNCTION(BlueprintCallable, Category="Player Function")
 	void Attack(const struct FInputActionValue& InputActionValue);
+	UFUNCTION(BlueprintCallable, Category="Player Function")
+	void NextState(const struct FInputActionValue& InputActionValue);
 	UFUNCTION(BlueprintCallable, Category="Player Function")
 	void LeftMousePressedAction(const struct FInputActionValue& InputActionValue);
 

@@ -131,11 +131,12 @@ ATbfGridCell* ATbfCharacterAI::ChooseCell() const
 	return UTbfGameFunctionLibrary::GetRandomCellForPlayer(this);
 }
 
-
 void ATbfCharacterAI::UpdateGameState()
 {
 	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Green,TEXT("Updating Game State"));
-	ATbfCharacter* Opponent = Cast<ATbfCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	UTbfGameInstance* GI = Cast<UTbfGameInstance>(UGameplayStatics::GetGameInstance(this));
+	if (!GI) return;  // Early return if GI is not valid
+	ATbfCharacterPlayer* Opponent = Cast<ATbfCharacterPlayer>(GI->PlayerOne);
 	if (!Opponent) return;  // Early return if Opponent is not valid
 	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Orange,TEXT("Updating Game State Opponent Check Passed"));
 	
@@ -153,35 +154,44 @@ void ATbfCharacterAI::UpdateGameState()
 	GameStateSim.OpponentLifePoints = OpponentAS->GetHealth();
 	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Orange,TEXT("Life Points Populated"));
 	
+	// Clear and populate the player's Deck
+	GameStateSim.Deck.Empty();
+	for (FTbfCardInfo Element : Deck)
+	{
+		GameStateSim.Deck.Add(UTbfCardFunctionLibrary::ConvertToCardSim(GameStateSim, Element.Name));;
+	}
 	// Clear and populate the player's hand
-	GameStateSim.Hand.Empty(Hand.Num());
+	GameStateSim.Hand.Empty();
 	for (auto* Element : Hand)
 	{
-		if (Element)
-		{
-			GameStateSim.Hand.Add(UTbfCardFunctionLibrary::ConvertCardToSim(GameStateSim, Element->CardInfo.Name));;
-		}
+		GameStateSim.Hand.Add(UTbfCardFunctionLibrary::ConvertToCardSim(GameStateSim, Element->CardInfo.Name));;
 	}
-
 	// Clear and populate the player's card field
-	GameStateSim.CardField.Empty(CardOnField.Num());
+	GameStateSim.CardField.Empty();
 	for (auto* Element : CardOnField)
 	{
-		if (Element)
-		{
-			GameStateSim.CardField.Add(UTbfCardFunctionLibrary::ConvertCardToSim(GameStateSim, Element->CardInfo.Name));
-		}
+		GameStateSim.CardField.Add(UTbfCardFunctionLibrary::ConvertToCardSim(GameStateSim, Element->CardInfo.Name));
+	}
+	// Clear and populate the player's unit field
+	GameStateSim.UnitField.Empty();
+	for (auto Element : UnitOnField)
+	{
+		GameStateSim.UnitField.Add(UTbfCardFunctionLibrary::ConvertToUnitSim(GameStateSim, Element->UnitInfo.Name));
 	}
 
 	// Clear and populate the opponent's card field
-	GameStateSim.OpponentCardField.Empty(Opponent->CardOnField.Num());
+	GameStateSim.OpponentCardField.Empty();
 	for (auto* Element : Opponent->CardOnField)
 	{
-		if (Element)
-		{
-			GameStateSim.OpponentCardField.Add(UTbfCardFunctionLibrary::ConvertCardToSim(GameStateSim, Element->CardInfo.Name));
-		}
+		GameStateSim.OpponentCardField.Add(UTbfCardFunctionLibrary::ConvertToCardSim(GameStateSim, Element->CardInfo.Name));
 	}
+	// Clear and populate the opponent's unit field
+	GameStateSim.OpponentUnitField.Empty();
+	for (auto Element : Opponent->UnitOnField)
+	{
+		GameStateSim.OpponentUnitField.Add(UTbfCardFunctionLibrary::ConvertToUnitSim(GameStateSim, Element->UnitInfo.Name));
+	}
+	GameStateSim;
 	
 	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Orange,TEXT("Game State Update Ended"));
 	

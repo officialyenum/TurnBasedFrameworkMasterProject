@@ -95,42 +95,42 @@ struct FGameStateSim
 	GENERATED_BODY()
 
 	// AI
-	UPROPERTY(BlueprintReadWrite, Category = "GameState")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameState")
 	int32 LifePoints = 0;
 
-	UPROPERTY(BlueprintReadWrite, Category = "GameState")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameState")
 	TArray<FTbfCardInfoSim> Deck;
 
-	UPROPERTY(BlueprintReadWrite, Category = "GameState")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameState")
 	TArray<FTbfCardInfoSim> Hand;
 
-	UPROPERTY(BlueprintReadWrite, Category = "GameState")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameState")
 	TArray<FTbfCardInfoSim> CardField;
 
-	UPROPERTY(BlueprintReadWrite, Category = "GameState")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameState")
 	TArray<FTbfUnitInfoSim> UnitField;
 
 	// Opponent
-	UPROPERTY(BlueprintReadWrite, Category = "GameState")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameState")
 	int32 OpponentLifePoints = 0;
 
-	UPROPERTY(BlueprintReadWrite, Category = "GameState")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameState")
 	TArray<FTbfCardInfoSim> OpponentCardDeck;
 
-	UPROPERTY(BlueprintReadWrite, Category = "GameState")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameState")
 	TArray<FTbfCardInfoSim> OpponentCardHand;
 
-	UPROPERTY(BlueprintReadWrite, Category = "GameState")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameState")
 	TArray<FTbfCardInfoSim> OpponentCardField;
 
-	UPROPERTY(BlueprintReadWrite, Category = "GameState")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameState")
 	TArray<FTbfUnitInfoSim> OpponentUnitField;
 
 	// Additional Game State Variables
-	UPROPERTY(BlueprintReadWrite, Category = "GameState")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameState")
 	TArray<FTbfCardInfoSim> OpponentDiscardedCards;
 
-	UPROPERTY(BlueprintReadWrite, Category = "GameState")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameState")
 	TArray<FTbfCardInfoSim> GeneralDeck;
 };
 

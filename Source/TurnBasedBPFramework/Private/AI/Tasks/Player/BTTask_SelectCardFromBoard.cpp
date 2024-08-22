@@ -19,7 +19,6 @@ EBTNodeResult::Type UBTTask_SelectCardFromBoard::ExecuteTask(UBehaviorTreeCompon
 	{
 		if (ATbfCharacterAI* const OwnerCharacter = Cast<ATbfCharacterAI>( OwnerController->GetPawn()))
 		{
-			// Reset Simulation State to Current
 			OwnerCharacter->UpdateGameState();
 			// Perform CardSelection Here
 			int32 CardIndex = OwnerCharacter->ChooseCardOnField();

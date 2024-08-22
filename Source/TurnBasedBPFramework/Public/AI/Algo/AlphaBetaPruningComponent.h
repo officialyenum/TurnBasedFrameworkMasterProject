@@ -29,7 +29,9 @@ private:
 	void GeneratePossibleHands(FGameStateSim& GameState);
 	void SimulatePlayCard(FGameStateSim& GameState, int32 CardIndex, bool bIsField);
 	
-	void ApplySpellOrTrapEffect(FGameStateSim& GameState, const FTbfCardInfoSim& CardToPlay, bool bIsOpponent);
 	void SimulateOpponentPlayCard(FGameStateSim& GameState, int32 CardIndex, bool bIsField);
 	int32 EvaluateBoardState(const FGameStateSim& GameState) const;
+
+	void RemoveFromCardArray(TArray<FTbfCardInfoSim>& Cards, const FTbfCardInfoSim& CardToRemove);
+	void RemoveDeadUnitsFromArray(TArray<FTbfUnitInfoSim>& UnitInfoSim);
 };

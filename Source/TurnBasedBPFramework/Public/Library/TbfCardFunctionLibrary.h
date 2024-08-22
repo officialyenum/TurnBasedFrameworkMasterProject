@@ -39,7 +39,10 @@ public:
 	static FTbfCardInfo GetRandomTrapCard(UDataTable* DataTable);
 	
 	UFUNCTION(BlueprintCallable, Category = "Card DataTable")
-	static FTbfCardInfoSim ConvertCardToSim(FGameStateSim State, FName Card);
+	static FTbfCardInfoSim ConvertToCardSim(FGameStateSim State, FName CardName);
+	
+	UFUNCTION(BlueprintCallable, Category = "Card DataTable")
+	static FTbfUnitInfoSim ConvertToUnitSim(FGameStateSim State, FName UnitName);
 	
 	UFUNCTION(BlueprintCallable, Category = "Card Library")
 	static ACardBase* GetRandomCardForPlayer(ATbfCharacter* Player);

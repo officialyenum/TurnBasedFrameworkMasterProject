@@ -138,16 +138,28 @@ FTbfCardInfo UTbfCardFunctionLibrary::GetRandomTrapCard(UDataTable* DataTable)
     return GetRandomCardByType(DataTable, ECardType::Trap);
 }
 
-FTbfCardInfoSim UTbfCardFunctionLibrary::ConvertCardToSim(FGameStateSim State, FName Card)
+FTbfCardInfoSim UTbfCardFunctionLibrary::ConvertToCardSim(FGameStateSim State, FName CardName)
 {
     for (FTbfCardInfoSim CardInfoSim : State.GeneralDeck)
     {
-        if (CardInfoSim.Name.Compare(Card) == 0)
+        if (CardInfoSim.Name.Compare(CardName) == 0)
         {
             return CardInfoSim;
         }
     }
     FTbfCardInfoSim Sim;
+    return Sim;
+}
+FTbfUnitInfoSim UTbfCardFunctionLibrary::ConvertToUnitSim(FGameStateSim State, FName UnitName)
+{
+    for (FTbfCardInfoSim CardInfoSim : State.GeneralDeck)
+    {
+        if (CardInfoSim.Name.Compare(UnitName) == 0)
+        {
+            return CardInfoSim.Unit;
+        }
+    }
+    FTbfUnitInfoSim Sim;
     return Sim;
 }
 

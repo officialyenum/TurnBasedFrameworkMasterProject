@@ -29,6 +29,8 @@ public:
 	int32 ChooseCardOnField() const;
 	UFUNCTION()
 	ATbfGridCell* ChooseCell() const;
+	UFUNCTION()
+	void UpdateGameState();
 	
 	// AI components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="AI", meta=(AllowPrivateAccess="true"))
@@ -43,12 +45,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI Params")
 	UDataTable* DeckDTSim;
 	
-	UFUNCTION()
-	void UpdateGameState();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI Params")
+	FGameStateSim GameStateSim;
+	
 	
 protected:
 	virtual void BeginPlay() override;
-	FGameStateSim GameStateSim;
 
 	// Simulated Actions
 	void PopulateDeck_Sim();
