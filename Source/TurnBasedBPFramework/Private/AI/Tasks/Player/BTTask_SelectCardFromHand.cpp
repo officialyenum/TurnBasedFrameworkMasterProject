@@ -21,7 +21,6 @@ EBTNodeResult::Type UBTTask_SelectCardFromHand::ExecuteTask(UBehaviorTreeCompone
 	{
 		if (ATbfCharacterAI* const OwnerCharacter = Cast<ATbfCharacterAI>( OwnerController->GetPawn()))
 		{
-			OwnerCharacter->UpdateGameState();
 			// Perform Card Selection
 			int32 CardIndex = OwnerCharacter->ChooseCardInHand();
 			if (CardIndex >= 0)

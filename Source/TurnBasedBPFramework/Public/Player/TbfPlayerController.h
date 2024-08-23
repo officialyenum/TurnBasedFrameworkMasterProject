@@ -26,6 +26,9 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, Category="Game Manager")
 	bool bIsPaused = false;
+	
+	UFUNCTION(BlueprintImplementableEvent, Category="Game Manager")
+	void PauseGameEvent();
 
 private:
 	UPROPERTY(EditAnywhere, Category="Input")
@@ -73,4 +76,5 @@ private:
 	FVector CachedDestination = FVector::Zero();
 	void CursorTrace();
 	FHitResult CursorHit;
+
 };

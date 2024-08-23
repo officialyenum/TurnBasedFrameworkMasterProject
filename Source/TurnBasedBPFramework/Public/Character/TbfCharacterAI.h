@@ -11,6 +11,7 @@ class UMonteCarloComponent;
 class UAlphaBetaPruningComponent;
 
 
+
 UCLASS()
 class TURNBASEDBPFRAMEWORK_API ATbfCharacterAI : public ATbfCharacter
 {
@@ -31,6 +32,7 @@ public:
 	ATbfGridCell* ChooseCell() const;
 	UFUNCTION()
 	void UpdateGameState();
+
 	
 	// AI components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="AI", meta=(AllowPrivateAccess="true"))
@@ -38,6 +40,13 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="AI", meta=(AllowPrivateAccess="true"))
 	UMonteCarloComponent* MonteCarloComponent;
+	
+	// AI Algorithms
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "AI Algorithm")
+	ECardAlgo SelectedCardAlgorithm;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "AI Algorithm")
+	EUnitAlgo SelectedUnitAlgorithm;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
 	UBehaviorTree* Tree;

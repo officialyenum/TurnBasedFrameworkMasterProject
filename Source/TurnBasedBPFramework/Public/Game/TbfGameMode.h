@@ -47,6 +47,8 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category="Game Functions")
 	void StartGame();
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category="Game Functions")
+	void ResumeGame();
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category="Game Functions")
 	void PauseGame();
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category="Game Functions")
 	void QuitGame();

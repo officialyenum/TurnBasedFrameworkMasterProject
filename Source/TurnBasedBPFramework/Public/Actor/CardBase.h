@@ -22,6 +22,24 @@ enum class ECardType: uint8
 };
 
 UENUM(BlueprintType)
+enum class ECardAlgo: uint8
+{
+	Random_Random,
+	AlphaBeta_Random,
+	Random_AlphaBeta,
+	AlphaBeta_AlphaBeta
+};
+
+UENUM(BlueprintType)
+enum class EUnitAlgo: uint8
+{
+	Random_Random,
+	MonteCarlo_Random,
+	Random_MonteCarlo,
+	MonteCarlo_MonteCarlo
+};
+
+UENUM(BlueprintType)
 enum class EModifierType: uint8
 {
 	Add,
@@ -87,6 +105,10 @@ struct FTbfCardInfoSim : public FTableRowBase
 	EModifierType ModifierType = EModifierType::Add;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float ModifierValue = 0.f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool bIsDead = false;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool bIsActive = false;
 };
 
 USTRUCT(BlueprintType)

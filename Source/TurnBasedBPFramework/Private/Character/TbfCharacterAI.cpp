@@ -11,7 +11,6 @@
 #include "Character/TbfCharacter.h"
 #include "Character/TbfCharacterPlayer.h"
 #include "Game/TbfGameInstance.h"
-#include "Game/TbfGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "Library/TbfCardFunctionLibrary.h"
 #include "Library/TbfGameFunctionLibrary.h"
@@ -34,7 +33,7 @@ ATbfCharacterAI::ATbfCharacterAI()
 
 	if (!DeckDTSim)
 	{
-		ConstructorHelpers::FObjectFinder<UDataTable> CardDataTable_BP(TEXT("/Game/FrameworkV2/Data/DT_CardDeckSim"));
+		ConstructorHelpers::FObjectFinder<UDataTable> CardDataTable_BP(TEXT("/Game/FrameworkV2/Data/CardDeckSim/DT_CardDeckSim"));
 		if (CardDataTable_BP.Succeeded())
 		{
 			DeckDTSim = CardDataTable_BP.Object;
@@ -61,6 +60,8 @@ void ATbfCharacterAI::BeginPlay()
 	if (UTbfGameInstance* GI = Cast<UTbfGameInstance>(UGameplayStatics::GetGameInstance(GetWorld())))
 	{
 		GI->PlayerTwo = this;
+		SelectedCardAlgorithm = GI->GetCardAlgorithm();
+		SelectedUnitAlgorithm = GI->GetUnitAlgorithm();
 	}
 	GenerateAndSpawnStartingCard();
 	GameStateSim.Deck = UTbfCardFunctionLibrary::GetDeckSim(DeckDTSim);
@@ -73,26 +74,33 @@ void ATbfCharacterAI::BeginPlay()
 int32 ATbfCharacterAI::ChooseCardInHand() const
 {
 	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("AI Choosing a Card In Hand With AlphaBetaPruning"));
-	// Simple heuristic for choosing a card to play: choose the first card in hand
 	if (Hand.Num() > 0)
 	{
-		FName CardName = AlphaBetaPruningComponent->ChooseBestCardInHand(GameStateSim, 3);
-		for (int i = 0; i < Hand.Num(); ++i)
+		if (SelectedCardAlgorithm == ECardAlgo::AlphaBeta_Random || SelectedCardAlgorithm == ECardAlgo::AlphaBeta_AlphaBeta)
 		{
-			if (Hand[i]->CardInfo.Name.Compare(CardName) == 0)
+			FName CardName = AlphaBetaPruningComponent->ChooseBestCard(GameStateSim, 3, false);
+			for (int i = 0; i < Hand.Num(); ++i)
 			{
-				return i;
+				if (Hand[i]->CardInfo.Name.Compare(CardName) == 0)
+				{
+					return i;
+				}
 			}
+		} else
+		{
+			// Always pick out unit card first for activation
+			for (int i = 0; i < Hand.Num(); ++i)
+			{
+				if(Hand[i]->CardInfo.Type == ECardType::Unit)
+				{
+					return i;
+				}
+			}
+			int32 RandomCardIndex = FMath::RandRange(0,Hand.Num()-1);
+			return RandomCardIndex;
 		}
-		// Always pick out unit card first for activation
-		// for (int i = 0; i < Hand.Num(); ++i)
-		// {
-		// 	if(Hand[i]->CardInfo.Type == ECardType::Unit)
-		// 	{
-		// 		return i;
-		// 	}
-		// }
-		// return 0;
+		
+		
 	}
 	return INDEX_NONE;
 }
@@ -103,24 +111,27 @@ int32 ATbfCharacterAI::ChooseCardOnField() const
 	// Alpha Beta Pruning heuristic for choosing a card to play
 	if (CardOnField.Num() > 0)
 	{
-		FName CardName = AlphaBetaPruningComponent->ChooseBestCardInField(GameStateSim, 3);
-		for (int i = 0; i < CardOnField.Num(); ++i)
+		if (SelectedCardAlgorithm == ECardAlgo::Random_AlphaBeta || SelectedCardAlgorithm == ECardAlgo::AlphaBeta_AlphaBeta)
 		{
-			if (CardOnField[i]->CardInfo.Name.Compare(CardName) == 0)
+			FName CardName = AlphaBetaPruningComponent->ChooseBestCard(GameStateSim, 3, true);
+			for (int i = 0; i < CardOnField.Num() - 1; ++i)
+			{
+				if (CardOnField[i]->CardInfo.Name.Compare(CardName) == 0)
+				{
+					return i;
+				}
+			}
+		}
+		// Always pick out unit card first for activation
+		for (int i = 0; i < CardOnField.Num() - 1; ++i)
+		{
+			if(CardOnField[i]->CardInfo.Type == ECardType::Unit)
 			{
 				return i;
 			}
 		}
-		return 0;
-		// Always pick out unit card first for activation
-		// for (int i = 0; i < Hand.Num(); ++i)
-		// {
-		// 	if(Hand[i]->CardInfo.Type == ECardType::Unit)
-		// 	{
-		// 		return i;
-		// 	}
-		// }
-		// return 0;
+		int32 RandomCardIndex = FMath::RandRange(0,CardOnField.Num()-1);
+		return RandomCardIndex;
 	}
 	return INDEX_NONE;
 }
@@ -172,11 +183,9 @@ void ATbfCharacterAI::UpdateGameState()
 	{
 		GameStateSim.CardField.Add(UTbfCardFunctionLibrary::ConvertToCardSim(GameStateSim, Element->CardInfo.Name));
 	}
-	// Clear and populate the player's unit field
-	GameStateSim.UnitField.Empty();
 	for (auto Element : UnitOnField)
 	{
-		GameStateSim.UnitField.Add(UTbfCardFunctionLibrary::ConvertToUnitSim(GameStateSim, Element->UnitInfo.Name));
+		GameStateSim.CardField.Add(UTbfCardFunctionLibrary::ConvertToCardSim(GameStateSim, Element->UnitInfo.Name));
 	}
 
 	// Clear and populate the opponent's card field
@@ -185,13 +194,12 @@ void ATbfCharacterAI::UpdateGameState()
 	{
 		GameStateSim.OpponentCardField.Add(UTbfCardFunctionLibrary::ConvertToCardSim(GameStateSim, Element->CardInfo.Name));
 	}
-	// Clear and populate the opponent's unit field
-	GameStateSim.OpponentUnitField.Empty();
 	for (auto Element : Opponent->UnitOnField)
 	{
-		GameStateSim.OpponentUnitField.Add(UTbfCardFunctionLibrary::ConvertToUnitSim(GameStateSim, Element->UnitInfo.Name));
+		FTbfCardInfoSim Card = UTbfCardFunctionLibrary::ConvertToCardSim(GameStateSim, Element->UnitInfo.Name);
+		Card.bIsActive = true;
+		GameStateSim.OpponentCardField.Add(Card);
 	}
-	GameStateSim;
 	
 	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Orange,TEXT("Game State Update Ended"));
 	

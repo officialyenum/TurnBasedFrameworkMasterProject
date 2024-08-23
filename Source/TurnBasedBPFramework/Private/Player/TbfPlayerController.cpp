@@ -81,8 +81,7 @@ void ATbfPlayerController::PauseGame(const FInputActionValue& InputActionValue)
 	// Call the UE5 Pause Game Function to Pause the Game
 
 	bIsPaused = !bIsPaused;
-	UGameplayStatics::SetGamePaused(GetWorld(), bIsPaused);
-	//TODO: if bIsPaused is true, open the pause widget, else close the pause widget
+	PauseGameEvent();
 	
 }
 

@@ -23,6 +23,16 @@ void UTbfGameInstance::SetPlayerTwo(ATbfCharacter* Player)
 	PlayerTwo = Player;
 }
 
+void UTbfGameInstance::SetCardAlgorithm(ECardAlgo Algo)
+{
+	CardAlgorithm = Algo;
+}
+
+void UTbfGameInstance::SetUnitAlgorithm(EUnitAlgo Algo)
+{
+	UnitAlgorithm = Algo;
+}
+
 TArray<ACardBase*> UTbfGameInstance::PlayerOneFieldedCards()
 {
 	TArray<ACardBase*> FilteredCard;

@@ -17,8 +17,7 @@ public:
 	// Sets default values for this component's properties
 	UAlphaBetaPruningComponent();
 	
-	FName ChooseBestCardInHand(const FGameStateSim& GameState, int32 Depth);
-	FName ChooseBestCardInField(const FGameStateSim& GameState, int32 Depth);
+	FName ChooseBestCard(const FGameStateSim& GameState, int32 Depth, bool bIsField);
 
 protected:
 	virtual void BeginPlay() override;
@@ -33,5 +32,9 @@ private:
 	int32 EvaluateBoardState(const FGameStateSim& GameState) const;
 
 	void RemoveFromCardArray(TArray<FTbfCardInfoSim>& Cards, const FTbfCardInfoSim& CardToRemove);
-	void RemoveDeadUnitsFromArray(TArray<FTbfUnitInfoSim>& UnitInfoSim);
+	void RemoveDeadUnitsFromArray(TArray<FTbfCardInfoSim>& UnitField);
+	
+	void ApplyCardEffects(FGameStateSim& GameState, FTbfCardInfoSim& Card, bool bIsTrap, bool bIsPlayer);
+	void SimulateCombat(FGameStateSim& GameState, FTbfCardInfoSim& Card, bool bIsPlayer);
+	
 };

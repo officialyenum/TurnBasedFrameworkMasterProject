@@ -21,14 +21,23 @@ public:
 	
 	UPROPERTY(BlueprintReadOnly, Category="Overlay Widget")
 	TObjectPtr<UTbfUserWidget> OverlayWidget;
+	UPROPERTY(BlueprintReadOnly, Category="Overlay Widget")
+	TObjectPtr<UUserWidget> PauseWidget;
 	
 	UOverlayWidgetController* GetOverlayWidgetController(const FWidgetControllerParams& WCParams);
 	UUnitWidgetController* GetUnitWidgetController(const FWidgetControllerParams& WCParams);
 	
 	void InitOverlay(APlayerController* PC, AAIController* AC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS);
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category="Pause UI Actions")
+	void PauseGameEvent();
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category="Pause UI Actions")
+	void ResumeGameEvent();
 private:
 	UPROPERTY(EditAnywhere, Category="Tbf HUD")
 	TSubclassOf<UTbfUserWidget> OverlayWidgetClass;
+	UPROPERTY(EditAnywhere, Category="Tbf HUD")
+	TSubclassOf<UUserWidget> PauseWidgetClass;
 
 	UPROPERTY()
 	TObjectPtr<UOverlayWidgetController> OverlayWidgetController;

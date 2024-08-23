@@ -9,7 +9,7 @@
 			"B": 0,
 			"A": 1
 		},
-		"Info": "NSLOCTEXT(\"[E7E6249B851542671902FEC042537632]\", \"C42A6D6243BDDD95C1BD8D9222268F14\", \"This Summons a Hollow Red Unit\")",
+		"Info": "NSLOCTEXT(\"[E7E6249B851542671902FEC042537632]\", \"C42A6D6243BDDD95C1BD8D9222268F14\", \"Ragnar Is A Unit Force\")",
 		"Type": "Unit",
 		"UnitClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Character/BP_TbfCharacterUnit.BP_TbfCharacterUnit_C'",
 		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_Deal100Damage.GE_Deal100Damage_C'",
@@ -44,7 +44,7 @@
 			"B": 0.10651,
 			"A": 1
 		},
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"449769F94FA1229157C9338EE2429966\", \"Bost Attack By 20%\")",
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"449769F94FA1229157C9338EE2429966\", \"Bost Attack By 50%\")",
 		"Type": "Spell",
 		"UnitClass": "None",
 		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Actor/GameplayEffects/GE_BoostAttackBy50.GE_BoostAttackBy50_C'",
@@ -80,7 +80,7 @@
 			"B": 0.954526,
 			"A": 1
 		},
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"20177A0C442EC4B03C4FE8B27F9509D8\", \"This Reduces Opponent Defence By 10%\")",
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"20177A0C442EC4B03C4FE8B27F9509D8\", \"This Reduces Opponent Defence By 50%\")",
 		"Type": "Trap",
 		"UnitClass": "None",
 		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_BoostDefenceBy25.GE_BoostDefenceBy25_C'",
@@ -116,7 +116,7 @@
 			"B": 0.10651,
 			"A": 1
 		},
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"1234567A0C4DC13D90373E838F9202F3D\", \"Deals 500 damage to opponent Defence\")",
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"1234567A0C4DC13D90373E838F9202F3D\", \"Boost Unit Defence by 500\")",
 		"Type": "Spell",
 		"UnitClass": "None",
 		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Actor/GameplayEffects/GE_BoostAttackBy50.GE_BoostAttackBy50_C'",
@@ -134,7 +134,7 @@
 			"B": 0.954526,
 			"A": 1
 		},
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"2234567A0C4DC13D90373E838F9202F3D\", \"Reduces opponent's defense by 30%\")",
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"2234567A0C4DC13D90373E838F9202F3D\", \"Reduces opponent's defense by 50%\")",
 		"Type": "Trap",
 		"UnitClass": "None",
 		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_BoostDefenceBy25.GE_BoostDefenceBy25_C'",
@@ -170,7 +170,7 @@
 			"B": 0.10651,
 			"A": 1
 		},
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"4234567A0C4DC13D90373E838F9202F3D\", \"Restores 300 Attack to unit\")",
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"4234567A0C4DC13D90373E838F9202F3D\", \"Restores 500 Attack to unit\")",
 		"Type": "Spell",
 		"UnitClass": "None",
 		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Actor/GameplayEffects/GE_BoostAttackBy50.GE_BoostAttackBy50_C'",
@@ -242,7 +242,7 @@
 			"B": 0.10651,
 			"A": 1
 		},
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"8234567A0C4DC13D90373E838F9202F3D\", \"Boosts attack and defense by 20%\")",
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"8234567A0C4DC13D90373E838F9202F3D\", \"Boosts attack and defense by 50%\")",
 		"Type": "Spell",
 		"UnitClass": "None",
 		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Actor/GameplayEffects/GE_BoostAttackBy50.GE_BoostAttackBy50_C'",
@@ -314,7 +314,7 @@
 			"B": 0.954526,
 			"A": 1
 		},
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"C234567A0C4DC13D90373E838F9202F3D\", \"Reduces opponent's attack by 40%\")",
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"C234567A0C4DC13D90373E838F9202F3D\", \"Reduces opponent's attack by 50%\")",
 		"Type": "Trap",
 		"UnitClass": "None",
 		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_BoostDefenceBy25.GE_BoostDefenceBy25_C'",
@@ -350,7 +350,7 @@
 			"B": 0.954526,
 			"A": 1
 		},
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"E234567A0C4DC13D90373E838F9202F3D\", \"Reduces opponent's attack and Defence by 300\")",
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"E234567A0C4DC13D90373E838F9202F3D\", \"Reduces opponent's Defence by 50%\")",
 		"Type": "Trap",
 		"UnitClass": "None",
 		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_BoostDefenceBy25.GE_BoostDefenceBy25_C'",
@@ -386,7 +386,7 @@
 			"B": 0.954526,
 			"A": 1
 		},
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"F234567A0C4DC13D90373E838F9202F3D\", \"Aphrodite Goddess of Love\")",
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"F234567A0C4DC13D90373E838F9202F3D\", \"Reduces opponent's Attack By 50%\")",
 		"Type": "Trap",
 		"UnitClass": "None",
 		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_BoostDefenceBy25.GE_BoostDefenceBy25_C'",
@@ -422,7 +422,7 @@
 			"B": 0.10651,
 			"A": 1
 		},
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"I234567A0C4DC13D90373E838F9202F3D\", \"Reduces opponent's attack and defense by 10%\")",
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"I234567A0C4DC13D90373E838F9202F3D\", \"Reduces opponent's attack and defense by 50%\")",
 		"Type": "Spell",
 		"UnitClass": "None",
 		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Actor/GameplayEffects/GE_BoostAttackBy50.GE_BoostAttackBy50_C'",
@@ -458,7 +458,7 @@
 			"B": 0.954526,
 			"A": 1
 		},
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"K234567A0C4DC13D90373E838F9202F3D\", \"Reduces opponent's Defence by 90%\")",
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"K234567A0C4DC13D90373E838F9202F3D\", \"Reduces opponent's Defence by 50%\")",
 		"Type": "Trap",
 		"UnitClass": "None",
 		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_BoostDefenceBy25.GE_BoostDefenceBy25_C'",
@@ -494,7 +494,7 @@
 			"B": 0.954526,
 			"A": 1
 		},
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"M234567A0C4DC13D90373E838F9202F3D\", \"Reduces both opponent By 10%\")",
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"M234567A0C4DC13D90373E838F9202F3D\", \"Reduces Attack opponent By 50%\")",
 		"Type": "Trap",
 		"UnitClass": "None",
 		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_BoostDefenceBy25.GE_BoostDefenceBy25_C'",
@@ -530,7 +530,7 @@
 			"B": 0.954526,
 			"A": 1
 		},
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"O234567A0C4DC13D90373E838F9202F3D\", \"Reduce Opponent Attack and Defence By 20%\")",
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"O234567A0C4DC13D90373E838F9202F3D\", \"Reduce Opponent Attack and Defence By 50%\")",
 		"Type": "Trap",
 		"UnitClass": "None",
 		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_BoostDefenceBy25.GE_BoostDefenceBy25_C'",
@@ -566,7 +566,7 @@
 			"B": 0.10651,
 			"A": 1
 		},
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"Q234567A0C4DC13D90373E838F9202F3D\", \"Boosts unit's attack by 40%\")",
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"Q234567A0C4DC13D90373E838F9202F3D\", \"Boosts unit's attack by 50%\")",
 		"Type": "Spell",
 		"UnitClass": "None",
 		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Actor/GameplayEffects/GE_BoostAttackBy50.GE_BoostAttackBy50_C'",
@@ -602,7 +602,7 @@
 			"B": 0.10651,
 			"A": 1
 		},
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"S234567A0C4DC13D90373E838F9202F3D\", \"Increases unit's defense by 30%\")",
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"S234567A0C4DC13D90373E838F9202F3D\", \"Increases unit's defense by 50%\")",
 		"Type": "Spell",
 		"UnitClass": "None",
 		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Actor/GameplayEffects/GE_BoostAttackBy50.GE_BoostAttackBy50_C'",
@@ -638,7 +638,7 @@
 			"B": 0.10651,
 			"A": 1
 		},
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"U234567A0C4DC13D90373E838F9202F3D\", \"Deals 600 damage to opponents Attack and Defence\")",
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"U234567A0C4DC13D90373E838F9202F3D\", \"Boots Attack by 500\")",
 		"Type": "Spell",
 		"UnitClass": "None",
 		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Actor/GameplayEffects/GE_BoostAttackBy50.GE_BoostAttackBy50_C'",
@@ -674,7 +674,7 @@
 			"B": 0.954526,
 			"A": 1
 		},
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"W234567A0C4DC13D90373E838F9202F3D\", \"Puts Opponent Attack and Defence to 1 for 1 turn\")",
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"W234567A0C4DC13D90373E838F9202F3D\", \"Reduce Opponent Defence by 500\")",
 		"Type": "Trap",
 		"UnitClass": "None",
 		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_BoostDefenceBy25.GE_BoostDefenceBy25_C'",
