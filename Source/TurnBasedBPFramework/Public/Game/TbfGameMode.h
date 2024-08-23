@@ -37,6 +37,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Game Functions Turn")
 	void SwitchTurn();
 	
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Game Functions Turn")
+	void GameOverEvent();
+	
 	UPROPERTY(BlueprintReadWrite, Category="Game Properties")
 	TObjectPtr<ATbfCharacterBase> PlayerOne;
 	UPROPERTY(BlueprintReadWrite, Category="Game Properties")

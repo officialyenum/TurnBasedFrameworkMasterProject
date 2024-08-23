@@ -28,7 +28,7 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Players")
 	TObjectPtr<ATbfCharacter> PlayerTwo;
-
+	
 	
 	UFUNCTION(BlueprintCallable, Category= "Player Setup")
 	void SetPlayerOne(ATbfCharacter* Player);
@@ -36,6 +36,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category= "Player Setup")
 	void SetPlayerTwo(ATbfCharacter* Player);
 
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Game")
+	FText WinningMessage;
+	
+	UFUNCTION(BlueprintCallable, Category="Game")
+	void CheckWinner();
 	
 	UFUNCTION(BlueprintCallable, Category="AI")
 	void SetCardAlgorithm(ECardAlgo Algo);

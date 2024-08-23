@@ -72,8 +72,11 @@ void ATbfCharacterPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 	// Set User Player in Game Instance Player One
-	UTbfGameInstance* GI = Cast<UTbfGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-	GI->PlayerOne = this;
+	if(UTbfGameInstance* GI = Cast<UTbfGameInstance>(UGameplayStatics::GetGameInstance(GetWorld())))
+	{
+		GI->PlayerOne = this;
+		CurrentState = GI->bIsPlayerOneTurn ?  ETbfPlayerState::Draw : ETbfPlayerState::Waiting;
+	}
 	GenerateAndSpawnStartingCard();
 	UpdateUIStat();
 	FText Message = FText::Format(

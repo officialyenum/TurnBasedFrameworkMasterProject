@@ -62,6 +62,7 @@ void ATbfCharacterAI::BeginPlay()
 		GI->PlayerTwo = this;
 		SelectedCardAlgorithm = GI->GetCardAlgorithm();
 		SelectedUnitAlgorithm = GI->GetUnitAlgorithm();
+		CurrentState = GI->bIsPlayerOneTurn ?  ETbfPlayerState::Waiting : ETbfPlayerState::Draw;
 	}
 	GenerateAndSpawnStartingCard();
 	GameStateSim.Deck = UTbfCardFunctionLibrary::GetDeckSim(DeckDTSim);

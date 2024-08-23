@@ -10,6 +10,10 @@ ATbfGameMode::ATbfGameMode()
 {
 	// Set default game instance class
 	GI = Cast<UTbfGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if(GI)
+	{
+		GI->bIsPlayerOneTurn = FMath::RandBool();
+	}
 }
 
 ATbfCharacter* ATbfGameMode::GetPlayerOne() const

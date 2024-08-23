@@ -8,6 +8,7 @@
 #include "Actor/TbfGridCell.h"
 #include "Components/ArrowComponent.h"
 #include "Game/TbfGameInstance.h"
+#include "Kismet/GameplayStatics.h"
 #include "Library/TbfCardFunctionLibrary.h"
 #include "Library/TbfGameFunctionLibrary.h"
 
@@ -427,8 +428,15 @@ void ATbfCharacter::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, cons
 	
 		CardCauser->ApplyEffectToTarget(this, CardCauser->CardInfo.GameplayEffectClass);
 		
-		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Orange,TEXT("Finish Handling Card Causer Damage"));;
+		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Orange,TEXT("Finish Handling Card Causer Damage"));
 	}
+
+	if (UTbfGameInstance* GI = Cast<UTbfGameInstance>(UGameplayStatics::GetGameInstance(this)))
+	{
+		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Orange,TEXT("Checking Winner"));
+		GI->CheckWinner();
+	}
+	
 }
 
 
