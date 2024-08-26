@@ -66,6 +66,7 @@ int32 UAlphaBetaPruningComponent::AlphaBetaPruning(FGameStateSim& GameState, int
         int32 MaxEval = INT32_MIN;
         for (int32 i = 0; i < NoOfCards; ++i)
         {
+            FGameStateSim SavedState = GameState;
             FGameStateSim SimulatedState = GameState;
             SimulatePlayCard(SimulatedState, i, bIsField);
 
@@ -77,6 +78,8 @@ int32 UAlphaBetaPruningComponent::AlphaBetaPruning(FGameStateSim& GameState, int
             {
                 break; // Beta cutoff
             }
+            //reverse State for next iteration
+            GameState = SavedState;
         }
         return MaxEval;
     }
@@ -86,6 +89,7 @@ int32 UAlphaBetaPruningComponent::AlphaBetaPruning(FGameStateSim& GameState, int
 
         for (int32 i = 0; i < NoOfCards; ++i)
         {
+            FGameStateSim SavedState = GameState;
             FGameStateSim SimulatedState = GameState;
             SimulateOpponentPlayCard(SimulatedState, i, bIsField);
 
@@ -97,6 +101,8 @@ int32 UAlphaBetaPruningComponent::AlphaBetaPruning(FGameStateSim& GameState, int
             {
                 break; // Alpha cutoff
             }
+            //reverse State for next iteration
+            GameState = SavedState;
         }
         return MinEval;
     }
