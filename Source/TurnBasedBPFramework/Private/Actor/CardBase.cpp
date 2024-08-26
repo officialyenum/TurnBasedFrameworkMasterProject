@@ -23,7 +23,7 @@ ACardBase::ACardBase(): CardInfo()
 	CardMesh->SetupAttachment(RootComponent);
 	CardMesh->SetRelativeScale3D(FVector3d(1.5,1.0,0.05));
 	// Find and set the static mesh
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshClass(TEXT("/Game/LevelPrototyping/Meshes/SM_ChamferCube"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshClass(TEXT("/Game/FrameworkV2/Assets/SM_TbfCardMesh"));
 	if (MeshClass.Succeeded())
 	{
 		CardMesh->SetStaticMesh(MeshClass.Object);

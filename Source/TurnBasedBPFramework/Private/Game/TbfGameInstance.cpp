@@ -6,6 +6,7 @@
 #include "AbilitySystem/TbfAttributeSet.h"
 #include "Actor/CardBase.h"
 #include "Character/TbfCharacter.h"
+#include "Components/AudioComponent.h"
 #include "Game/TbfGameMode.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -24,6 +25,11 @@ void UTbfGameInstance::SetPlayerOne(ATbfCharacter* Player)
 void UTbfGameInstance::SetPlayerTwo(ATbfCharacter* Player)
 {
 	PlayerTwo = Player;
+}
+
+void UTbfGameInstance::PlayMusicAction() const
+{
+	MusicComponent = Cast<UAudioComponent>(UGameplayStatics::SpawnSound2D(this,BgMusic,1,1,0,nullptr,true));
 }
 
 void UTbfGameInstance::CheckWinner()

@@ -17,13 +17,18 @@ class TURNBASEDBPFRAMEWORK_API UMonteCarloComponent : public UActorComponent
 public:
 	UMonteCarloComponent();
 
-	int32 MonteCarloSimulation(FGameStateSim GameState, int32 Simulations);
+	int32 GetAttackingUnitIndex() const { return OutAttackingUnitIndex; };
+	int32 GetTargetUnitIndex() const { return OutTargetUnitIndex; };
+	// Function to choose the best unit to attack with and the best target
+	void ChooseBestAttack(FGameStateSim& GameState, int32 NumSimulations);
 
 protected:
 	virtual void BeginPlay() override;
-
+	
 private:
-	void PlaySelectedUnit(FGameStateSim& GameState, int32 CardIndex);
-	void UndoSelectedUnit(FGameStateSim& GameState, int32 CardIndex);
-	bool SimulateGame(FGameStateSim& GameState);
+	int32 MonteCarloSimulation(FGameStateSim& SimulatedState, int32 AttackingUnitIndex, int32 TargetUnitIndex, int32 NumSimulations);
+	void SimulateAttack(FGameStateSim& GameState, int32 AttackingUnitIndex, int32 TargetUnitIndex);
+	int32 EvaluateBoardState(const FGameStateSim& GameState) const;
+	int32 OutAttackingUnitIndex;
+	int32 OutTargetUnitIndex;
 };
