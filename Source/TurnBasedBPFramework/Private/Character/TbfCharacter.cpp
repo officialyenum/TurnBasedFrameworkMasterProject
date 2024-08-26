@@ -8,6 +8,7 @@
 #include "Actor/TbfGridCell.h"
 #include "Components/ArrowComponent.h"
 #include "Game/TbfGameInstance.h"
+#include "Kismet/GameplayStatics.h"
 #include "Library/TbfCardFunctionLibrary.h"
 #include "Library/TbfGameFunctionLibrary.h"
 
@@ -29,7 +30,7 @@ ATbfCharacter::ATbfCharacter()
 
 	if (!DeckDT)
 	{
-		ConstructorHelpers::FObjectFinder<UDataTable> CardDataTable_BP(TEXT("/Game/FrameWork/Blueprint/Data/DT_CardDeckList"));
+		ConstructorHelpers::FObjectFinder<UDataTable> CardDataTable_BP(TEXT("/Game/FrameworkV2/Data/CardDeck/DT_CardDeckList"));
 		if (CardDataTable_BP.Succeeded())
 		{
 			DeckDT = CardDataTable_BP.Object;
@@ -131,8 +132,6 @@ void ATbfCharacter::PlaySelectedCard()
 		}
 		if (!TargetedCell)
 		{
-			MoveCountPerTurn--;
-			UpdateAttributeSet();
 			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Did Not Select A Cell for Card to Move To"), *Name.ToString()));
 			return;
 		}
@@ -220,6 +219,12 @@ void ATbfCharacter::ActivateSelectedCard()
 		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s is Out Of Activation Moves"), *Name.ToString()));
 		return;
 	}
+	if (!SelectedCard) return;
+	if (SelectedCard->CardInfo.Type == ECardType::Unit && !CardOnField.Contains(SelectedCard))
+	{
+		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s unit card has not been moved to a cell"), *Name.ToString()));
+		return;
+	}
 	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("Activation Triggered")));
 	if (Hand.Contains(SelectedCard) || CardOnField.Contains(SelectedCard))
 	{
@@ -227,14 +232,10 @@ void ATbfCharacter::ActivateSelectedCard()
 		SelectedCard->ActivateCard();
 		ActivateCountPerTurn--;
 		Cast<UTbfAttributeSet>(AttributeSet)->SetActivatePoints(ActivateCountPerTurn);
-		if (ActivateCountPerTurn <= 0)
-		{
-			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Switch to Next State Due Activation Cost Exceeded"), *Name.ToString()));
-		}
 	}
 	UpdateAttributeSet();
 	//UpdateUIStat();
-	if (ActivateCountPerTurn <= 0 && (CurrentState == ETbfPlayerState::Main || CurrentState == ETbfPlayerState::Battle))
+	if (ActivateCountPerTurn <= 0 && CurrentState == ETbfPlayerState::Main)
 	{
 		GoToNextState();
 	}
@@ -427,8 +428,15 @@ void ATbfCharacter::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, cons
 	
 		CardCauser->ApplyEffectToTarget(this, CardCauser->CardInfo.GameplayEffectClass);
 		
-		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Orange,TEXT("Finish Handling Card Causer Damage"));;
+		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Orange,TEXT("Finish Handling Card Causer Damage"));
 	}
+
+	if (UTbfGameInstance* GI = Cast<UTbfGameInstance>(UGameplayStatics::GetGameInstance(this)))
+	{
+		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Orange,TEXT("Checking Winner"));
+		GI->CheckWinner();
+	}
+	
 }
 
 

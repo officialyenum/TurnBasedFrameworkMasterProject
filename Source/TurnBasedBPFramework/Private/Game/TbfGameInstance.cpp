@@ -3,8 +3,11 @@
 
 #include "Game/TbfGameInstance.h"
 
+#include "AbilitySystem/TbfAttributeSet.h"
 #include "Actor/CardBase.h"
 #include "Character/TbfCharacter.h"
+#include "Game/TbfGameMode.h"
+#include "Kismet/GameplayStatics.h"
 
 UTbfGameInstance::UTbfGameInstance()
 {
@@ -21,6 +24,41 @@ void UTbfGameInstance::SetPlayerOne(ATbfCharacter* Player)
 void UTbfGameInstance::SetPlayerTwo(ATbfCharacter* Player)
 {
 	PlayerTwo = Player;
+}
+
+void UTbfGameInstance::CheckWinner()
+{
+	auto CheckAndDeclareWinner = [&](ATbfCharacter* Player, ATbfCharacter* Opponent) {
+		if (Player && Opponent)
+		{
+			UTbfAttributeSet* PlayerAttributeSet = Cast<UTbfAttributeSet>(Player->GetAttributeSet());
+			if (PlayerAttributeSet && PlayerAttributeSet->GetHealth() <= 0)
+			{
+				if (ATbfGameMode* GM = Cast<ATbfGameMode>(UGameplayStatics::GetGameMode(this)))
+				{
+					WinningMessage = FText::Format(
+						FText::FromString(TEXT("{0} Won this round")), 
+						FText::FromName(Opponent->Name)
+					);
+					GM->GameOverEvent();
+				}
+			}
+		}
+	};
+
+	// Check if either player has won
+	CheckAndDeclareWinner(PlayerOne, PlayerTwo);
+	CheckAndDeclareWinner(PlayerTwo, PlayerOne);
+}
+
+void UTbfGameInstance::SetCardAlgorithm(ECardAlgo Algo)
+{
+	CardAlgorithm = Algo;
+}
+
+void UTbfGameInstance::SetUnitAlgorithm(EUnitAlgo Algo)
+{
+	UnitAlgorithm = Algo;
 }
 
 TArray<ACardBase*> UTbfGameInstance::PlayerOneFieldedCards()

@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Actor/CardBase.h"
+#include "Character/TbfCharacterAI.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "TbfCardFunctionLibrary.generated.h"
 
-struct FTbfCardInfo;
 /**
  * 
  */
@@ -37,6 +37,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Card DataTable")
 	static FTbfCardInfo GetRandomTrapCard(UDataTable* DataTable);
+	
+	UFUNCTION(BlueprintCallable, Category = "Card DataTable")
+	static FTbfCardInfoSim ConvertToCardSim(FGameStateSim State, FName CardName);
+	
+	UFUNCTION(BlueprintCallable, Category = "Card DataTable")
+	static FTbfUnitInfoSim ConvertToUnitSim(FGameStateSim State, FName UnitName);
 	
 	UFUNCTION(BlueprintCallable, Category = "Card Library")
 	static ACardBase* GetRandomCardForPlayer(ATbfCharacter* Player);

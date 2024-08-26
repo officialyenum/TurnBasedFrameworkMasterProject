@@ -82,13 +82,13 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Params" )
 	int32 CardSpace = 100;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Params" )
-	int32 DrawCountPerTurn = 2;
+	int32 DrawCountPerTurn = 5;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Params" )
 	int32 MoveCountPerTurn = 2;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Params" )
-	int32 ActivateCountPerTurn = 2;
+	int32 ActivateCountPerTurn = 0;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Params" )
-	int32 BattleCountPerTurn = 2;
+	int32 BattleCountPerTurn = 0;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Params" )
 	ETbfPlayerState CurrentState = ETbfPlayerState::Waiting;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Params")

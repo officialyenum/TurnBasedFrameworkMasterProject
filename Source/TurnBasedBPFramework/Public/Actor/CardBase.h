@@ -10,9 +10,8 @@
 #include "CardBase.generated.h"
 
 class UWidgetComponent;
-struct FTbfUnitInfoSim;
 // Forward declaration
-class ATbfCharacterUnit;
+// class ATbfCharacterUnit;
 
 UENUM(BlueprintType)
 enum class ECardType: uint8
@@ -20,6 +19,24 @@ enum class ECardType: uint8
 	Unit,
 	Spell,
 	Trap
+};
+
+UENUM(BlueprintType)
+enum class ECardAlgo: uint8
+{
+	Random_Random,
+	AlphaBeta_Random,
+	Random_AlphaBeta,
+	AlphaBeta_AlphaBeta
+};
+
+UENUM(BlueprintType)
+enum class EUnitAlgo: uint8
+{
+	Random_Random,
+	MonteCarlo_Random,
+	Random_MonteCarlo,
+	MonteCarlo_MonteCarlo
 };
 
 UENUM(BlueprintType)
@@ -88,6 +105,55 @@ struct FTbfCardInfoSim : public FTableRowBase
 	EModifierType ModifierType = EModifierType::Add;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float ModifierValue = 0.f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool bIsDead = false;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool bIsActive = false;
+};
+
+USTRUCT(BlueprintType)
+struct FGameStateSim
+{
+	GENERATED_BODY()
+
+	// AI
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameState")
+	int32 LifePoints = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameState")
+	TArray<FTbfCardInfoSim> Deck;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameState")
+	TArray<FTbfCardInfoSim> Hand;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameState")
+	TArray<FTbfCardInfoSim> CardField;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameState")
+	TArray<FTbfUnitInfoSim> UnitField;
+
+	// Opponent
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameState")
+	int32 OpponentLifePoints = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameState")
+	TArray<FTbfCardInfoSim> OpponentCardDeck;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameState")
+	TArray<FTbfCardInfoSim> OpponentCardHand;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameState")
+	TArray<FTbfCardInfoSim> OpponentCardField;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameState")
+	TArray<FTbfUnitInfoSim> OpponentUnitField;
+
+	// Additional Game State Variables
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameState")
+	TArray<FTbfCardInfoSim> OpponentDiscardedCards;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameState")
+	TArray<FTbfCardInfoSim> GeneralDeck;
 };
 
 UCLASS()

@@ -4,45 +4,13 @@
 #include "TbfCharacter.h"
 #include "Actor/CardBase.h"
 #include "BehaviorTree/BehaviorTree.h"
+#include "CoreMinimal.h"
+#include "TbfCharacterAI.generated.h"
 
 class UMonteCarloComponent;
 class UAlphaBetaPruningComponent;
-struct FTbfUnitInfoSim;
-struct FTbfUnitInfo;
 
-struct FGameState
-{
-	int32 LifePoints;
-	int32 OpponentLifePoints;
-	TArray<FTbfCardInfo*> Deck;
-	TArray<ACardBase*> Hand;
-	TArray<ACardBase*> CardField;
-	TArray<ACardBase*> OpponentCardField;
-	TArray<ATbfCharacterUnit*> UnitField;
-	TArray<ATbfCharacterUnit*> OpponentUnitField;
-	// Add other game state variables as needed
-};
 
-struct FGameStateSim
-{
-	// AI
-	int32 LifePoints;
-	TArray<FTbfCardInfoSim> Deck;
-	TArray<FTbfCardInfoSim> Hand;
-	TArray<FTbfCardInfoSim> CardField;
-	TArray<FTbfUnitInfoSim> UnitField;
-	// Opponent
-	int32 OpponentLifePoints;
-	TArray<FTbfCardInfoSim> OpponentCardDeck;
-	TArray<FTbfCardInfoSim> OpponentCardHand;
-	TArray<FTbfCardInfoSim> OpponentCardField;
-	TArray<FTbfUnitInfoSim> OpponentUnitField;
-	// Add other game state variables as needed
-};
-
-#include "CoreMinimal.h"
-#include "TbfCharacterBase.h"
-#include "TbfCharacterAI.generated.h"
 
 UCLASS()
 class TURNBASEDBPFRAMEWORK_API ATbfCharacterAI : public ATbfCharacter
@@ -62,6 +30,9 @@ public:
 	int32 ChooseCardOnField() const;
 	UFUNCTION()
 	ATbfGridCell* ChooseCell() const;
+	UFUNCTION()
+	void UpdateGameState();
+
 	
 	// AI components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="AI", meta=(AllowPrivateAccess="true"))
@@ -69,6 +40,13 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="AI", meta=(AllowPrivateAccess="true"))
 	UMonteCarloComponent* MonteCarloComponent;
+	
+	// AI Algorithms
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "AI Algorithm")
+	ECardAlgo SelectedCardAlgorithm;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "AI Algorithm")
+	EUnitAlgo SelectedUnitAlgorithm;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
 	UBehaviorTree* Tree;
@@ -76,10 +54,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI Params")
 	UDataTable* DeckDTSim;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI Params")
+	FGameStateSim GameStateSim;
+	
+	
 protected:
 	virtual void BeginPlay() override;
-	FGameState InitialGameState;
-	FGameStateSim GameStateSim;
 
 	// Simulated Actions
 	void PopulateDeck_Sim();
@@ -93,6 +73,4 @@ protected:
 	
 private:
 	virtual void InitAbilityActorInfo() override;
-	UFUNCTION()
-	void SaveGameState(const UObject* WorldContextObject);
 };

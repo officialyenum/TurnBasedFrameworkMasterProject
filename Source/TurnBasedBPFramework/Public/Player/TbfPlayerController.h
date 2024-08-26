@@ -26,6 +26,9 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, Category="Game Manager")
 	bool bIsPaused = false;
+	
+	UFUNCTION(BlueprintImplementableEvent, Category="Game Manager")
+	void PauseGameEvent();
 
 private:
 	UPROPERTY(EditAnywhere, Category="Input")
@@ -47,6 +50,9 @@ private:
 	TObjectPtr<UInputAction> AttackAction;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
+	TObjectPtr<UInputAction> NextStateAction;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
 	TObjectPtr<UInputAction> LMBAction;
 
 	UFUNCTION(BlueprintCallable, Category="Player Function")
@@ -60,6 +66,8 @@ private:
 	UFUNCTION(BlueprintCallable, Category="Player Function")
 	void Attack(const struct FInputActionValue& InputActionValue);
 	UFUNCTION(BlueprintCallable, Category="Player Function")
+	void NextState(const struct FInputActionValue& InputActionValue);
+	UFUNCTION(BlueprintCallable, Category="Player Function")
 	void LeftMousePressedAction(const struct FInputActionValue& InputActionValue);
 
 	ISelectionInterface* LastActor;
@@ -68,4 +76,5 @@ private:
 	FVector CachedDestination = FVector::Zero();
 	void CursorTrace();
 	FHitResult CursorHit;
+
 };

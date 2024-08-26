@@ -33,8 +33,10 @@ void ATbfHUD::InitOverlay(APlayerController* PC, AAIController* AC, APlayerState
                           UAttributeSet* AS)
 {
 	checkf(OverlayWidgetClass, TEXT("Overlay Widget Class uninitialized, please fill out BP_TbfHUD"))
+	checkf(PauseWidgetClass, TEXT("Pause Widget Class uninitialized, please fill out BP_TbfHUD"))
 	checkf(OverlayWidgetControllerClass, TEXT("Overlay Widget Controller Class uninitialized, please fill out BP_TbfHUD"))
 	UUserWidget* Widget = CreateWidget<UUserWidget>(GetWorld(), OverlayWidgetClass);
+	PauseWidget = CreateWidget<UUserWidget>(GetWorld(), PauseWidgetClass);
 	OverlayWidget = Cast<UTbfUserWidget>(Widget);
 
 	const FWidgetControllerParams WidgetControllerParams(PC,AC,PS,ASC,AS);

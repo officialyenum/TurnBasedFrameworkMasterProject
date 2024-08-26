@@ -43,6 +43,8 @@ struct FTbfUnitInfoSim : public FTableRowBase
 	float Attack = 0.f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float Defence = 0.f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool bIsDead = false;
 };
 
 UCLASS()

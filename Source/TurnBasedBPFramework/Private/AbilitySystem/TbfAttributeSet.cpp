@@ -11,7 +11,7 @@ UTbfAttributeSet::UTbfAttributeSet()
 	
 	InitDrawPoints(5.0f);
 	InitMovePoints(2.0f);
-	InitActivatePoints(2.0f);
+	InitActivatePoints(0.0f);
 	InitBattlePoints(0.0f);
 
 	InitAttack(0.0f);
