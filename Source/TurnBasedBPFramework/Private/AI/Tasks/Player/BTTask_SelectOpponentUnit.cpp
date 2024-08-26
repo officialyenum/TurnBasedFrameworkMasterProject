@@ -24,7 +24,7 @@ EBTNodeResult::Type UBTTask_SelectOpponentUnit::ExecuteTask(UBehaviorTreeCompone
 			//TODO: Perform Opponent To Attack Selection
 			OwnerCharacter->TargetedUnit =
 				OwnerCharacter->SelectedUnitAlgorithm == EUnitAlgo::Random_MonteCarlo || OwnerCharacter->SelectedUnitAlgorithm == EUnitAlgo::MonteCarlo_MonteCarlo
-			? UTbfGameFunctionLibrary::GetOpponentUnitByIndex(OwnerCharacter, OwnerCharacter->MonteCarloComponent->GetTargetUnitIndex())
+			? UTbfGameFunctionLibrary::GetOpponentUnitByIndex(OwnerCharacter, OwnerCharacter->ChooseOpponentUnitOnField())
 			: UTbfGameFunctionLibrary::GetRandomOpponentUnit(OwnerCharacter);
 			OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), OwnerCharacter->TargetedUnit);
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);

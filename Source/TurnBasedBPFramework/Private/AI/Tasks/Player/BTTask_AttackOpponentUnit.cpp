@@ -23,6 +23,10 @@ EBTNodeResult::Type UBTTask_AttackOpponentUnit::ExecuteTask(UBehaviorTreeCompone
 		{
 			//TODO: Perform Attack Opponent Unit Logic Here
 			OwnerCharacter->PlaySelectedUnitBattle();
+			if (OwnerCharacter->BattleCountPerTurn <= 0)
+			{
+				OwnerCharacter->GoToNextState();
+			}
 			// finish with success
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 			return EBTNodeResult::Succeeded;

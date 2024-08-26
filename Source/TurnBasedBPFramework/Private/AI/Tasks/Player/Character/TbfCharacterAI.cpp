@@ -74,11 +74,12 @@ void ATbfCharacterAI::BeginPlay()
 
 int32 ATbfCharacterAI::ChooseCardInHand() const
 {
-	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("AI Choosing a Card In Hand With AlphaBetaPruning"));
 	if (Hand.Num() > 0)
 	{
 		if (SelectedCardAlgorithm == ECardAlgo::AlphaBeta_Random || SelectedCardAlgorithm == ECardAlgo::AlphaBeta_AlphaBeta)
 		{
+			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("AI Choosing a Card In Hand With AlphaBetaPruning"));
+	
 			FName CardName = AlphaBetaPruningComponent->ChooseBestCard(GameStateSim, 3, false);
 			for (int i = 0; i < Hand.Num(); ++i)
 			{
@@ -89,6 +90,8 @@ int32 ATbfCharacterAI::ChooseCardInHand() const
 			}
 		} else
 		{
+			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("AI Choosing a Random Card In Hand"));
+	
 			// Always pick out unit card first for activation
 			for (int i = 0; i < Hand.Num(); ++i)
 			{
@@ -108,12 +111,13 @@ int32 ATbfCharacterAI::ChooseCardInHand() const
 
 int32 ATbfCharacterAI::ChooseCardOnField() const
 {
-	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("AI Choosing a Card On Board AlphaBeta Pruning"));
 	// Alpha Beta Pruning heuristic for choosing a card to play
 	if (CardOnField.Num() > 0)
 	{
 		if (SelectedCardAlgorithm == ECardAlgo::Random_AlphaBeta || SelectedCardAlgorithm == ECardAlgo::AlphaBeta_AlphaBeta)
 		{
+			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("AI Choosing a Card On Board AlphaBeta Pruning"));
+	
 			FName CardName = AlphaBetaPruningComponent->ChooseBestCard(GameStateSim, 3, true);
 			for (int i = 0; i < CardOnField.Num() - 1; ++i)
 			{
@@ -123,6 +127,8 @@ int32 ATbfCharacterAI::ChooseCardOnField() const
 				}
 			}
 		}
+		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("AI Choosing a Random Card On Board"));
+	
 		// Always pick out unit card first for activation
 		for (int i = 0; i < CardOnField.Num() - 1; ++i)
 		{
@@ -132,6 +138,65 @@ int32 ATbfCharacterAI::ChooseCardOnField() const
 			}
 		}
 		int32 RandomCardIndex = FMath::RandRange(0,CardOnField.Num()-1);
+		return RandomCardIndex;
+	}
+	return INDEX_NONE;
+}
+
+int32 ATbfCharacterAI::ChooseUnitOnField() const
+{
+	// Monte Carlo Tree Searcg heuristic for choosing a unit to attack with
+	if (UnitOnField.Num() > 0)
+	{
+		if (UnitOnField.Num() == 1)
+		{
+			return 0;
+		}
+		if (SelectedUnitAlgorithm == EUnitAlgo::MonteCarlo_Random || SelectedUnitAlgorithm == EUnitAlgo::MonteCarlo_MonteCarlo)
+		{
+			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("AI Choosing a Unit On Its Board Monte Carlo"));
+			FName UnitName = MonteCarloComponent->ChooseBestAttackingUnit(GameStateSim, 50);
+			for (int i = 0; i < UnitOnField.Num() - 1; ++i)
+			{
+				if (UnitOnField[i]->UnitInfo.Name.Compare(UnitName) == 0)
+				{
+					return i;
+				}
+			}
+		}
+		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("AI Choosing a Unit On Its Board Random"));
+		int32 RandomCardIndex = FMath::RandRange(0,UnitOnField.Num()-1);
+		return RandomCardIndex;
+	}
+	return INDEX_NONE;
+}
+
+int32 ATbfCharacterAI::ChooseOpponentUnitOnField() const
+{
+	// Monte Carlo Tree Search heuristic for choosing a unit to attack
+	TArray<ATbfCharacterUnit*> OpponentUnits = UTbfGameFunctionLibrary::GetOpponentUnits(this);
+	
+	if (OpponentUnits.Num() > 0)
+	{
+		if (OpponentUnits.Num() == 1)
+		{
+			return 0;
+		}
+		if (SelectedUnitAlgorithm == EUnitAlgo::Random_MonteCarlo || SelectedUnitAlgorithm == EUnitAlgo::MonteCarlo_MonteCarlo)
+		{
+			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("AI Choosing a Unit On Opponent Board Monte Carlo"));
+			FName UnitName = MonteCarloComponent->ChooseBestAttackingUnit(GameStateSim, 50);
+			for (int i = 0; i < OpponentUnits.Num() - 1; ++i)
+			{
+				if (OpponentUnits[i]->UnitInfo.Name.Compare(UnitName) == 0)
+				{
+					return i;
+				}
+			}
+		}
+		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("AI Choosing a Unit On Opponent Board Random"));
+		// Always pick out unit card first for activation
+		int32 RandomCardIndex = FMath::RandRange(0,OpponentUnits.Num() - 1);
 		return RandomCardIndex;
 	}
 	return INDEX_NONE;
@@ -210,38 +275,6 @@ void ATbfCharacterAI::UpdateGameState()
 	
 	GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Orange,TEXT("Game State Update Ended"));
 	
-}
-
-// Simulation Area
-
-
-void ATbfCharacterAI::PopulateDeck_Sim()
-{
-	
-}
-
-void ATbfCharacterAI::SelectCardAndCell_Sim()
-{
-}
-
-void ATbfCharacterAI::MoveCardToCell_Sim()
-{
-}
-
-void ATbfCharacterAI::ActivateCard_Sim()
-{
-}
-
-void ATbfCharacterAI::SelectUnitAndTarget_Sim()
-{
-}
-
-void ATbfCharacterAI::AttackUnitTarget_Sim()
-{
-}
-
-void ATbfCharacterAI::AttackPlayer_Sim()
-{
 }
 
 void ATbfCharacterAI::InitAbilityActorInfo()

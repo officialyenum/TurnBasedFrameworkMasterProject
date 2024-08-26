@@ -195,14 +195,14 @@ void ATbfCharacter::PlaySelectedUnitBattle()
 				SelectedUnit->BattleOpponentUnit();
 				GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Green,FString::Printf(TEXT("%s Played Attack a Unit on Board"), *Name.ToString()));
 			};
-			Cast<UTbfAttributeSet>(AttributeSet)->SetBattlePoints(BattleCountPerTurn);
 		}
+		BattleCountPerTurn--;
 	}
 	else
 	{
 		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,FString::Printf(TEXT("%s Is Out Of Battle Moves"), *Name.ToString()));
 	}
-	BattleCountPerTurn -= 1;
+	Cast<UTbfAttributeSet>(AttributeSet)->SetBattlePoints(BattleCountPerTurn);
 	UpdateAttributeSet();
 	//UpdateUIStat();
 	if (BattleCountPerTurn <= 0 && CurrentState == ETbfPlayerState::Battle)
@@ -234,7 +234,7 @@ void ATbfCharacter::ActivateSelectedCard()
 		Cast<UTbfAttributeSet>(AttributeSet)->SetActivatePoints(ActivateCountPerTurn);
 	}
 	UpdateAttributeSet();
-	//UpdateUIStat();
+	UpdateUIStat();
 	if (ActivateCountPerTurn <= 0 && CurrentState == ETbfPlayerState::Main)
 	{
 		GoToNextState();

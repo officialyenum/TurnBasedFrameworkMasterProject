@@ -27,7 +27,7 @@
 			"B": 0.10651,
 			"A": 1
 		},
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"BAA3E5F64CD30800D1D8918E167D2FF8\", \"Bost Attack By 50%\")","Type": "Spell",
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"BAA3E5F64CD30800D1D8918E167D2FF8\", \"Boost Attack By 1000\")","Type": "Spell",
 		"UnitClass": "None",
 		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Actor/GameplayEffects/GE_BoostAttackBy50.GE_BoostAttackBy50_C'",
 		"Health": 0,
@@ -62,7 +62,7 @@
 			"B": 0.954526,
 			"A": 1
 		},
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"B5FE424A45E63978C75BD8A1A329AC8D\", \"This Reduces Opponent Attack By 50%\")",
+		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"B5FE424A45E63978C75BD8A1A329AC8D\", \"This Reduces Opponent Attack By 500\")",
 		"Type": "Trap",
 		"UnitClass": "None",
 		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_BoostDefenceBy25.GE_BoostDefenceBy25_C'",
@@ -103,7 +103,7 @@
 		"UnitClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Character/BP_TbfCharacterUnit.BP_TbfCharacterUnit_C'",
 		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_Deal100Damage.GE_Deal100Damage_C'",
 		"Health": 0,
-		"Attack": 1200,
+		"Attack": 2200,
 		"Defence": 800
 	},
 	{
@@ -337,8 +337,8 @@
 		"UnitClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Character/BP_TbfCharacterUnit.BP_TbfCharacterUnit_C'",
 		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_Deal100Damage.GE_Deal100Damage_C'",
 		"Health": 0,
-		"Attack": 800,
-		"Defence": 400
+		"Attack": 1600,
+		"Defence": 700
 	},
 	{
 		"Name": "Poison",
@@ -374,7 +374,7 @@
 		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_Deal100Damage.GE_Deal100Damage_C'",
 		"Health": 0,
 		"Attack": 700,
-		"Defence": 600
+		"Defence": 1600
 	},
 	{
 		"Name": "Blindness",
@@ -409,7 +409,7 @@
 		"UnitClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Character/BP_TbfCharacterUnit.BP_TbfCharacterUnit_C'",
 		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_Deal100Damage.GE_Deal100Damage_C'",
 		"Health": 0,
-		"Attack": 1000,
+		"Attack": 1500,
 		"Defence": 700
 	},
 	{
@@ -446,7 +446,7 @@
 		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_Deal100Damage.GE_Deal100Damage_C'",
 		"Health": 0,
 		"Attack": 800,
-		"Defence": 900
+		"Defence": 2900
 	},
 	{
 		"Name": "Confusion",
@@ -481,8 +481,8 @@
 		"UnitClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Character/BP_TbfCharacterUnit.BP_TbfCharacterUnit_C'",
 		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_Deal100Damage.GE_Deal100Damage_C'",
 		"Health": 0,
-		"Attack": 1200,
-		"Defence": 500
+		"Attack": 2500,
+		"Defence": 600
 	},
 	{
 		"Name": "Silence",
@@ -517,8 +517,8 @@
 		"UnitClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Character/BP_TbfCharacterUnit.BP_TbfCharacterUnit_C'",
 		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_Deal100Damage.GE_Deal100Damage_C'",
 		"Health": 0,
-		"Attack": 1400,
-		"Defence": 600
+		"Attack": 1800,
+		"Defence": 1600
 	},
 	{
 		"Name": "Darkness",
@@ -553,7 +553,7 @@
 		"UnitClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Character/BP_TbfCharacterUnit.BP_TbfCharacterUnit_C'",
 		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_Deal100Damage.GE_Deal100Damage_C'",
 		"Health": 0,
-		"Attack": 1100,
+		"Attack": 1700,
 		"Defence": 800
 	},
 	{
@@ -589,8 +589,8 @@
 		"UnitClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Character/BP_TbfCharacterUnit.BP_TbfCharacterUnit_C'",
 		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_Deal100Damage.GE_Deal100Damage_C'",
 		"Health": 0,
-		"Attack": 900,
-		"Defence": 700
+		"Attack": 400,
+		"Defence": 3000
 	},
 	{
 		"Name": "Barrier",
@@ -625,8 +625,8 @@
 		"UnitClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameWork/Blueprint/Character/BP_TbfCharacterUnit.BP_TbfCharacterUnit_C'",
 		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_Deal100Damage.GE_Deal100Damage_C'",
 		"Health": 0,
-		"Attack": 1200,
-		"Defence": 800
+		"Attack": 3500,
+		"Defence": 200
 	},
 	{
 		"Name": "Lightning",
@@ -662,7 +662,7 @@
 		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_Deal100Damage.GE_Deal100Damage_C'",
 		"Health": 0,
 		"Attack": 1300,
-		"Defence": 900
+		"Defence": 1300
 	},
 	{
 		"Name": "Sleep",
@@ -698,7 +698,7 @@
 		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_Deal100Damage.GE_Deal100Damage_C'",
 		"Health": 0,
 		"Attack": 1100,
-		"Defence": 600
+		"Defence": 1600
 	},
 	{
 		"Name": "Yenum",
@@ -716,6 +716,6 @@
 		"GameplayEffectClass": "/Script/Engine.BlueprintGeneratedClass'/Game/FrameworkV2/Gas/Effects/GameplayEffects/GE_Deal100Damage.GE_Deal100Damage_C'",
 		"Health": 0,
 		"Attack": 3000,
-		"Defence": 2500
+		"Defence": 3000
 	}
 ]

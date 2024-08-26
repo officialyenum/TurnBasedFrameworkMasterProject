@@ -25,9 +25,12 @@ EBTNodeResult::Type UBTTask_SelectUnit::ExecuteTask(UBehaviorTreeComponent& Owne
 			// Perform Unit Selection Here
 			OwnerCharacter->SelectedUnit =
 				OwnerCharacter->SelectedUnitAlgorithm == EUnitAlgo::MonteCarlo_Random || OwnerCharacter->SelectedUnitAlgorithm == EUnitAlgo::MonteCarlo_MonteCarlo
-				? UTbfGameFunctionLibrary::GetPlayerUnitByIndex(OwnerCharacter, OwnerCharacter->MonteCarloComponent->GetAttackingUnitIndex())
+				? UTbfGameFunctionLibrary::GetPlayerUnitByIndex(OwnerCharacter, OwnerCharacter->ChooseUnitOnField())
 				: OwnerCharacter->SelectedUnit = UTbfGameFunctionLibrary::GetRandomUnitForPlayer(OwnerCharacter);
-			
+			if (!OwnerCharacter->SelectedUnit && OwnerCharacter->CurrentState == ETbfPlayerState::Battle)
+			{
+				OwnerCharacter->GoToNextState();
+			}
 			OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), OwnerCharacter->SelectedUnit);
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 			return EBTNodeResult::Succeeded;

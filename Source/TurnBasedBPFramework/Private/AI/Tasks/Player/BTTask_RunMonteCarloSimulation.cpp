@@ -23,16 +23,13 @@ EBTNodeResult::Type UBTTask_RunMonteCarloSimulation::ExecuteTask(UBehaviorTreeCo
 		if (ATbfCharacterAI* const OwnerCharacter = Cast<ATbfCharacterAI>( OwnerController->GetPawn()))
 		{
 			// Perform Unit Selection Here
-			if (OwnerCharacter->SelectedUnitAlgorithm == EUnitAlgo::Random_MonteCarlo || OwnerCharacter->SelectedUnitAlgorithm == EUnitAlgo::MonteCarlo_MonteCarlo)
+			if (
+			OwnerCharacter->SelectedUnitAlgorithm == EUnitAlgo::MonteCarlo_Random || 
+				OwnerCharacter->SelectedUnitAlgorithm == EUnitAlgo::Random_MonteCarlo ||
+				OwnerCharacter->SelectedUnitAlgorithm == EUnitAlgo::MonteCarlo_MonteCarlo
+				)
 			{
 				OwnerCharacter->UpdateGameState();
-				OwnerCharacter->MonteCarloComponent->ChooseBestAttack(OwnerCharacter->GameStateSim,20);
-				int32 AttackingIndex = OwnerCharacter->MonteCarloComponent->GetAttackingUnitIndex();
-				int32 TargetIndex = OwnerCharacter->MonteCarloComponent->GetTargetUnitIndex();
-				if (AttackingIndex == INDEX_NONE && TargetIndex == INDEX_NONE)
-				{
-					OwnerCharacter->GoToNextState();
-				}
 			}
 			OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), OwnerCharacter->SelectedUnit);
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
