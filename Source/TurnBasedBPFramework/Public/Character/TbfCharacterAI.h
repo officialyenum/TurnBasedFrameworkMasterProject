@@ -23,15 +23,20 @@ public:
 
 	UBehaviorTree* GetBehaviorTree() const;
 
-	// Helper methods for AI card decision-making
+	// START: Helper methods for AI card and unit selection decision-making
 	UFUNCTION()
 	int32 ChooseCardInHand() const;
 	UFUNCTION()
 	int32 ChooseCardOnField() const;
 	UFUNCTION()
+	int32 ChooseUnitOnField() const;
+	UFUNCTION()
+	int32 ChooseOpponentUnitOnField() const;
+	UFUNCTION()
 	ATbfGridCell* ChooseCell() const;
 	UFUNCTION()
 	void UpdateGameState();
+	// END: Helper methods for AI card and unit selection decision-making
 
 	
 	// AI components
@@ -60,16 +65,6 @@ public:
 	
 protected:
 	virtual void BeginPlay() override;
-
-	// Simulated Actions
-	void PopulateDeck_Sim();
-	void SelectCardAndCell_Sim();
-	void MoveCardToCell_Sim();
-	void ActivateCard_Sim();
-	void SelectUnitAndTarget_Sim();
-	void AttackUnitTarget_Sim();
-	void AttackPlayer_Sim();
-	// Simulated Actions End
 	
 private:
 	virtual void InitAbilityActorInfo() override;

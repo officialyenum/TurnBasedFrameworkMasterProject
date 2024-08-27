@@ -21,7 +21,9 @@ public:
 	static ATbfGridCell* GetRandomCellForPlayer(const ATbfCharacter* Player);
 
 	static ATbfCharacterUnit* GetRandomUnitForPlayer(const ATbfCharacter* Player);
+	static ATbfCharacterUnit* GetPlayerUnitByIndex(const ATbfCharacter* Player, const int32 UnitIndex);
 	static ATbfCharacterUnit* GetRandomOpponentUnit(const ATbfCharacter* Player);
+	static ATbfCharacterUnit* GetOpponentUnitByIndex(const ATbfCharacter* Player, const int32 UnitIndex);
 	static TArray<ATbfCharacterUnit*> GetAllUnitForPlayer(const ATbfCharacter* Player);
 	static TArray<ATbfCharacterUnit*> GetOpponentUnits(const ATbfCharacter* Player);
 	

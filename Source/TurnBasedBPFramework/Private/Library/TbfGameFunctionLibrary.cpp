@@ -64,6 +64,12 @@ ATbfCharacterUnit* UTbfGameFunctionLibrary::GetRandomUnitForPlayer(const ATbfCha
 	return Player->UnitOnField[RandomIndex];
 }
 
+ATbfCharacterUnit* UTbfGameFunctionLibrary::GetPlayerUnitByIndex(const ATbfCharacter* Player, const int32 UnitIndex)
+{
+	if (Player->UnitOnField.Num() == 0 || UnitIndex == INDEX_NONE) return nullptr;
+	return Player->UnitOnField[UnitIndex];
+}
+
 ATbfCharacterUnit* UTbfGameFunctionLibrary::GetRandomOpponentUnit(const ATbfCharacter* Player)
 {
 	if (!IsValid(Player)) return nullptr;
@@ -76,6 +82,19 @@ ATbfCharacterUnit* UTbfGameFunctionLibrary::GetRandomOpponentUnit(const ATbfChar
 	if (Opponent->UnitOnField.Num() == 0) return nullptr;
 
 	const int32 UnitIndex = FMath::RandRange(0, Opponent->UnitOnField.Num() - 1);
+	return Opponent->UnitOnField[UnitIndex];
+}
+
+ATbfCharacterUnit* UTbfGameFunctionLibrary::GetOpponentUnitByIndex(const ATbfCharacter* Player, const int32 UnitIndex)
+{
+	if (!IsValid(Player)) return nullptr;
+
+	const UTbfGameInstance* GI = Cast<UTbfGameInstance>(UGameplayStatics::GetGameInstance(Player));
+	if (!IsValid(GI) || !IsValid(GI->PlayerOne) || !IsValid(GI->PlayerTwo)) return nullptr;
+
+	const ATbfCharacter* Opponent = (GI->PlayerOne->id == Player->id) ? GI->PlayerTwo : GI->PlayerOne;
+	
+	if (Opponent->UnitOnField.Num() == 0 || UnitIndex == INDEX_NONE) return nullptr;
 	return Opponent->UnitOnField[UnitIndex];
 }
 

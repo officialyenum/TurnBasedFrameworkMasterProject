@@ -86,7 +86,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Params" )
 	int32 MoveCountPerTurn = 2;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Params" )
-	int32 ActivateCountPerTurn = 0;
+	int32 ActivateCountPerTurn = 2;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Params" )
 	int32 BattleCountPerTurn = 0;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player Params" )

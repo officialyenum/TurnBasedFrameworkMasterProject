@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Actor/CardBase.h"
+#include "Components/AudioComponent.h"
 #include "Engine/GameInstance.h"
 #include "TbfGameInstance.generated.h"
 
@@ -36,6 +37,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category= "Player Setup")
 	void SetPlayerTwo(ATbfCharacter* Player);
 
+	UFUNCTION(BlueprintCallable, Category="Action Functions")
+	void PlayMusicAction() const;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Game")
 	FText WinningMessage;
@@ -63,11 +66,18 @@ public:
 	TArray<ATbfCharacterUnit*> PlayerOneFieldedUnits();
 	UFUNCTION(BlueprintCallable, Category= "Card Trackers")
 	TArray<ATbfCharacterUnit*> PlayerTwoFieldedUnits();
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Character Sounds")
+	mutable UAudioComponent* MusicComponent;
 protected:
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "AI Algorithm")
 	ECardAlgo CardAlgorithm;
 
+	UPROPERTY(EditAnywhere, Category="Character Sounds")
+	TObjectPtr<USoundBase> BgMusic;
+
+	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "AI Algorithm")
 	EUnitAlgo UnitAlgorithm;
 };

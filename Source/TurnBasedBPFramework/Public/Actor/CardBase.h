@@ -210,6 +210,10 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Card Param", meta=(ExposeOnSpawn="true"))
 	FTbfCardInfo CardInfo;
+	
+	UFUNCTION(BlueprintCallable, Category="Action Functions")
+	void PlayActivationAction() const;
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -222,6 +226,15 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category="Components")
 	TObjectPtr<UArrowComponent> SpawnDirectionArrow;
+
+	UPROPERTY(EditAnywhere, Category="Card Sounds")
+	TObjectPtr<USoundBase> UnitSound;
+	
+	UPROPERTY(EditAnywhere, Category="Card Sounds")
+	TObjectPtr<USoundBase> TrapSound;
+	
+	UPROPERTY(EditAnywhere, Category="Card Sounds")
+	TObjectPtr<USoundBase> SpellSound;
 	
 
 };

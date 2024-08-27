@@ -4,6 +4,7 @@
 #include "AI/Tasks/Player/BTTask_SelectUnit.h"
 
 #include "AI/TbfAIController.h"
+#include "AI/Algo/MonteCarloComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Character/TbfCharacterAI.h"
 #include "Character/TbfCharacterUnit.h"
@@ -22,15 +23,15 @@ EBTNodeResult::Type UBTTask_SelectUnit::ExecuteTask(UBehaviorTreeComponent& Owne
 		if (ATbfCharacterAI* const OwnerCharacter = Cast<ATbfCharacterAI>( OwnerController->GetPawn()))
 		{
 			// Perform Unit Selection Here
-			OwnerCharacter->SelectedUnit = UTbfGameFunctionLibrary::GetRandomUnitForPlayer(OwnerCharacter);
-			if (OwnerCharacter->SelectedUnit)
+			OwnerCharacter->SelectedUnit =
+				OwnerCharacter->SelectedUnitAlgorithm == EUnitAlgo::MonteCarlo_Random || OwnerCharacter->SelectedUnitAlgorithm == EUnitAlgo::MonteCarlo_MonteCarlo
+				? UTbfGameFunctionLibrary::GetPlayerUnitByIndex(OwnerCharacter, OwnerCharacter->ChooseUnitOnField())
+				: OwnerCharacter->SelectedUnit = UTbfGameFunctionLibrary::GetRandomUnitForPlayer(OwnerCharacter);
+			if (!OwnerCharacter->SelectedUnit && OwnerCharacter->CurrentState == ETbfPlayerState::Battle)
 			{
-				OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), OwnerCharacter->SelectedUnit);
-				// finish with success
-				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-				return EBTNodeResult::Succeeded;
+				OwnerCharacter->GoToNextState();
 			}
-			OwnerCharacter->GoToNextState();
+			OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), OwnerCharacter->SelectedUnit);
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 			return EBTNodeResult::Succeeded;
 		}

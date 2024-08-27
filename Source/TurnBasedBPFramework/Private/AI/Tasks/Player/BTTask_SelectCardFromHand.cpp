@@ -32,7 +32,7 @@ EBTNodeResult::Type UBTTask_SelectCardFromHand::ExecuteTask(UBehaviorTreeCompone
 				return EBTNodeResult::Succeeded;
 			}
 			OwnerCharacter->MoveCountPerTurn--;
-			if (OwnerCharacter->MoveCountPerTurn <= 0 || OwnerCharacter->ActivateCountPerTurn <= 0)
+			if (OwnerCharacter->CurrentState == ETbfPlayerState::Main && (OwnerCharacter->MoveCountPerTurn <= 0 || OwnerCharacter->ActivateCountPerTurn <= 0))
 			{
 				OwnerCharacter->GoToNextState();
 				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);

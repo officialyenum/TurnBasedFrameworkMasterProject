@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Node/MonteCarloNode.h"
 #include "MonteCarloComponent.generated.h"
 
 
@@ -16,14 +17,22 @@ class TURNBASEDBPFRAMEWORK_API UMonteCarloComponent : public UActorComponent
 
 public:
 	UMonteCarloComponent();
-
-	int32 MonteCarloSimulation(FGameStateSim GameState, int32 Simulations);
-
-protected:
 	virtual void BeginPlay() override;
 
+	FName ChooseBestAttackingUnit(const FGameStateSim& GameState, int32 NumSimulations);
+	FName ChooseBestTargetUnit(const FGameStateSim& GameState, int32 NumSimulations);
+
 private:
-	void PlaySelectedUnit(FGameStateSim& GameState, int32 CardIndex);
-	void UndoSelectedUnit(FGameStateSim& GameState, int32 CardIndex);
-	bool SimulateGame(FGameStateSim& GameState);
+	void SimulateAttack(FGameStateSim& GameState, int32 AttackingUnitIndex, int32 TargetUnitIndex, bool isOpponent);
+	bool IsTerminalState(const FGameStateSim& State);
+	int32 GetRandomLivingUnitIndex(const TArray<FTbfUnitInfoSim>& UnitField);
+	UMonteCarloNode* TreePolicy(UMonteCarloNode* Root);
+	int32 DefaultPolicy(FGameStateSim& State);
+	void Backpropagate(UMonteCarloNode* Node, int32 Result);
+	UMonteCarloNode* Expand(UMonteCarloNode* Node);
+	bool AllUnitsDead(const TArray<FTbfUnitInfoSim>& UnitField);
+
+	// These variables are used to store the best indices found
+	int32 OutAttackingUnitIndex;
+	int32 OutTargetUnitIndex;
 };

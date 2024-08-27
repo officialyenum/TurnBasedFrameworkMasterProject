@@ -4,6 +4,7 @@
 #include "AI/Tasks/Player/BTTask_SelectOpponentUnit.h"
 
 #include "AI/TbfAIController.h"
+#include "AI/Algo/MonteCarloComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Character/TbfCharacterAI.h"
 #include "Library/TbfGameFunctionLibrary.h"
@@ -21,11 +22,11 @@ EBTNodeResult::Type UBTTask_SelectOpponentUnit::ExecuteTask(UBehaviorTreeCompone
 		if (ATbfCharacterAI* const OwnerCharacter = Cast<ATbfCharacterAI>( OwnerController->GetPawn()))
 		{
 			//TODO: Perform Opponent To Attack Selection
-
-			// finish with success
-			ATbfCharacterUnit* OpponentUnit = UTbfGameFunctionLibrary::GetRandomOpponentUnit(OwnerCharacter);
-			OwnerCharacter->TargetedUnit = OpponentUnit;
-			OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), OpponentUnit);
+			OwnerCharacter->TargetedUnit =
+				OwnerCharacter->SelectedUnitAlgorithm == EUnitAlgo::Random_MonteCarlo || OwnerCharacter->SelectedUnitAlgorithm == EUnitAlgo::MonteCarlo_MonteCarlo
+			? UTbfGameFunctionLibrary::GetOpponentUnitByIndex(OwnerCharacter, OwnerCharacter->ChooseOpponentUnitOnField())
+			: UTbfGameFunctionLibrary::GetRandomOpponentUnit(OwnerCharacter);
+			OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), OwnerCharacter->TargetedUnit);
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 			return EBTNodeResult::Succeeded;
 		}

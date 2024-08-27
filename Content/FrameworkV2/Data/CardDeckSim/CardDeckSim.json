@@ -1,602 +1,762 @@
 [
 	{
 		"Name": "Ragnar",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"044F47BD44CBFD5017173399755DECD9\", \"Ragnar Is A Unit Force\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"5BF5033F4CCF514391E51596F134ADD2\", \"Ragnar Is A Unit Force\")",
 		"Rank": 10,
 		"Type": "Unit",
 		"Unit":
 		{
 			"Name": "Ragnar",
+			"UnitState": "Idle",
 			"Attack": 1000,
-			"Defence": 500
+			"Defence": 500,
+			"bIsDead": false
 		},
 		"ModifierParam": "None",
 		"ModifierType": "Add",
-		"ModifierValue": 0
+		"ModifierValue": 0,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Courage",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"BAA3E5F64CD30800D1D8918E167D2FF8\", \"Bost Attack By 50%\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"6C9761304DC82AE88EED28A423D9D152\", \"Boost Attack By 1000\")",
 		"Rank": 2,
 		"Type": "Spell",
 		"Unit":
 		{
 			"Name": "None",
+			"UnitState": "Idle",
 			"Attack": 0,
-			"Defence": 0
+			"Defence": 0,
+			"bIsDead": false
 		},
 		"ModifierParam": "Attack",
-		"ModifierType": "Multiply",
-		"ModifierValue": 1.5
+		"ModifierType": "Add",
+		"ModifierValue": 1000,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Rage",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"449769F94FA1229157C9338EE2429966\", \"Bost Attack By 50%\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"CD71FE3943C50DBD4C654488939252CD\", \"Bost Attack By 50%\")",
 		"Rank": 3,
 		"Type": "Spell",
 		"Unit":
 		{
 			"Name": "None",
+			"UnitState": "Idle",
 			"Attack": 0,
-			"Defence": 0
+			"Defence": 0,
+			"bIsDead": false
 		},
 		"ModifierParam": "Attack",
 		"ModifierType": "Multiply",
-		"ModifierValue": 1.5
+		"ModifierValue": 1.5,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Shock",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"B5FE424A45E63978C75BD8A1A329AC8D\", \"This Reduces Opponent Attack By 50%\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"CA7CCC9E4D080B14D768B0BAAC526EA4\", \"This Reduces Opponent Attack By 500\")",
 		"Rank": 5,
 		"Type": "Trap",
 		"Unit":
 		{
 			"Name": "None",
+			"UnitState": "Idle",
 			"Attack": 0,
-			"Defence": 0
+			"Defence": 0,
+			"bIsDead": false
 		},
 		"ModifierParam": "Attack",
-		"ModifierType": "Multiply",
-		"ModifierValue": 0.5
+		"ModifierType": "Add",
+		"ModifierValue": -500,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "WindStorm",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"20177A0C442EC4B03C4FE8B27F9509D8\", \"This Reduces Opponent Defence By 50%\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"2708373846C0CE1E76203AB53E4E5DFA\", \"This Reduces Opponent Defence By 50%\")",
 		"Rank": 4,
 		"Type": "Trap",
 		"Unit":
 		{
 			"Name": "None",
+			"UnitState": "Idle",
 			"Attack": 0,
-			"Defence": 0
+			"Defence": 0,
+			"bIsDead": false
 		},
 		"ModifierParam": "Defence",
 		"ModifierType": "Multiply",
-		"ModifierValue": 0.5
+		"ModifierValue": 0.5,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Thor",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"C20C8A0C4DC13D90373E838F9202F3D8\", \"Thor Is A Powerful Unit\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"CA47954A444E9C327D2D94A58A221768\", \"Thor Is A Powerful Unit\")",
 		"Rank": 17,
 		"Type": "Unit",
 		"Unit":
 		{
 			"Name": "Thor",
+			"UnitState": "Idle",
 			"Attack": 2200,
-			"Defence": 800
+			"Defence": 800,
+			"bIsDead": false
 		},
 		"ModifierParam": "None",
 		"ModifierType": "Add",
-		"ModifierValue": 0
+		"ModifierValue": 0,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Fireball",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"1234567A0C4DC13D90373E838F9202F3D\", \"Boost Unit Defence by 500\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"6FB397324E13EEC498BD92B2E654FA61\", \"Boost Unit Defence by 500\")",
 		"Rank": 2,
 		"Type": "Spell",
 		"Unit":
 		{
 			"Name": "None",
+			"UnitState": "Idle",
 			"Attack": 0,
-			"Defence": 0
+			"Defence": 0,
+			"bIsDead": false
 		},
 		"ModifierParam": "Defence",
 		"ModifierType": "Add",
-		"ModifierValue": 500
+		"ModifierValue": 500,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Earthquake",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"2234567A0C4DC13D90373E838F9202F3D\", \"Reduces opponent's defense by 50%\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"2E5E7F514E3021A054212DBCBFFC703D\", \"Reduces opponent\\'s defense by 50%\")",
 		"Rank": 6,
 		"Type": "Trap",
 		"Unit":
 		{
 			"Name": "None",
+			"UnitState": "Idle",
 			"Attack": 0,
-			"Defence": 0
+			"Defence": 0,
+			"bIsDead": false
 		},
 		"ModifierParam": "Defence",
 		"ModifierType": "Multiply",
-		"ModifierValue": 0.5
+		"ModifierValue": 0.5,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Zeus",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"3234567A0C4DC13D90373E838F9202F3D\", \"Zeus Commands Thunder\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"CCEC23224C88F2D5E832D7BBCDB9521D\", \"Zeus Commands Thunder\")",
 		"Rank": 15,
 		"Type": "Unit",
 		"Unit":
 		{
 			"Name": "Zeus",
+			"UnitState": "Idle",
 			"Attack": 1500,
-			"Defence": 700
+			"Defence": 700,
+			"bIsDead": false
 		},
 		"ModifierParam": "None",
 		"ModifierType": "Add",
-		"ModifierValue": 0
+		"ModifierValue": 0,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Heal",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"4234567A0C4DC13D90373E838F9202F3D\", \"Restores 500 Attack to unit\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"B4A304F644A5C9A0D77DB7B2B80CA3F4\", \"Restores 500 Attack to unit\")",
 		"Rank": 1,
 		"Type": "Spell",
 		"Unit":
 		{
 			"Name": "None",
+			"UnitState": "Idle",
 			"Attack": 0,
-			"Defence": 0
+			"Defence": 0,
+			"bIsDead": false
 		},
 		"ModifierParam": "Attack",
 		"ModifierType": "Add",
-		"ModifierValue": 500
+		"ModifierValue": 500,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Poseidon",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"5234567A0C4DC13D90373E838F9202F3D\", \"Poseidon Master of the Seas\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"024EC87B417597D769EA0D9516480CDD\", \"Poseidon Master of the Seas\")",
 		"Rank": 11,
 		"Type": "Unit",
 		"Unit":
 		{
 			"Name": "Poseidon",
+			"UnitState": "Idle",
 			"Attack": 1100,
-			"Defence": 900
+			"Defence": 900,
+			"bIsDead": false
 		},
 		"ModifierParam": "None",
 		"ModifierType": "Add",
-		"ModifierValue": 0
+		"ModifierValue": 0,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Invisibility",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"6234567A0C4DC13D90373E838F9202F3D\", \"Double Unit Defence and Make unit invisible\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"9EF502564C2C68E9280ABAB4CFBE54FC\", \"Double Unit Defence and Make unit invisible\")",
 		"Rank": 5,
 		"Type": "Spell",
 		"Unit":
 		{
 			"Name": "None",
+			"UnitState": "Idle",
 			"Attack": 0,
-			"Defence": 0
+			"Defence": 0,
+			"bIsDead": false
 		},
 		"ModifierParam": "Defence",
 		"ModifierType": "Multiply",
-		"ModifierValue": 2
+		"ModifierValue": 2,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Hades",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"7234567A0C4DC13D90373E838F9202F3D\", \"Hades Ruler of the Underworld\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"C7474D1E4FB10FD5DF570BA7D2EECB06\", \"Hades Ruler of the Underworld\")",
 		"Rank": 11,
 		"Type": "Unit",
 		"Unit":
 		{
 			"Name": "Hades",
+			"UnitState": "Idle",
 			"Attack": 1300,
-			"Defence": 600
+			"Defence": 600,
+			"bIsDead": false
 		},
 		"ModifierParam": "None",
 		"ModifierType": "Add",
-		"ModifierValue": 0
+		"ModifierValue": 0,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Blessing",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"8234567A0C4DC13D90373E838F9202F3D\", \"Boosts attack and defense by 50%\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"17B819D6465494075741D09E54CB028C\", \"Boosts attack and defense by 50%\")",
 		"Rank": 5,
 		"Type": "Spell",
 		"Unit":
 		{
 			"Name": "None",
+			"UnitState": "Idle",
 			"Attack": 0,
-			"Defence": 0
+			"Defence": 0,
+			"bIsDead": false
 		},
 		"ModifierParam": "Both",
 		"ModifierType": "Multiply",
-		"ModifierValue": 1.5
+		"ModifierValue": 1.5,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Medusa",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"9234567A0C4DC13D90373E838F9202F3D\", \"Medusa Turns Opponents to Stone\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"FBE3E03549D0775F1951BFBF27974256\", \"Medusa Turns Opponents to Stone\")",
 		"Rank": 7,
 		"Type": "Unit",
 		"Unit":
 		{
 			"Name": "Medusa",
+			"UnitState": "Idle",
 			"Attack": 900,
-			"Defence": 700
+			"Defence": 700,
+			"bIsDead": false
 		},
 		"ModifierParam": "None",
 		"ModifierType": "Add",
-		"ModifierValue": 0
+		"ModifierValue": 0,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Freeze",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"A234567A0C4DC13D90373E838F9202F3D\", \"Freezes opponent Defence and deal 50% Damage to it\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"26FBDA1C427DA557D6C4E3B8A3DCBD43\", \"Freezes opponent Defence and deal 50% Damage to it\")",
 		"Rank": 5,
 		"Type": "Trap",
 		"Unit":
 		{
 			"Name": "None",
+			"UnitState": "Idle",
 			"Attack": 0,
-			"Defence": 0
+			"Defence": 0,
+			"bIsDead": false
 		},
 		"ModifierParam": "Defence",
 		"ModifierType": "Multiply",
-		"ModifierValue": 0.5
+		"ModifierValue": 0.5,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Hermes",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"B234567A0C4DC13D90373E838F9202F3D\", \"Hermes Messenger of the Gods\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"9F51417241812429E44BEF8E0CF97370\", \"Hermes Messenger of the Gods\")",
 		"Rank": 6,
 		"Type": "Unit",
 		"Unit":
 		{
 			"Name": "Hermes",
+			"UnitState": "Idle",
 			"Attack": 800,
-			"Defence": 400
+			"Defence": 400,
+			"bIsDead": false
 		},
 		"ModifierParam": "None",
 		"ModifierType": "Add",
-		"ModifierValue": 0
+		"ModifierValue": 0,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Storm",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"C234567A0C4DC13D90373E838F9202F3D\", \"Reduces opponent's attack by 50%\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"8D0BB4674F3FB926F3A684BA4DAC19CB\", \"Reduces opponent\\'s attack by 50%\")",
 		"Rank": 4,
 		"Type": "Trap",
 		"Unit":
 		{
 			"Name": "None",
+			"UnitState": "Idle",
 			"Attack": 0,
-			"Defence": 0
+			"Defence": 0,
+			"bIsDead": false
 		},
 		"ModifierParam": "Attack",
 		"ModifierType": "Multiply",
-		"ModifierValue": 0.5
+		"ModifierValue": 0.5,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Ares",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"D234567A0C4DC13D90373E838F9202F3D\", \"Ares God of War\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"D7B2810F487A6AC834D09188E0D89FB7\", \"Ares God of War\")",
 		"Rank": 17,
 		"Type": "Unit",
 		"Unit":
 		{
 			"Name": "Ares",
+			"UnitState": "Idle",
 			"Attack": 1600,
-			"Defence": 700
+			"Defence": 700,
+			"bIsDead": false
 		},
 		"ModifierParam": "None",
 		"ModifierType": "Add",
-		"ModifierValue": 0
+		"ModifierValue": 0,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Poison",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"E234567A0C4DC13D90373E838F9202F3D\", \"Reduces opponent's Defence by 50%\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"C4D5126A4D8AABB20E0DA08886687BB5\", \"Reduces opponent\\'s Defence by 50%\")",
 		"Rank": 5,
 		"Type": "Trap",
 		"Unit":
 		{
 			"Name": "None",
+			"UnitState": "Idle",
 			"Attack": 0,
-			"Defence": 0
+			"Defence": 0,
+			"bIsDead": false
 		},
 		"ModifierParam": "Defence",
 		"ModifierType": "Multiply",
-		"ModifierValue": 0.5
+		"ModifierValue": 0.5,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Aphrodite",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"F234567A0C4DC13D90373E838F9202F3D\", \"Aphrodite Goddess of Love\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"B16B953D4AF1BC741539168AEB080B70\", \"Aphrodite Goddess of Love\")",
 		"Rank": 13,
 		"Type": "Unit",
 		"Unit":
 		{
 			"Name": "Aphrodite",
+			"UnitState": "Idle",
 			"Attack": 700,
-			"Defence": 1600
+			"Defence": 1600,
+			"bIsDead": false
 		},
 		"ModifierParam": "None",
 		"ModifierType": "Add",
-		"ModifierValue": 0
+		"ModifierValue": 0,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Blindness",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"G234567A0C4DC13D90373E838F9202F3D\", \"Reduces opponent's Attack By 50%\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"407A888E43C5853673BA87944C7ABD50\", \"Reduces opponent\\'s Attack By 50%\")",
 		"Rank": 2,
 		"Type": "Trap",
 		"Unit":
 		{
 			"Name": "None",
+			"UnitState": "Idle",
 			"Attack": 0,
-			"Defence": 0
+			"Defence": 0,
+			"bIsDead": false
 		},
 		"ModifierParam": "Attack",
 		"ModifierType": "Multiply",
-		"ModifierValue": 0.5
+		"ModifierValue": 0.5,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Hera",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"H234567A0C4DC13D90373E838F9202F3D\", \"Hera Queen of the Gods\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"BA761B084E2A1A63D9254B94BD3EA8D2\", \"Hera Queen of the Gods\")",
 		"Rank": 11,
 		"Type": "Unit",
 		"Unit":
 		{
 			"Name": "Hera",
+			"UnitState": "Idle",
 			"Attack": 1500,
-			"Defence": 700
+			"Defence": 700,
+			"bIsDead": false
 		},
 		"ModifierParam": "None",
 		"ModifierType": "Add",
-		"ModifierValue": 0
+		"ModifierValue": 0,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Weakness",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"I234567A0C4DC13D90373E838F9202F3D\", \"Reduces opponent's attack by 50%\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"01E941AC4A4352C83357649E92C697BA\", \"Reduces opponent\\'s attack by 50%\")",
 		"Rank": 3,
 		"Type": "Spell",
 		"Unit":
 		{
 			"Name": "None",
+			"UnitState": "Idle",
 			"Attack": 0,
-			"Defence": 0
+			"Defence": 0,
+			"bIsDead": false
 		},
 		"ModifierParam": "Attack",
 		"ModifierType": "Multiply",
-		"ModifierValue": 0.5
+		"ModifierValue": 0.5,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Hestia",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"J234567A0C4DC13D90373E838F9202F3D\", \"Hestia Goddess of Hearth\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"2A52D7A841DB19FA3E04D3A40E9199DB\", \"Hestia Goddess of Hearth\")",
 		"Rank": 13,
 		"Type": "Unit",
 		"Unit":
 		{
 			"Name": "Hestia",
+			"UnitState": "Idle",
 			"Attack": 800,
-			"Defence": 2900
+			"Defence": 2900,
+			"bIsDead": false
 		},
 		"ModifierParam": "None",
 		"ModifierType": "Add",
-		"ModifierValue": 0
+		"ModifierValue": 0,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Confusion",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"K234567A0C4DC13D90373E838F9202F3D\", \"Reduces opponent's Defence by 50%\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"B5BD3BA4411B83329704E5BAE549A13C\", \"Reduces opponent\\'s Defence by 50%\")",
 		"Rank": 4,
 		"Type": "Trap",
 		"Unit":
 		{
 			"Name": "None",
+			"UnitState": "Idle",
 			"Attack": 0,
-			"Defence": 0
+			"Defence": 0,
+			"bIsDead": false
 		},
 		"ModifierParam": "Defence",
 		"ModifierType": "Multiply",
-		"ModifierValue": 0.5
+		"ModifierValue": 0.5,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Athena",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"L234567A0C4DC13D90373E838F9202F3D\", \"Athena Goddess of Wisdom\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"615E0F8D452B358644B8D081F07B5617\", \"Athena Goddess of Wisdom\")",
 		"Rank": 17,
 		"Type": "Unit",
 		"Unit":
 		{
 			"Name": "Athena",
+			"UnitState": "Idle",
 			"Attack": 2500,
-			"Defence": 600
+			"Defence": 600,
+			"bIsDead": false
 		},
 		"ModifierParam": "None",
 		"ModifierType": "Add",
-		"ModifierValue": 0
+		"ModifierValue": 0,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Silence",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"M234567A0C4DC13D90373E838F9202F3D\", \"Reduces Attack opponent By 50%\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"8EC82D054C590741FDBBBE8AD89EB975\", \"Reduces Attack opponent By 50%\")",
 		"Rank": 3,
 		"Type": "Trap",
 		"Unit":
 		{
 			"Name": "None",
+			"UnitState": "Idle",
 			"Attack": 0,
-			"Defence": 0
+			"Defence": 0,
+			"bIsDead": false
 		},
 		"ModifierParam": "Attack",
 		"ModifierType": "Multiply",
-		"ModifierValue": 0.5
+		"ModifierValue": 0.5,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Apollo",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"N234567A0C4DC13D90373E838F9202F3D\", \"Apollo God of the Sun\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"7A6A1C944660DC9ECC7626BE5F906451\", \"Apollo God of the Sun\")",
 		"Rank": 16,
 		"Type": "Unit",
 		"Unit":
 		{
 			"Name": "Apollo",
+			"UnitState": "Idle",
 			"Attack": 1800,
-			"Defence": 1600
+			"Defence": 1600,
+			"bIsDead": false
 		},
 		"ModifierParam": "None",
 		"ModifierType": "Add",
-		"ModifierValue": 0
+		"ModifierValue": 0,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Darkness",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"O234567A0C4DC13D90373E838F9202F3D\", \"Reduce Opponent Attack By 50%\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"74C257AB4B2205485789CFB048C64EF7\", \"Reduce Opponent Attack By 50%\")",
 		"Rank": 6,
 		"Type": "Trap",
 		"Unit":
 		{
 			"Name": "None",
+			"UnitState": "Idle",
 			"Attack": 0,
-			"Defence": 0
+			"Defence": 0,
+			"bIsDead": false
 		},
 		"ModifierParam": "Attack",
 		"ModifierType": "Multiply",
-		"ModifierValue": 0.5
+		"ModifierValue": 0.5,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Artemis",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"P234567A0C4DC13D90373E838F9202F3D\", \"Artemis Goddess of the Hunt\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"868421CA4DD56CC8985A6FA12EA1CBD8\", \"Artemis Goddess of the Hunt\")",
 		"Rank": 12,
 		"Type": "Unit",
 		"Unit":
 		{
 			"Name": "Artemis",
+			"UnitState": "Idle",
 			"Attack": 1700,
-			"Defence": 800
+			"Defence": 800,
+			"bIsDead": false
 		},
 		"ModifierParam": "None",
 		"ModifierType": "Add",
-		"ModifierValue": 0
+		"ModifierValue": 0,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Enrage",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"Q234567A0C4DC13D90373E838F9202F3D\", \"Boosts unit's attack by 50%\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"697CAC614E609324FE9003B148B9471D\", \"Boosts unit\\'s attack by 50%\")",
 		"Rank": 5,
 		"Type": "Spell",
 		"Unit":
 		{
 			"Name": "None",
+			"UnitState": "Idle",
 			"Attack": 0,
-			"Defence": 0
+			"Defence": 0,
+			"bIsDead": false
 		},
 		"ModifierParam": "Attack",
 		"ModifierType": "Multiply",
-		"ModifierValue": 1.5
+		"ModifierValue": 1.5,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Demeter",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"R234567A0C4DC13D90373E838F9202F3D\", \"Demeter Goddess of Harvest\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"6ED738694DE7779628D4BAA73956F874\", \"Demeter Goddess of Harvest\")",
 		"Rank": 15,
 		"Type": "Unit",
 		"Unit":
 		{
 			"Name": "Demeter",
+			"UnitState": "Idle",
 			"Attack": 400,
-			"Defence": 3000
+			"Defence": 3000,
+			"bIsDead": false
 		},
 		"ModifierParam": "None",
 		"ModifierType": "Add",
-		"ModifierValue": 0
+		"ModifierValue": 0,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Barrier",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"S234567A0C4DC13D90373E838F9202F3D\", \"Increases unit's defense by 50%\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"80842A1E4FD25387968D1CA465E0DD7D\", \"Increases unit\\'s defense by 50%\")",
 		"Rank": 5,
 		"Type": "Spell",
 		"Unit":
 		{
 			"Name": "None",
+			"UnitState": "Idle",
 			"Attack": 0,
-			"Defence": 0
+			"Defence": 0,
+			"bIsDead": false
 		},
 		"ModifierParam": "Defence",
 		"ModifierType": "Multiply",
-		"ModifierValue": 1.5
+		"ModifierValue": 1.5,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Nemesis",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"T234567A0C4DC13D90373E838F9202F3D\", \"Nemesis Goddess of Revenge\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"CAC570B34301041273A83EBCBE1665B5\", \"Nemesis Goddess of Revenge\")",
 		"Rank": 16,
 		"Type": "Unit",
 		"Unit":
 		{
 			"Name": "Nemesis",
+			"UnitState": "Idle",
 			"Attack": 3500,
-			"Defence": 200
+			"Defence": 200,
+			"bIsDead": false
 		},
 		"ModifierParam": "None",
 		"ModifierType": "Add",
-		"ModifierValue": 0
+		"ModifierValue": 0,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Lightning",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"U234567A0C4DC13D90373E838F9202F3D\", \"Boots Attack by 500 \")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"EAD4AC1A4661F8259C6C8BBF3D6F4F1A\", \"Boots Attack by 500 \")",
 		"Rank": 4,
 		"Type": "Spell",
 		"Unit":
 		{
 			"Name": "None",
+			"UnitState": "Idle",
 			"Attack": 0,
-			"Defence": 0
+			"Defence": 0,
+			"bIsDead": false
 		},
 		"ModifierParam": "Defence",
 		"ModifierType": "Add",
-		"ModifierValue": 500
+		"ModifierValue": 500,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Hephaestus",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"V234567A0C4DC13D90373E838F9202F3D\", \"Hephaestus God of Fire\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"458EF6BF414F78FAEEC7BCA5899CCE3A\", \"Hephaestus God of Fire\")",
 		"Rank": 13,
 		"Type": "Unit",
 		"Unit":
 		{
 			"Name": "Hephaestus",
+			"UnitState": "Idle",
 			"Attack": 1300,
-			"Defence": 1300
+			"Defence": 1300,
+			"bIsDead": false
 		},
 		"ModifierParam": "None",
 		"ModifierType": "Add",
-		"ModifierValue": 0
+		"ModifierValue": 0,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Sleep",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"W234567A0C4DC13D90373E838F9202F3D\", \"Reduce Opponent Defence by 500\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"351BBED84B6FCAB22494EDA9CF2491D1\", \"Reduce Opponent Defence by 500\")",
 		"Rank": 3,
 		"Type": "Trap",
 		"Unit":
 		{
 			"Name": "None",
+			"UnitState": "Idle",
 			"Attack": 0,
-			"Defence": 0
+			"Defence": 0,
+			"bIsDead": false
 		},
 		"ModifierParam": "Defence",
 		"ModifierType": "Add",
-		"ModifierValue": -500
+		"ModifierValue": -500,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Chiron",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"X234567A0C4DC13D90373E838F9202F3D\", \"Chiron the Centaur\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"2F49BC334C718CEE60AD28A9834BC548\", \"Chiron the Centaur\")",
 		"Rank": 18,
 		"Type": "Unit",
 		"Unit":
 		{
 			"Name": "Chiron",
+			"UnitState": "Idle",
 			"Attack": 1100,
-			"Defence": 1600
+			"Defence": 1600,
+			"bIsDead": false
 		},
 		"ModifierParam": "None",
 		"ModifierType": "Add",
-		"ModifierValue": 0
+		"ModifierValue": 0,
+		"bIsDead": false,
+		"bIsActive": false
 	},
 	{
 		"Name": "Yenum",
-		"Info": "NSLOCTEXT(\"[210EC60026F49C9A64ADB1D3297DC6B5]\", \"X234567A0C4DC13D90373E838F9202F3D\", \"Yenum D. Law\")",
+		"Info": "NSLOCTEXT(\"[ADC676CBBB1AAADDE6289E2D269DF39F]\", \"E75961D3447323BDCDA4CE8D341AE075\", \"Yenum D. Law\")",
 		"Rank": 20,
 		"Type": "Unit",
 		"Unit":
 		{
 			"Name": "Yenum",
+			"UnitState": "Idle",
 			"Attack": 3000,
-			"Defence": 3000
+			"Defence": 3000,
+			"bIsDead": false
 		},
 		"ModifierParam": "None",
 		"ModifierType": "Add",
-		"ModifierValue": 0
+		"ModifierValue": 0,
+		"bIsDead": false,
+		"bIsActive": false
 	}
 ]
