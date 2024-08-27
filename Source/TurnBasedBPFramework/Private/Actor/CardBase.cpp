@@ -53,6 +53,22 @@ ACardBase::ACardBase(): CardInfo()
 	SpawnDirectionArrow->SetArrowLength(50.0f);
 }
 
+void ACardBase::PlayActivationAction() const
+{
+	switch (CardInfo.Type)
+	{
+	case ECardType::Unit:
+		UGameplayStatics::PlaySoundAtLocation(this, UnitSound, GetActorLocation(), FRotator::ZeroRotator);
+		break;
+	case ECardType::Spell:
+		UGameplayStatics::PlaySoundAtLocation(this, SpellSound, GetActorLocation(), FRotator::ZeroRotator);
+		break;
+	case ECardType::Trap:
+		UGameplayStatics::PlaySoundAtLocation(this, TrapSound, GetActorLocation(), FRotator::ZeroRotator);
+		break;
+	}
+}
+
 // Called when the game starts or when spawned
 void ACardBase::BeginPlay()
 {
@@ -184,7 +200,7 @@ void ACardBase::SpawnCardUnit()
 	UnitOwner->UnitOnField.Add(Unit);
 	// Update Character UI Stat
 	UnitOwner->UpdateUIStat();
-	
+	PlayActivationAction();
 	// Play Animation to Destroy
 	Destroy();
 }
@@ -202,7 +218,7 @@ void ACardBase::ActivateSpellWithGameplayEffect()
 
 	UDamageType* DamageTypeClass = nullptr;
 	CardOwner->SelectedUnit->HandleTakeAnyDamage(CardOwner->SelectedUnit,0.f, DamageTypeClass,InstigatorController,this);
-	
+	PlayActivationAction();
 }
 
 void ACardBase::ActivateTrapWithGameplayEffect()
@@ -217,7 +233,7 @@ void ACardBase::ActivateTrapWithGameplayEffect()
 
 	UDamageType* DamageTypeClass = nullptr;
 	CardOwner->TargetedUnit->HandleTakeAnyDamage(CardOwner->SelectedUnit,0.f, DamageTypeClass,InstigatorController,this);
-	
+	PlayActivationAction();
 }
 
 void ACardBase::MoveCardToBoard()
