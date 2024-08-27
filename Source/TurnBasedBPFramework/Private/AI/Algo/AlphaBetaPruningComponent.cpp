@@ -1,14 +1,16 @@
 // Copyright Chukwuyenum Opone @officialyenum
 
-
 #include "AI/Algo/AlphaBetaPruningComponent.h"
+
+#include "Algo/RandomShuffle.h"
 #include "Character/TbfCharacterAI.h"
 
 // Sets default values for this component's properties
 UAlphaBetaPruningComponent::UAlphaBetaPruningComponent()
 {
-    // Set this component to be initialized when the game starts, and to be ticked every frame.
+    // Set this component to be initialized when the game starts, and to not be ticked every frame.
     PrimaryComponentTick.bCanEverTick = false;
+    BestCardIndex = -1;
 }
 
 void UAlphaBetaPruningComponent::BeginPlay()
@@ -16,335 +18,281 @@ void UAlphaBetaPruningComponent::BeginPlay()
     Super::BeginPlay();
 }
 
+/**
+ * Chooses the best card to play using the Alpha-Beta Pruning algorithm.
+ */
 FName UAlphaBetaPruningComponent::ChooseBestCard(const FGameStateSim& GameState, int32 Depth, bool bIsField)
 {
-    int32 BestCardIndex = INDEX_NONE;
-    int32 BestValue = INT32_MIN;
+    // Get the AI owner of this component
     ATbfCharacterAI* OwnerCharacter = Cast<ATbfCharacterAI>(GetOwner());
-    OwnerCharacter->UpdateGameState();
+    OwnerCharacter->UpdateGameState();  // Ensure the game state is up-to-date
+
+    // Start the Alpha-Beta Pruning process
+    FGameStateSim SimulatedStateSim = GameState;
+    // Generate possible hands for the current game state
+    GeneratePossibleHands(SimulatedStateSim);
+    int32 Score = AlphaBetaPruning(SimulatedStateSim, Depth, INT32_MIN, INT32_MAX, true, bIsField);
+
+    // Retrieve the card array based on whether it's from the field or hand
     const TArray<FTbfCardInfoSim>& Cards = bIsField ? GameState.CardField : GameState.Hand;
-    for (int32 i = 0; i < Cards.Num(); ++i)
+
+    // Return the best card's name if a valid index was found
+    if (BestCardIndex >= 0 && BestCardIndex < Cards.Num())
     {
-        
-        FGameStateSim SimulatedState = GameState;
-
-        // Simulate playing the card
-        SimulatePlayCard(SimulatedState, i, bIsField);
-
-        // Perform Alpha-Beta Pruning on the simulated state
-        int32 Value = AlphaBetaPruning(SimulatedState, Depth, INT32_MIN, INT32_MAX, false, bIsField);
-
-        if (Value > BestValue)
-        {
-            BestValue = Value;
-            BestCardIndex = i;
-        }
-        GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Orange,FString::Printf(TEXT("%s Generated a Value of %i"), *Cards[i].Name.ToString(), Value));
-        
-    }
-    if (BestCardIndex >= 0)
-    {
-        GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Blue,FString::Printf(TEXT("%s Returned Best Value of %i"), *Cards[BestCardIndex].Name.ToString(), BestValue));
+        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("%s Returned as Best Card"), *Cards[BestCardIndex].Name.ToString()));
         return Cards[BestCardIndex].Name;
     }
+
     return FName();
 }
 
-int32 UAlphaBetaPruningComponent::AlphaBetaPruning(FGameStateSim& GameState, int32 Depth, int32 Alpha, int32 Beta,
-    bool bIsMaximizingPlayer, bool bIsField)
+/**
+ * Performs the Alpha-Beta Pruning algorithm to evaluate game states.
+ */
+int32 UAlphaBetaPruningComponent::AlphaBetaPruning(FGameStateSim& GameState, int32 Depth, int32 Alpha, int32 Beta, bool bIsMaximizingPlayer, bool bIsField)
 {
+    // Base case: If depth is 0, return the evaluated score of the board
     if (Depth == 0)
     {
         return EvaluateBoardState(GameState);
     }
-    GeneratePossibleHands(GameState);
-    int32 NoOfCards = bIsField ? (bIsMaximizingPlayer ? GameState.CardField.Num() : GameState.OpponentCardField.Num()) : 
-                                  (bIsMaximizingPlayer ? GameState.Hand.Num() : GameState.OpponentCardHand.Num());
+
+
+    // Determine the number of cards based on whether it's the player's or opponent's turn
+    int32 NoOfCards = bIsField ? (bIsMaximizingPlayer ? GameState.CardField.Num() : GameState.OpponentCardField.Num())
+                                : (bIsMaximizingPlayer ? GameState.Hand.Num() : GameState.OpponentCardHand.Num());
 
     if (bIsMaximizingPlayer)
     {
+        // Maximizing player's turn (AI)
         int32 MaxEval = INT32_MIN;
+
         for (int32 i = 0; i < NoOfCards; ++i)
         {
-            FGameStateSim SavedState = GameState;
+            // Simulate the game state after playing the card
             FGameStateSim SimulatedState = GameState;
-            SimulatePlayCard(SimulatedState, i, bIsField);
+            SimulatePlay(SimulatedState, i, bIsField, true);
 
+            // Recursively call Alpha-Beta Pruning for the opponent's turn
             int32 Eval = AlphaBetaPruning(SimulatedState, Depth - 1, Alpha, Beta, false, bIsField);
-            MaxEval = FMath::Max(MaxEval, Eval);
+            if (Eval > MaxEval)
+            {
+                MaxEval = Eval;
+                BestCardIndex = i;  // Only update BestCardIndex when bIsMaximizingPlayer is true
+            }
             Alpha = FMath::Max(Alpha, Eval);
-
+            // Beta cutoff
             if (Beta <= Alpha)
             {
-                break; // Beta cutoff
+                break;
             }
-            //reverse State for next iteration
-            GameState = SavedState;
         }
         return MaxEval;
     }
     else
     {
+        // Minimizing player's turn (Opponent)
         int32 MinEval = INT32_MAX;
 
         for (int32 i = 0; i < NoOfCards; ++i)
         {
-            FGameStateSim SavedState = GameState;
+            // Simulate the game state after playing the card
             FGameStateSim SimulatedState = GameState;
-            SimulateOpponentPlayCard(SimulatedState, i, bIsField);
+            SimulatePlay(SimulatedState, i, bIsField, false);
 
+            // Recursively call Alpha-Beta Pruning for the AI's turn
             int32 Eval = AlphaBetaPruning(SimulatedState, Depth - 1, Alpha, Beta, true, bIsField);
+
+            // Update the minimum evaluation score and beta value
             MinEval = FMath::Min(MinEval, Eval);
             Beta = FMath::Min(Beta, Eval);
 
+            // Alpha cutoff
             if (Beta <= Alpha)
             {
-                break; // Alpha cutoff
+                break;
             }
-            //reverse State for next iteration
-            GameState = SavedState;
         }
         return MinEval;
     }
 }
 
+/**
+ * Generates possible hands for the opponent by simulating their deck.
+ */
 void UAlphaBetaPruningComponent::GeneratePossibleHands(FGameStateSim& GameState)
 {
-    if(GameState.OpponentCardDeck.IsEmpty())
-    {
-        GameState.OpponentCardDeck = GameState.GeneralDeck;
-    }
-
+    // Create a list of known cards (field and discarded)
     TArray<FTbfCardInfoSim> KnownCards;
     KnownCards.Append(GameState.OpponentCardField);
-    KnownCards.Append(GameState.OpponentDiscardedCards);
+    KnownCards.Append(GameState.OpponentCardHand); // Include current hand cards as well
 
-    for (FTbfCardInfoSim& KnownCard : KnownCards)
+    // Remove known cards from the opponent's deck
+    for (const FTbfCardInfoSim& KnownCard : KnownCards)
     {
         RemoveFromCardArray(GameState.OpponentCardDeck, KnownCard);
     }
-    // Sort the remaining cards in the deck by Rank in descending order
-    GameState.OpponentCardDeck.Sort([](const FTbfCardInfoSim& A, const FTbfCardInfoSim& B)
-    {
-        return A.Rank > B.Rank;
-    });
 
-    // Take the top 5 cards (or fewer if there are less than 5 cards)
-    GameState.OpponentCardHand = GameState.OpponentCardDeck;
-    if (GameState.OpponentCardHand.Num() > 5)
-    {
-        GameState.OpponentCardHand.SetNum(5);
-    }
-    // Remove from Deck
-    for (FTbfCardInfoSim& HandCard : GameState.OpponentCardHand)
-    {
-        RemoveFromCardArray(GameState.OpponentCardDeck, HandCard);
-    }
-    
-}
+    // Shuffle the remaining deck using Algo::Shuffle
+    Algo::RandomShuffle(GameState.OpponentCardDeck);
 
-void UAlphaBetaPruningComponent::SimulatePlayCard(FGameStateSim& GameState, int32 CardIndex, bool bIsField)
-{
-    FTbfCardInfoSim& CardToPlay = bIsField ? GameState.CardField[CardIndex] : GameState.Hand[CardIndex];
+    // Generate possible hand with 5 to 7 cards
+    int32 NumCardsToDraw = FMath::RandRange(5, 7);
+    NumCardsToDraw = FMath::Min(NumCardsToDraw, GameState.OpponentCardDeck.Num());
 
-    switch (CardToPlay.Type)
+    GameState.OpponentCardHand.Empty(); // Clear existing hand
+    for (int32 i = 0; i < NumCardsToDraw; i++)
     {
-        case ECardType::Unit:
-            CardToPlay.Rank += CardToPlay.Unit.Attack + CardToPlay.Unit.Defence + 5000;
-            if (!bIsField)
-            {
-                GameState.CardField.Add(CardToPlay);
-                GameState.Hand.RemoveAt(CardIndex);
-            }
-            SimulateCombat(GameState, CardToPlay, true);
-            break;
-        case ECardType::Spell:
-            ApplyCardEffects(GameState, CardToPlay, false, true);
-            if (!bIsField)
-            {
-                GameState.CardField.Add(CardToPlay);
-                GameState.Hand.RemoveAt(CardIndex);
-            }
-            break;
-        case ECardType::Trap:
-            ApplyCardEffects(GameState, CardToPlay, true, true);
-            if (!bIsField)
-            {
-                GameState.CardField.Add(CardToPlay);
-                GameState.Hand.RemoveAt(CardIndex);
-            }
-            break;
-
-        default:
-            break;
+        GameState.OpponentCardHand.Add(GameState.OpponentCardDeck[i]);
     }
 }
 
-void UAlphaBetaPruningComponent::SimulateOpponentPlayCard(FGameStateSim& GameState, int32 CardIndex, bool bIsField)
+/**
+ * Simulates playing a card, updating the game state accordingly.
+ */
+void UAlphaBetaPruningComponent::SimulatePlay(FGameStateSim& GameState, int32 CardIndex, bool bIsField, bool bIsPlayer)
 {
-    FTbfCardInfoSim& CardToPlay = bIsField ? GameState.OpponentCardField[CardIndex] : GameState.OpponentCardHand[CardIndex];
+    // Select the card to play based on whether it's from the field or hand
+    FTbfCardInfoSim& CardToPlay = bIsField ? (bIsPlayer ? GameState.CardField[CardIndex] : GameState.OpponentCardField[CardIndex])
+                                           : (bIsPlayer ? GameState.Hand[CardIndex] : GameState.OpponentCardHand[CardIndex]);
 
+    // Handle the card based on its type
     switch (CardToPlay.Type)
     {
-        case ECardType::Unit:
-            CardToPlay.Rank += CardToPlay.Unit.Attack + CardToPlay.Unit.Defence + 5000;
-            if (!bIsField)
-            {
-                GameState.OpponentCardField.Add(CardToPlay);
-                GameState.OpponentCardHand.RemoveAt(CardIndex);
-            }
-            SimulateCombat(GameState, CardToPlay, false);
-            break;
+    case ECardType::Unit:
+        // Update the rank based on unit attributes
+        CardToPlay.Rank += CardToPlay.Unit.Attack + CardToPlay.Unit.Defence + 5000;
 
-        case ECardType::Spell:
-            ApplyCardEffects(GameState, CardToPlay, false, false);
-            if (!bIsField)
+        // Move the card from hand to field if necessary
+        if (!bIsField)
+        {
+            if (bIsPlayer)
             {
-                GameState.OpponentCardField.Add(CardToPlay);
-                GameState.OpponentCardHand.RemoveAt(CardIndex);
-            }
-            break;
-        case ECardType::Trap:
-            ApplyCardEffects(GameState, CardToPlay, true, false);
-            if (!bIsField)
-            {
-                GameState.OpponentCardField.Add(CardToPlay);
-                GameState.OpponentCardHand.RemoveAt(CardIndex);
+                GameState.CardField.Add(CardToPlay);
+                GameState.Hand.RemoveAt(CardIndex);
             }
             else
             {
-                GameState.OpponentDiscardedCards.Add(CardToPlay);
-                GameState.OpponentCardField.RemoveAt(CardIndex);
+                GameState.OpponentCardField.Add(CardToPlay);
+                GameState.OpponentCardHand.RemoveAt(CardIndex);
             }
-            break;
-        default:
-            break;
+        }
+
+        // Simulate combat with the opponent's units
+        SimulateCombat(GameState, CardToPlay, bIsPlayer);
+        break;
+
+    case ECardType::Spell:
+    case ECardType::Trap:
+        // Apply the card's effects
+        ApplyCardEffects(GameState, CardToPlay, CardToPlay.Type == ECardType::Trap, bIsPlayer);
+
+        // Move the card from hand to field if necessary
+        if (!bIsField)
+        {
+            if (bIsPlayer)
+            {
+                GameState.CardField.Add(CardToPlay);
+                GameState.Hand.RemoveAt(CardIndex);
+            }
+            else
+            {
+                GameState.OpponentCardField.Add(CardToPlay);
+                GameState.OpponentCardHand.RemoveAt(CardIndex);
+            }
+        }
+        break;
+
+    default:
+        break;
     }
 }
 
+
+
+/**
+ * Applies effects of a card to the game state.
+ */
 void UAlphaBetaPruningComponent::ApplyCardEffects(FGameStateSim& GameState, FTbfCardInfoSim& Card, bool bIsTrap, bool bIsPlayer)
 {
+    // Check if the card modifies attack or defense
     if (Card.ModifierParam == EModifierParam::Attack || Card.ModifierParam == EModifierParam::Defence)
     {
-        TArray<FTbfCardInfoSim>& TargetField = bIsPlayer ? (bIsTrap ? GameState.OpponentCardField : GameState.CardField) : 
-                                      (bIsTrap ? GameState.CardField : GameState.OpponentCardField);
-        
+        // Determine the target field based on card type and player
+        TArray<FTbfCardInfoSim>& TargetField = bIsPlayer ? (bIsTrap ? GameState.OpponentCardField : GameState.CardField)
+                                                         : (bIsTrap ? GameState.CardField : GameState.OpponentCardField);
+
+        // Apply the effect to each card in the target field
         for (FTbfCardInfoSim& TargetCard : TargetField)
         {
-            if (TargetCard.Type == ECardType::Unit)
-            {
-                if (Card.ModifierType == EModifierType::Add)
-                {
-                    if (Card.ModifierParam == EModifierParam::Attack)
-                    {
-                        TargetCard.Unit.Attack += Card.ModifierValue;
-                    }
-                    else
-                    {
-                        TargetCard.Unit.Defence += Card.ModifierValue;
-                    }
-                }
-                else if (Card.ModifierType == EModifierType::Multiply)
-                {
-                    if (Card.ModifierParam == EModifierParam::Attack)
-                    {
-                        TargetCard.Unit.Attack *= Card.ModifierValue;
-                    }
-                    else
-                    {
-                        TargetCard.Unit.Defence *= Card.ModifierValue;
-                    }
-                }
-                TargetCard.Rank += Card.ModifierValue * (Card.ModifierType == EModifierType::Multiply ? 500 : 10);
-            }
-            if (TargetCard.Unit.Attack <= 0 || TargetCard.Unit.Defence == 0)
-            {
-                RemoveFromCardArray(GameState.OpponentCardDeck, TargetCard);
-            }
+            float* AttributeToModify = (Card.ModifierParam == EModifierParam::Attack)
+                                            ? &TargetCard.Unit.Attack
+                                            : &TargetCard.Unit.Defence;
+            *AttributeToModify += Card.ModifierValue * (Card.ModifierType == EModifierType::Add ? 1 : 1000);
+            TargetCard.Rank += *AttributeToModify * 0.5;
         }
-        Card.Rank += 1000.f;
     }
+
+    // Additional effects can be added here
 }
 
-void UAlphaBetaPruningComponent::SimulateCombat(FGameStateSim& GameState, FTbfCardInfoSim& Card, bool bIsPlayer)
+/**
+ * Simulates combat between the played card and the opponent's units.
+ */
+void UAlphaBetaPruningComponent::SimulateCombat(FGameStateSim& GameState, FTbfCardInfoSim& PlayedCard, bool bIsPlayer)
 {
+    // Define the fields for both players
+    TArray<FTbfCardInfoSim>& PlayerField = bIsPlayer ? GameState.CardField : GameState.OpponentCardField;
     TArray<FTbfCardInfoSim>& OpponentField = bIsPlayer ? GameState.OpponentCardField : GameState.CardField;
 
-    if (OpponentField.Num() > 0)
+    // Iterate over the opponent's field to resolve combat
+    for (int32 i = 0; i < OpponentField.Num(); ++i)
     {
-        for (FTbfCardInfoSim& OpponentCard : OpponentField)
+        FTbfCardInfoSim& OpponentCard = OpponentField[i];
+        // Combat resolution based on attack values
+        if (PlayedCard.Unit.Attack > OpponentCard.Unit.Attack)
         {
-            if (OpponentCard.Type == ECardType::Unit && !OpponentCard.bIsDead)
-            {
-                float NewDefence = OpponentCard.Unit.Defence - Card.Unit.Attack;
-                OpponentCard.Unit.Defence = NewDefence;
-
-                if (NewDefence <= 0.f)
-                {
-                    OpponentCard.bIsDead = true;
-                    OpponentCard.Unit.bIsDead = true;
-                    OpponentCard.Rank = 0;
-                    RemoveFromCardArray(GameState.OpponentCardDeck, OpponentCard);
-                }
-                else
-                {
-                    OpponentCard.Rank -= NewDefence;
-                }
-            }
+            OpponentCard.bIsDead = true;
+            PlayedCard.Rank += 500;  // Increase rank after successful combat
         }
-    }
-    else
-    {
-        if (bIsPlayer)
+        else if (PlayedCard.Unit.Attack < OpponentCard.Unit.Attack)
         {
-            GameState.OpponentLifePoints -= Card.Unit.Attack;
-        }
-        else
-        {
-            GameState.LifePoints -= Card.Unit.Attack;
+            PlayedCard.bIsDead = true;
+            //RemoveFromCardArray(PlayerField,PlayedCard);
+            break;  // Stop further combat if the played card is destroyed
         }
     }
 }
 
-void UAlphaBetaPruningComponent::RemoveDeadUnitsFromArray(TArray<FTbfCardInfoSim>& UnitField)
+/**
+ * Removes a specified card from the card array.
+ */
+void UAlphaBetaPruningComponent::RemoveFromCardArray(TArray<FTbfCardInfoSim>& CardArray, const FTbfCardInfoSim& CardToRemove)
 {
-    UnitField.RemoveAll([](const FTbfCardInfoSim& Card)
+    CardArray.RemoveAll([&CardToRemove](const FTbfCardInfoSim& Card)
     {
-        return Card.bIsDead || Card.Unit.bIsDead;
+        return Card.Name == CardToRemove.Name;
     });
 }
 
+/**
+ * Evaluates the current board state to assign a score.
+ */
 int32 UAlphaBetaPruningComponent::EvaluateBoardState(const FGameStateSim& GameState) const
 {
-    float PlayerScore = GameState.LifePoints;
-    float OpponentScore = GameState.OpponentLifePoints;
-
+    int32 Score = 0;
+    // Use Both AI and Player Life Points after simulation for evaluation
+    Score += GameState.LifePoints;
+    Score -= GameState.OpponentLifePoints;
+    // Calculate the score based on the AI's selected card impact on the fields
     for (const FTbfCardInfoSim& Card : GameState.CardField)
     {
-        PlayerScore += Card.Rank;
+        Score += Card.Rank;
     }
-    for (const FTbfCardInfoSim& Card : GameState.Hand)
-    {
-        PlayerScore += Card.Rank;
-    }
-
     for (const FTbfCardInfoSim& Card : GameState.OpponentCardField)
     {
-        OpponentScore += Card.Rank;
+        Score -= Card.Rank;
     }
 
-    for (const FTbfCardInfoSim& Card : GameState.OpponentCardHand)
-    {
-        OpponentScore += Card.Rank;
-    }
-
-    return PlayerScore - OpponentScore;
-}
-
-void UAlphaBetaPruningComponent::RemoveFromCardArray(TArray<FTbfCardInfoSim>& CardArray, const FTbfCardInfoSim& Card)
-{
-    CardArray.RemoveAll([&](const FTbfCardInfoSim& Element)
-    {
-        return Element.Name == Card.Name;
-    });
+    return Score;
 }

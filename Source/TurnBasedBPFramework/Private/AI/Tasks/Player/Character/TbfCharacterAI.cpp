@@ -252,12 +252,17 @@ void ATbfCharacterAI::UpdateGameState()
 	GameStateSim.UnitField.Empty();
 	for (auto Element : UnitOnField)
 	{
-		GameStateSim.CardField.Add(UTbfCardFunctionLibrary::ConvertToCardSim(GameStateSim, Element->UnitInfo.Name));
-		GameStateSim.UnitField.Add(UTbfCardFunctionLibrary::ConvertToUnitSim(GameStateSim,Element->UnitInfo.Name));
+		FTbfUnitInfoSim Unit = UTbfCardFunctionLibrary::ConvertToUnitSim(GameStateSim, Element->UnitInfo.Name);
+		GameStateSim.UnitField.Add(Unit);
 	}
 	
 
 	// Clear and populate the opponent's card field
+	GameStateSim.OpponentCardDeck.Empty();
+	for (FTbfCardInfo Element : Opponent->Deck)
+	{
+		GameStateSim.OpponentCardDeck.Add(UTbfCardFunctionLibrary::ConvertToCardSim(GameStateSim, Element.Name));;
+	}
 	GameStateSim.OpponentCardField.Empty();
 	for (auto* Element : Opponent->CardOnField)
 	{
@@ -266,10 +271,7 @@ void ATbfCharacterAI::UpdateGameState()
 	GameStateSim.OpponentUnitField.Empty();
 	for (auto Element : Opponent->UnitOnField)
 	{
-		FTbfCardInfoSim Card = UTbfCardFunctionLibrary::ConvertToCardSim(GameStateSim, Element->UnitInfo.Name);
 		FTbfUnitInfoSim Unit = UTbfCardFunctionLibrary::ConvertToUnitSim(GameStateSim, Element->UnitInfo.Name);
-		Card.bIsActive = true;
-		GameStateSim.OpponentCardField.Add(Card);
 		GameStateSim.OpponentUnitField.Add(Unit);
 	}
 	

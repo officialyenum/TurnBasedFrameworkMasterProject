@@ -18,23 +18,22 @@ public:
 	UAlphaBetaPruningComponent();
 	
 	FName ChooseBestCard(const FGameStateSim& GameState, int32 Depth, bool bIsField);
-
+	
 protected:
 	virtual void BeginPlay() override;
-
+	int32 GetBestCardIndex() { return BestCardIndex; };
+	
 private:
 	int32 AlphaBetaPruning(FGameStateSim& GameState, int32 Depth, int32 Alpha, int32 Beta, bool bIsMaximizingPlayer, bool bIsField);
-
-	void GeneratePossibleHands(FGameStateSim& GameState);
-	void SimulatePlayCard(FGameStateSim& GameState, int32 CardIndex, bool bIsField);
 	
-	void SimulateOpponentPlayCard(FGameStateSim& GameState, int32 CardIndex, bool bIsField);
+	void GeneratePossibleHands(FGameStateSim& GameState);
+	
+	void SimulatePlay(FGameStateSim& GameState, int32 CardIndex, bool bIsField, bool bIsPlayer);
 	int32 EvaluateBoardState(const FGameStateSim& GameState) const;
 
 	void RemoveFromCardArray(TArray<FTbfCardInfoSim>& Cards, const FTbfCardInfoSim& CardToRemove);
-	void RemoveDeadUnitsFromArray(TArray<FTbfCardInfoSim>& UnitField);
 	
 	void ApplyCardEffects(FGameStateSim& GameState, FTbfCardInfoSim& Card, bool bIsTrap, bool bIsPlayer);
 	void SimulateCombat(FGameStateSim& GameState, FTbfCardInfoSim& Card, bool bIsPlayer);
-	
+	int32 BestCardIndex;
 };
