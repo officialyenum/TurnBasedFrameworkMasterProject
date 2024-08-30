@@ -47,4 +47,14 @@ public:
 	}
 
 	bool IsLeaf() const { return Children.Num() == 0; }
+
+	// Update method for backpropagation
+	void Update(int32 Result)
+	{
+		Simulations++;
+		if (Result > 0)
+		{
+			Wins++; // Increment wins if the result is favorable
+		}
+	}
 };

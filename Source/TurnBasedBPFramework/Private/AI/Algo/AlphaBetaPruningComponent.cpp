@@ -32,17 +32,14 @@ FName UAlphaBetaPruningComponent::ChooseBestCard(const FGameStateSim& GameState,
     // Generate possible hands for the current game state
     GeneratePossibleHands(SimulatedStateSim);
     int32 Score = AlphaBetaPruning(SimulatedStateSim, Depth, INT32_MIN, INT32_MAX, true, bIsField);
-
     // Retrieve the card array based on whether it's from the field or hand
     const TArray<FTbfCardInfoSim>& Cards = bIsField ? GameState.CardField : GameState.Hand;
-
     // Return the best card's name if a valid index was found
     if (BestCardIndex >= 0 && BestCardIndex < Cards.Num())
     {
         GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("%s Returned as Best Card"), *Cards[BestCardIndex].Name.ToString()));
         return Cards[BestCardIndex].Name;
     }
-
     return FName();
 }
 
@@ -56,23 +53,18 @@ int32 UAlphaBetaPruningComponent::AlphaBetaPruning(FGameStateSim& GameState, int
     {
         return EvaluateBoardState(GameState);
     }
-
-
     // Determine the number of cards based on whether it's the player's or opponent's turn
     int32 NoOfCards = bIsField ? (bIsMaximizingPlayer ? GameState.CardField.Num() : GameState.OpponentCardField.Num())
                                 : (bIsMaximizingPlayer ? GameState.Hand.Num() : GameState.OpponentCardHand.Num());
-
     if (bIsMaximizingPlayer)
     {
         // Maximizing player's turn (AI)
         int32 MaxEval = INT32_MIN;
-
         for (int32 i = 0; i < NoOfCards; ++i)
         {
             // Simulate the game state after playing the card
             FGameStateSim SimulatedState = GameState;
             SimulatePlay(SimulatedState, i, bIsField, true);
-
             // Recursively call Alpha-Beta Pruning for the opponent's turn
             int32 Eval = AlphaBetaPruning(SimulatedState, Depth - 1, Alpha, Beta, false, bIsField);
             if (Eval > MaxEval)
@@ -93,20 +85,16 @@ int32 UAlphaBetaPruningComponent::AlphaBetaPruning(FGameStateSim& GameState, int
     {
         // Minimizing player's turn (Opponent)
         int32 MinEval = INT32_MAX;
-
         for (int32 i = 0; i < NoOfCards; ++i)
         {
             // Simulate the game state after playing the card
             FGameStateSim SimulatedState = GameState;
             SimulatePlay(SimulatedState, i, bIsField, false);
-
             // Recursively call Alpha-Beta Pruning for the AI's turn
             int32 Eval = AlphaBetaPruning(SimulatedState, Depth - 1, Alpha, Beta, true, bIsField);
-
             // Update the minimum evaluation score and beta value
             MinEval = FMath::Min(MinEval, Eval);
             Beta = FMath::Min(Beta, Eval);
-
             // Alpha cutoff
             if (Beta <= Alpha)
             {
@@ -155,14 +143,12 @@ void UAlphaBetaPruningComponent::SimulatePlay(FGameStateSim& GameState, int32 Ca
     // Select the card to play based on whether it's from the field or hand
     FTbfCardInfoSim& CardToPlay = bIsField ? (bIsPlayer ? GameState.CardField[CardIndex] : GameState.OpponentCardField[CardIndex])
                                            : (bIsPlayer ? GameState.Hand[CardIndex] : GameState.OpponentCardHand[CardIndex]);
-
     // Handle the card based on its type
     switch (CardToPlay.Type)
     {
     case ECardType::Unit:
         // Update the rank based on unit attributes
         CardToPlay.Rank += CardToPlay.Unit.Attack + CardToPlay.Unit.Defence + 5000;
-
         // Move the card from hand to field if necessary
         if (!bIsField)
         {
@@ -177,16 +163,13 @@ void UAlphaBetaPruningComponent::SimulatePlay(FGameStateSim& GameState, int32 Ca
                 GameState.OpponentCardHand.RemoveAt(CardIndex);
             }
         }
-
         // Simulate combat with the opponent's units
         SimulateCombat(GameState, CardToPlay, bIsPlayer);
         break;
-
     case ECardType::Spell:
     case ECardType::Trap:
         // Apply the card's effects
         ApplyCardEffects(GameState, CardToPlay, CardToPlay.Type == ECardType::Trap, bIsPlayer);
-
         // Move the card from hand to field if necessary
         if (!bIsField)
         {
@@ -222,17 +205,25 @@ void UAlphaBetaPruningComponent::ApplyCardEffects(FGameStateSim& GameState, FTbf
         TArray<FTbfCardInfoSim>& TargetField = bIsPlayer ? (bIsTrap ? GameState.OpponentCardField : GameState.CardField)
                                                          : (bIsTrap ? GameState.CardField : GameState.OpponentCardField);
 
-        // Apply the effect to each card in the target field
-        for (FTbfCardInfoSim& TargetCard : TargetField)
+        if (TargetField.Num() > 0)
         {
-            float* AttributeToModify = (Card.ModifierParam == EModifierParam::Attack)
-                                            ? &TargetCard.Unit.Attack
-                                            : &TargetCard.Unit.Defence;
-            *AttributeToModify += Card.ModifierValue * (Card.ModifierType == EModifierType::Add ? 1 : 1000);
-            TargetCard.Rank += *AttributeToModify * 0.5;
+            // Apply the effect to each card in the target field
+            for (FTbfCardInfoSim& TargetCard : TargetField)
+            {
+                float* AttributeToModify = (Card.ModifierParam == EModifierParam::Attack)
+                                                ? &TargetCard.Unit.Attack
+                                                : &TargetCard.Unit.Defence;
+                *AttributeToModify = Card.ModifierValue * (Card.ModifierType == EModifierType::Add ? *AttributeToModify + Card.ModifierValue : *AttributeToModify * Card.ModifierValue);
+                // increase the rank by 500 of the modified attribute
+                TargetCard.Rank += 5;
+            }
+        }
+        else
+        {
+            //reduce card by 20% since it has no units it can affect
+            Card.Rank *= 0.8;
         }
     }
-
     // Additional effects can be added here
 }
 
@@ -246,6 +237,18 @@ void UAlphaBetaPruningComponent::SimulateCombat(FGameStateSim& GameState, FTbfCa
     TArray<FTbfCardInfoSim>& OpponentField = bIsPlayer ? GameState.OpponentCardField : GameState.CardField;
 
     // Iterate over the opponent's field to resolve combat
+    if (OpponentField.Num() <= 0)
+    {
+        PlayedCard.Rank += 1000;
+        if (bIsPlayer)
+        {
+            GameState.OpponentLifePoints -= 500;
+        }
+        else
+        {
+            GameState.LifePoints -= 500;
+        }
+    }
     for (int32 i = 0; i < OpponentField.Num(); ++i)
     {
         FTbfCardInfoSim& OpponentCard = OpponentField[i];

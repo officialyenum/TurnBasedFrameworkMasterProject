@@ -72,7 +72,7 @@ void ATbfCharacterAI::BeginPlay()
 }
 
 
-int32 ATbfCharacterAI::ChooseCardInHand() const
+int32 ATbfCharacterAI::ChooseCardInHand()
 {
 	if (Hand.Num() > 0)
 	{
@@ -88,7 +88,8 @@ int32 ATbfCharacterAI::ChooseCardInHand() const
 					return i;
 				}
 			}
-		} else
+		}
+		else
 		{
 			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("AI Choosing a Random Card In Hand"));
 	
@@ -109,7 +110,7 @@ int32 ATbfCharacterAI::ChooseCardInHand() const
 	return INDEX_NONE;
 }
 
-int32 ATbfCharacterAI::ChooseCardOnField() const
+int32 ATbfCharacterAI::ChooseCardOnField()
 {
 	// Alpha Beta Pruning heuristic for choosing a card to play
 	if (CardOnField.Num() > 0)
@@ -121,24 +122,33 @@ int32 ATbfCharacterAI::ChooseCardOnField() const
 			FName CardName = AlphaBetaPruningComponent->ChooseBestCard(GameStateSim, 3, true);
 			for (int i = 0; i < CardOnField.Num() - 1; ++i)
 			{
+				if (CardOnField[i]->CardInfo.Type == ECardType::Unit)
+				{
+					return i;
+				}
 				if (CardOnField[i]->CardInfo.Name.Compare(CardName) == 0)
 				{
+					
 					return i;
 				}
 			}
 		}
-		GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("AI Choosing a Random Card On Board"));
-	
-		// Always pick out unit card first for activation
-		for (int i = 0; i < CardOnField.Num() - 1; ++i)
+		else
 		{
-			if(CardOnField[i]->CardInfo.Type == ECardType::Unit)
+			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("AI Choosing a Random Card On Board"));
+	
+			// Always pick out unit card first for activation
+			for (int i = 0; i < CardOnField.Num() - 1; ++i)
 			{
-				return i;
+				if(CardOnField[i]->CardInfo.Type == ECardType::Unit)
+				{
+					return i;
+				}
 			}
+			int32 RandomCardIndex = FMath::RandRange(0,CardOnField.Num()-1);
+			return RandomCardIndex;
 		}
-		int32 RandomCardIndex = FMath::RandRange(0,CardOnField.Num()-1);
-		return RandomCardIndex;
+		
 	}
 	return INDEX_NONE;
 }
@@ -155,7 +165,7 @@ int32 ATbfCharacterAI::ChooseUnitOnField() const
 		if (SelectedUnitAlgorithm == EUnitAlgo::MonteCarlo_Random || SelectedUnitAlgorithm == EUnitAlgo::MonteCarlo_MonteCarlo)
 		{
 			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("AI Choosing a Unit On Its Board Monte Carlo"));
-			FName UnitName = MonteCarloComponent->ChooseBestAttackingUnit(GameStateSim, 50);
+			FName UnitName = MonteCarloComponent->ChooseBestAttackingUnit(GameStateSim, 40);
 			for (int i = 0; i < UnitOnField.Num() - 1; ++i)
 			{
 				if (UnitOnField[i]->UnitInfo.Name.Compare(UnitName) == 0)
@@ -185,7 +195,7 @@ int32 ATbfCharacterAI::ChooseOpponentUnitOnField() const
 		if (SelectedUnitAlgorithm == EUnitAlgo::Random_MonteCarlo || SelectedUnitAlgorithm == EUnitAlgo::MonteCarlo_MonteCarlo)
 		{
 			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("AI Choosing a Unit On Opponent Board Monte Carlo"));
-			FName UnitName = MonteCarloComponent->ChooseBestAttackingUnit(GameStateSim, 50);
+			FName UnitName = MonteCarloComponent->BestTargetUnit.Name;
 			for (int i = 0; i < OpponentUnits.Num() - 1; ++i)
 			{
 				if (OpponentUnits[i]->UnitInfo.Name.Compare(UnitName) == 0)

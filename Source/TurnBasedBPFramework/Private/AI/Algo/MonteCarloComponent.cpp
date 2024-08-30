@@ -4,6 +4,7 @@
 #include "AI/Algo/MonteCarloComponent.h"
 
 #include "Character/TbfCharacterAI.h"
+#include "Engine/Engine.h"
 
 UMonteCarloComponent::UMonteCarloComponent()
 {
@@ -21,30 +22,33 @@ FName UMonteCarloComponent::ChooseBestAttackingUnit(const FGameStateSim& GameSta
 {
     UMonteCarloNode* Root = NewObject<UMonteCarloNode>();
     Root->State = GameState;
-
+    // Run simulations
     for (int32 i = 0; i < NumSimulations; ++i)
     {
         UMonteCarloNode* SelectedNode = TreePolicy(Root);
         int32 SimulationResult = DefaultPolicy(SelectedNode->State);
         Backpropagate(SelectedNode, SimulationResult);
     }
-
+    // Determine the best child node
     UMonteCarloNode* BestChild = Root->BestChild();
     if (BestChild && BestChild->Parent)
     {
+        // Find the best attacking unit based on the state of the BestChild
         for (int32 i = 0; i < GameState.UnitField.Num(); ++i)
         {
             if (!GameState.UnitField[i].bIsDead && !BestChild->State.UnitField[i].bIsDead)
             {
                 OutAttackingUnitIndex = i;
+                BestAttackingUnit = GameState.UnitField[OutAttackingUnitIndex];
                 break;
             }
         }
 
-        const FTbfUnitInfoSim& BestUnit = GameState.UnitField[OutAttackingUnitIndex];
-        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("Best Unit: %s"), *BestUnit.Name.ToString()));
-        return BestUnit.Name;
+        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("Best Attacking Unit: %s"),
+            *BestAttackingUnit.Name.ToString()));
+        return BestAttackingUnit.Name;
     }
+    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("No Good State Found Unit")));
     return FName();
 }
 
@@ -53,6 +57,7 @@ FName UMonteCarloComponent::ChooseBestTargetUnit(const FGameStateSim& GameState,
     UMonteCarloNode* Root = NewObject<UMonteCarloNode>();
     Root->State = GameState;
 
+    // Run simulations
     for (int32 i = 0; i < NumSimulations; ++i)
     {
         UMonteCarloNode* SelectedNode = TreePolicy(Root);
@@ -60,22 +65,28 @@ FName UMonteCarloComponent::ChooseBestTargetUnit(const FGameStateSim& GameState,
         Backpropagate(SelectedNode, SimulationResult);
     }
 
+    // Determine the best child node
     UMonteCarloNode* BestChild = Root->BestChild();
+    
     if (BestChild && BestChild->Parent)
     {
+        // Find the best target unit based on the state of the BestChild
         for (int32 i = 0; i < GameState.OpponentUnitField.Num(); ++i)
         {
             if (!GameState.OpponentUnitField[i].bIsDead && !BestChild->State.OpponentUnitField[i].bIsDead)
             {
                 OutTargetUnitIndex = i;
+                BestTargetUnit = GameState.OpponentUnitField[OutTargetUnitIndex];
                 break;
             }
         }
 
-        const FTbfUnitInfoSim& BestTarget = GameState.OpponentUnitField[OutTargetUnitIndex];
-        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("Best Target Unit: %s"), *BestTarget.Name.ToString()));
-        return BestTarget.Name;
+        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("Best Target Unit: %s"),
+            *BestTargetUnit.Name.ToString()));
+        return BestTargetUnit.Name;
     }
+
+    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("No Good State Found Target")));
     return FName();
 }
 
@@ -105,7 +116,6 @@ UMonteCarloNode* UMonteCarloComponent::Expand(UMonteCarloNode* Node)
         {
             continue; // Skip dead units
         }
-
         for (int32 TargetUnitIndex = 0; TargetUnitIndex < Node->State.OpponentUnitField.Num(); ++TargetUnitIndex)
         {
             FTbfUnitInfoSim& TargetUnit = Node->State.OpponentUnitField[TargetUnitIndex];
@@ -113,35 +123,26 @@ UMonteCarloNode* UMonteCarloComponent::Expand(UMonteCarloNode* Node)
             {
                 continue; // Skip dead units
             }
-
             // Create a new child node for this move
             UMonteCarloNode* ChildNode = NewObject<UMonteCarloNode>();
             ChildNode->State = Node->State;
-
             // Simulate the attack using the centralized function
             SimulateAttack(ChildNode->State, AttackingUnitIndex, TargetUnitIndex, false);
-
             ChildNode->Parent = Node;
             Node->Children.Add(ChildNode);
-
             return ChildNode;
         }
-
         // Direct attack on life points
         if (AllUnitsDead(Node->State.OpponentUnitField))
         {
             UMonteCarloNode* ChildNode = NewObject<UMonteCarloNode>();
             ChildNode->State = Node->State;
-
             SimulateAttack(ChildNode->State, AttackingUnitIndex, INDEX_NONE, false);
-
             ChildNode->Parent = Node;
             Node->Children.Add(ChildNode);
-
             return ChildNode;
         }
     }
-
     return nullptr;
 }
 
@@ -178,79 +179,69 @@ int32 UMonteCarloComponent::DefaultPolicy(FGameStateSim& State)
             SimulateAttack(State, OpponentAttackingUnitIndex, OpponentTargetUnitIndex, true);
         }
     }
-    return (State.OpponentLifePoints <= 0) ? 1 : 0;
+    return (State.OpponentLifePoints <= 0) ? 1 : (State.LifePoints <= 0) ? -1 : 0;
 }
 
 void UMonteCarloComponent::Backpropagate(UMonteCarloNode* Node, int32 Result)
 {
-    while (Node != nullptr)
+    while (Node)
     {
-        Node->Simulations++;
-        Node->Wins += Result;
+        Node->Update(Result);
         Node = Node->Parent;
-    }
-}
-
-void UMonteCarloComponent::SimulateAttack(FGameStateSim& GameState, int32 AttackingUnitIndex, int32 TargetUnitIndex, bool isOpponent)
-{
-    if (AttackingUnitIndex == INDEX_NONE)
-    {
-        return; // No attacker
-    }
-
-    FTbfUnitInfoSim& AttackingUnit = isOpponent ? GameState.OpponentUnitField[AttackingUnitIndex] : GameState.UnitField[AttackingUnitIndex];
-
-    if (TargetUnitIndex == INDEX_NONE)
-    {
-        if (isOpponent)
-        {
-            GameState.LifePoints -= AttackingUnit.Attack;
-        }else
-        {
-            GameState.OpponentLifePoints -= AttackingUnit.Attack;
-        }
-    }
-    else
-    {
-
-        FTbfUnitInfoSim& TargetUnit = isOpponent ? GameState.UnitField[TargetUnitIndex] : GameState.OpponentUnitField[TargetUnitIndex];
-        if (TargetUnit.bIsDead || AttackingUnit.bIsDead)
-        {
-            return; // Skip dead units
-        }
-
-        int32 Damage = FMath::Max(0, AttackingUnit.Attack - TargetUnit.Defence);
-        TargetUnit.Defence = FMath::Max(0, TargetUnit.Defence - AttackingUnit.Attack);
-
-        if (Damage > 0)
-        {
-            TargetUnit.bIsDead = true;
-        }
     }
 }
 
 bool UMonteCarloComponent::IsTerminalState(const FGameStateSim& State)
 {
-    return (State.LifePoints <= 0 || State.OpponentLifePoints <= 0);
+    return (State.LifePoints <= 0 || State.OpponentLifePoints <= 0 || AllUnitsDead(State.UnitField) || AllUnitsDead(State.OpponentUnitField));
 }
 
 int32 UMonteCarloComponent::GetRandomLivingUnitIndex(const TArray<FTbfUnitInfoSim>& UnitField)
 {
-    TArray<int32> LivingUnits;
+    TArray<int32> LivingUnitIndices;
     for (int32 i = 0; i < UnitField.Num(); ++i)
     {
         if (!UnitField[i].bIsDead)
         {
-            LivingUnits.Add(i);
+            LivingUnitIndices.Add(i);
         }
     }
-
-    if (LivingUnits.Num() > 0)
+    if (LivingUnitIndices.Num() > 0)
     {
-        return LivingUnits[FMath::RandRange(0, LivingUnits.Num() - 1)];
+        return LivingUnitIndices[FMath::RandRange(0, LivingUnitIndices.Num() - 1)];
     }
-
-    return INDEX_NONE; // No living units
+    return INDEX_NONE;
 }
 
+void UMonteCarloComponent::SimulateAttack(FGameStateSim& GameState, int32 AttackingUnitIndex, int32 TargetUnitIndex, bool IsOpponent)
+{
+    if (AttackingUnitIndex == INDEX_NONE || (TargetUnitIndex == INDEX_NONE && !AllUnitsDead(GameState.OpponentUnitField)))
+    {
+        return; // Invalid attack
+    }
+
+    FTbfUnitInfoSim* Attacker = (IsOpponent) ? &GameState.OpponentUnitField[AttackingUnitIndex] : &GameState.UnitField[AttackingUnitIndex];
+    FTbfUnitInfoSim* Target = (TargetUnitIndex != INDEX_NONE) ? (IsOpponent ? &GameState.UnitField[TargetUnitIndex] : &GameState.OpponentUnitField[TargetUnitIndex]) : nullptr;
+
+    // Simplified combat logic for simulation purposes
+    if (Target)
+    {
+        Target->Defence -= FMath::Clamp(Attacker->Attack - Target->Defence, 1, Attacker->Attack);
+        if (Target->Defence <= 0)
+        {
+            Target->bIsDead = true;
+        }
+    }
+    else
+    {
+        if (IsOpponent)
+        {
+            GameState.LifePoints -= Attacker->Attack;
+        }
+        else
+        {
+            GameState.OpponentLifePoints -= Attacker->Attack;
+        }
+    }
+}
 

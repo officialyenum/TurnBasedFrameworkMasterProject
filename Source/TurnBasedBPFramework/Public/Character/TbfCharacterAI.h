@@ -25,9 +25,9 @@ public:
 
 	// START: Helper methods for AI card and unit selection decision-making
 	UFUNCTION()
-	int32 ChooseCardInHand() const;
+	int32 ChooseCardInHand();
 	UFUNCTION()
-	int32 ChooseCardOnField() const;
+	int32 ChooseCardOnField();
 	UFUNCTION()
 	int32 ChooseUnitOnField() const;
 	UFUNCTION()
