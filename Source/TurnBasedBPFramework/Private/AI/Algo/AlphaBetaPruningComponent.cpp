@@ -37,7 +37,7 @@ FName UAlphaBetaPruningComponent::ChooseBestCard(const FGameStateSim& GameState,
     // Return the best card's name if a valid index was found
     if (BestCardIndex >= 0 && BestCardIndex < Cards.Num())
     {
-        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("%s Returned as Best Card"), *Cards[BestCardIndex].Name.ToString()));
+        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("%s Returned as Best Card with score %i"), *Cards[BestCardIndex].Name.ToString(), Score));
         return Cards[BestCardIndex].Name;
     }
     return FName();
