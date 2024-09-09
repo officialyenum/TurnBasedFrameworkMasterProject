@@ -15,8 +15,6 @@ class TURNBASEDBPFRAMEWORK_API UMonteCarloComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-	GENERATED_BODY()
-
 public:
 	UMonteCarloComponent();
 

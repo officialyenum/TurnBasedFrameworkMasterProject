@@ -195,7 +195,7 @@ int32 ATbfCharacterAI::ChooseOpponentUnitOnField() const
 		if (SelectedUnitAlgorithm == EUnitAlgo::Random_MonteCarlo || SelectedUnitAlgorithm == EUnitAlgo::MonteCarlo_MonteCarlo)
 		{
 			GEngine->AddOnScreenDebugMessage(-1,3.0f,FColor::Red,TEXT("AI Choosing a Unit On Opponent Board Monte Carlo"));
-			FName UnitName = MonteCarloComponent->BestTargetUnit.Name;
+			FName UnitName = MonteCarloComponent->ChooseBestTargetUnit(GameStateSim, 40);
 			for (int i = 0; i < OpponentUnits.Num() - 1; ++i)
 			{
 				if (OpponentUnits[i]->UnitInfo.Name.Compare(UnitName) == 0)
